@@ -1,19 +1,21 @@
-
 # DuckDB local databases
 *.duckdb
 *.duckdb.wal
+
+# Raw source data
+data/raw/
 
 # R session files
 .Rhistory
 .RData
 .Ruserdata
 
-# RStudio project settings (if used)
+# RStudio project settings
 .Rproj.user/
+
+# Quarto
+.quarto/
+*_files/
 
 # macOS
 .DS_Store
-
-# Quarto generated files
-.quarto/
-*_files/
