@@ -1,6 +1,6 @@
 # DERAILED GeoLab — How did Vancouver move one hour away from Seattle?
 # Run from the DERAILED repository root, after your GeoNames import:
-#   source("scripts/03_build_clock_story.R")
+#   source("scripts/04_build_clock_story.R")
 # Requires: DBI, duckdb, jsonlite
 #
 # GeoNames supplies coordinates and place identifiers, NOT legal time rules.
@@ -102,18 +102,23 @@ if (length(missing)) {
 }
 stopifnot(nrow(places) == nrow(wanted))
 
-# Step 3: explicit time facts for two instants; not inferred from GeoNames IDs.
-# Source: BC government + Washington law + US NIST DST rules.
-# October 31, 2026: Pacific Coast cities UTC-7; Toronto UTC-4.
-# November 2, 2026: Vancouver/Victoria/Fort St. John UTC-7,
-#                  Seattle/San Francisco UTC-8, Toronto UTC-5.
-# Note that Fort St. John already kept UTC-7 year-round before 2026.
+# Step 3: dated clock facts, independently verified against the applicable
+# policies, NOT inferred from GeoNames' IANA IDs.
+# 2026-10-31 16:00 UTC and 2026-11-02 16:00 UTC.
+# Both instants show 9:00 AM in Vancouver; other clocks are comparable.
+# Alberta Time remains UTC-6 after Nov 1, and St. John's returns to
+# Newfoundland Standard Time (UTC-3:30).
 before <- c(vancouver = -420L, seattle = -420L,
-            `san-francisco` = -420L, toronto = -240L,
-            victoria = -420L, `fort-st-john` = -420L)
+            `san-francisco` = -420L, victoria = -420L,
+            `fort-st-john` = -420L, calgary = -360L,
+            toronto = -240L, `st-johns` = -150L)
 after <- c(vancouver = -420L, seattle = -480L,
-           `san-francisco` = -480L, toronto = -300L,
-           victoria = -420L, `fort-st-john` = -420L)
+           `san-francisco` = -480L, victoria = -420L,
+           `fort-st-john` = -420L, calgary = -360L,
+           toronto = -300L, `st-johns` = -210L)
+
+stopifnot(setequal(names(before), wanted$id),
+          setequal(names(after), wanted$id))
 
 scenarios <- data.frame(
   id = c("before", "after"),
@@ -171,6 +176,10 @@ rows$local_time <- vapply(seq_len(nrow(rows)), function(i) {
   format_local(s, rows$utc_offset_minutes[i])
 }, character(1))
 
+# Fail rather than shipping partial story data: all cities require both dates.
+stopifnot(nrow(rows) == nrow(wanted) * nrow(scenarios))
+stopifnot(!anyNA(rows$utc_offset_minutes), !anyNA(rows$local_time))
+
 # Persist a documented, reusable snapshot table to explore inside Positron.
 dbWriteTable(con, Id(schema = "analysis", table = "clock_story_snapshot"),
              rows, overwrite = TRUE)
@@ -213,7 +222,9 @@ payload <- list(
       "https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time",
       "https://news.gov.bc.ca/releases/2026CITZ0009-001073",
       "https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051",
-      "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-rules"
+      "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst",
+      "https://www.alberta.ca/albertas-new-time-system-abt",
+      "https://www.timeanddate.com/time/zone/canada/st-johns"
     )
   ),
   places = place_list,
@@ -234,7 +245,10 @@ stopifnot(
   get_offset("before", "vancouver") == get_offset("before", "seattle"),
   get_offset("after", "vancouver") - get_offset("after", "seattle") == 60L,
   get_offset("after", "vancouver") - get_offset("after", "san-francisco") == 60L,
-  get_offset("after", "toronto") - get_offset("after", "vancouver") == 120L
+  get_offset("after", "toronto") - get_offset("after", "vancouver") == 120L,
+  get_offset("before", "calgary") == get_offset("after", "calgary"),
+  get_offset("before", "st-johns") == -150L,
+  get_offset("after", "st-johns") == -210L
 )
 
 # Close the file-backed database before opening it from Positron Data Connections.
