@@ -1,16 +1,11 @@
 {
   "metadata": {
-    "data_status": "demo_seed",
-    "generated_utc": "2026-10-29T00:00:00Z",
-    "place_source": "Illustrative manual demo points — replace with GeoNames (CC BY 4.0)",
-    "place_source_url": "https://www.geonames.org/export/",
-    "explanation": "Clock offsets are externally verified for two instants; representative demo coordinates are not the imported GeoNames points. Run the R script before publishing.",
-    "rule_sources": [
-      "https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time",
-      "https://news.gov.bc.ca/releases/2026CITZ0009-001073",
-      "https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051",
-      "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time"
-    ]
+    "data_status": "geonames_rebuilt",
+    "generated_utc": "2026-10-28T23:22:34Z",
+    "place_source": "GeoNames cities15000 (CC BY 4.0)",
+    "place_source_url": "https://download.geonames.org/export/dump/cities15000.zip",
+    "explanation": "GeoNames provides representative place coordinates and IANA IDs. Clock offsets are explicitly curated for these two UTC instants, not derived from GeoNames or inferred from the host time-zone database.",
+    "rule_sources": ["https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time", "https://news.gov.bc.ca/releases/2026CITZ0009-001073", "https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051", "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-rules"]
   },
   "places": [
     {
@@ -18,9 +13,9 @@
       "name": "Vancouver",
       "region": "British Columbia",
       "country_code": "CA",
-      "geonameid": null,
+      "geonameid": 6173331,
       "latitude": 49.24966,
-      "longitude": -123.1193,
+      "longitude": -123.11934,
       "geonames_timezone": "America/Vancouver"
     },
     {
@@ -28,9 +23,9 @@
       "name": "Seattle",
       "region": "Washington",
       "country_code": "US",
-      "geonameid": null,
-      "latitude": 47.6062,
-      "longitude": -122.3321,
+      "geonameid": 5809844,
+      "latitude": 47.60621,
+      "longitude": -122.33207,
       "geonames_timezone": "America/Los_Angeles"
     },
     {
@@ -38,29 +33,19 @@
       "name": "San Francisco",
       "region": "California",
       "country_code": "US",
-      "geonameid": null,
-      "latitude": 37.7749,
-      "longitude": -122.4194,
+      "geonameid": 5391959,
+      "latitude": 37.77493,
+      "longitude": -122.41942,
       "geonames_timezone": "America/Los_Angeles"
-    },
-    {
-      "id": "toronto",
-      "name": "Toronto",
-      "region": "Ontario",
-      "country_code": "CA",
-      "geonameid": null,
-      "latitude": 43.6532,
-      "longitude": -79.3832,
-      "geonames_timezone": "America/Toronto"
     },
     {
       "id": "victoria",
       "name": "Victoria",
       "region": "British Columbia",
       "country_code": "CA",
-      "geonameid": null,
+      "geonameid": 6174041,
       "latitude": 48.4359,
-      "longitude": -123.3516,
+      "longitude": -123.35155,
       "geonames_timezone": "America/Vancouver"
     },
     {
@@ -68,10 +53,40 @@
       "name": "Fort St. John",
       "region": "British Columbia",
       "country_code": "CA",
-      "geonameid": null,
+      "geonameid": 5955960,
       "latitude": 56.24988,
-      "longitude": -120.8529,
+      "longitude": -120.85292,
       "geonames_timezone": "America/Dawson_Creek"
+    },
+    {
+      "id": "calgary",
+      "name": "Calgary",
+      "region": "Alberta",
+      "country_code": "CA",
+      "geonameid": 5913490,
+      "latitude": 51.05011,
+      "longitude": -114.08529,
+      "geonames_timezone": "America/Edmonton"
+    },
+    {
+      "id": "toronto",
+      "name": "Toronto",
+      "region": "Ontario",
+      "country_code": "CA",
+      "geonameid": 6167865,
+      "latitude": 43.70643,
+      "longitude": -79.39864,
+      "geonames_timezone": "America/Toronto"
+    },
+    {
+      "id": "st-johns",
+      "name": "St. John's",
+      "region": "Newfoundland and Labrador",
+      "country_code": "CA",
+      "geonameid": 6324733,
+      "latitude": 47.56494,
+      "longitude": -52.70931,
+      "geonames_timezone": "America/St_Johns"
     }
   ],
   "scenarios": [
@@ -96,11 +111,6 @@
           "utc_offset_minutes": -420
         },
         {
-          "id": "toronto",
-          "local_time": "12:00",
-          "utc_offset_minutes": -240
-        },
-        {
           "id": "victoria",
           "local_time": "09:00",
           "utc_offset_minutes": -420
@@ -109,6 +119,11 @@
           "id": "fort-st-john",
           "local_time": "09:00",
           "utc_offset_minutes": -420
+        },
+        {
+          "id": "toronto",
+          "local_time": "12:00",
+          "utc_offset_minutes": -240
         }
       ]
     },
@@ -133,11 +148,6 @@
           "utc_offset_minutes": -480
         },
         {
-          "id": "toronto",
-          "local_time": "11:00",
-          "utc_offset_minutes": -300
-        },
-        {
           "id": "victoria",
           "local_time": "09:00",
           "utc_offset_minutes": -420
@@ -146,6 +156,11 @@
           "id": "fort-st-john",
           "local_time": "09:00",
           "utc_offset_minutes": -420
+        },
+        {
+          "id": "toronto",
+          "local_time": "11:00",
+          "utc_offset_minutes": -300
         }
       ]
     }

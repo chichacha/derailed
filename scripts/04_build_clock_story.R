@@ -22,15 +22,56 @@ dbExecute(con, "CREATE SCHEMA IF NOT EXISTS analysis")
 
 # Step 1: select a SMALL group of places for the editorial comparison.
 # This list supplies editorial identities; GeoNames supplies coordinates.
+
 wanted <- data.frame(
-  id = c("vancouver", "seattle", "san-francisco", "toronto", "victoria", "fort-st-john"),
-  lookup_name = c("Vancouver", "Seattle", "San Francisco", "Toronto", "Victoria", "Fort St. John"),
-  country_code = c("CA", "US", "US", "CA", "CA", "CA"),
-  display_name = c("Vancouver", "Seattle", "San Francisco", "Toronto", "Victoria", "Fort St. John"),
-  region = c("British Columbia", "Washington", "California", "Ontario", "British Columbia", "British Columbia"),
-  display_order = seq_len(6),
+  id = c(
+    "vancouver",
+    "seattle",
+    "san-francisco",
+    "victoria",
+    "fort-st-john",
+    "calgary",
+    "toronto",
+    "st-johns"
+  ),
+  lookup_name = c(
+    "Vancouver",
+    "Seattle",
+    "San Francisco",
+    "Victoria",
+    "Fort St. John",
+    "Calgary",
+    "Toronto",
+    "St. John's"
+  ),
+  country_code = c(
+    "CA", "US", "US", "CA",
+    "CA", "CA", "CA", "CA"
+  ),
+  display_name = c(
+    "Vancouver",
+    "Seattle",
+    "San Francisco",
+    "Victoria",
+    "Fort St. John",
+    "Calgary",
+    "Toronto",
+    "St. John's"
+  ),
+  region = c(
+    "British Columbia",
+    "Washington",
+    "California",
+    "British Columbia",
+    "British Columbia",
+    "Alberta",
+    "Ontario",
+    "Newfoundland and Labrador"
+  ),
+  display_order = seq_len(8),
   stringsAsFactors = FALSE
 )
+
 
 dbWriteTable(con, Id(schema = "analysis", table = "clock_place_selection"),
              wanted, overwrite = TRUE)
