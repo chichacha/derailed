@@ -21,18 +21,70 @@
   const home = placeById.get('vancouver');
   if (!home) { status('No Vancouver point in the story dataset.'); return; }
 
-  const state = { scenario: 'before', destination: 'seattle' };
+  // The chapter controls the map's geographic extent and available destinations.
+  // Coordinates, names and clock values still come from the generated JSON.
+  const chapters = {
+    border: {
+      caption: 'Two neighbouring cities, one border. Flip the date to see the clocks separate.',
+      ids: ['vancouver', 'seattle'], first: 'seattle'
+    },
+    west: {
+      caption: 'Follow the Pacific coast and inland to Alberta. Not every city changes its clock.',
+      ids: ['vancouver', 'seattle', 'san-francisco', 'victoria', 'fort-st-john', 'calgary'],
+      first: 'san-francisco'
+    },
+    continent: {
+      caption: 'Zoom out. Toronto shifts relative to Vancouver; Newfoundland adds a half-hour.',
+      ids: ['vancouver', 'seattle', 'san-francisco', 'victoria',
+            'fort-st-john', 'calgary', 'toronto', 'st-johns'],
+      first: 'toronto'
+    }
+  };
+  const state = { scenario: 'before', destination: 'seattle', stage: 'border' };
   const clock = (s, id) => s.clocks.find(x => x.id === id);
   const offsetLabel = min => `UTC${min >= 0 ? '+' : '−'}${Math.floor(Math.abs(min) / 60)}${Math.abs(min) % 60 ? ':' + String(Math.abs(min) % 60).padStart(2, '0') : ''}`;
   const displayTime = hhmm => {
     const [h, m] = hhmm.split(':').map(Number);
     return `${h % 12 || 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
   };
-  const relativeLabel = offset => offset === 0 ? 'the same time' :
-    `${Math.abs(offset) / 60} hour${Math.abs(offset) === 60 ? '' : 's'} ${offset > 0 ? 'ahead of' : 'behind'} Vancouver`;
+  function relativeLabel(offset) {
+    if (offset === 0) return 'at the same time as Vancouver';
+    const abs = Math.abs(offset);
+    const hours = Math.floor(abs / 60), mins = abs % 60;
+    const duration = [
+      hours ? `${hours} hour${hours === 1 ? '' : 's'}` : '',
+      mins ? `${mins} minute${mins === 1 ? '' : 's'}` : ''
+    ].filter(Boolean).join(' ');
+    return `${duration} ${offset > 0 ? 'ahead of' : 'behind'} Vancouver`;
+  }
   const coords = p => [Number(p.longitude), Number(p.latitude)];
 
   let map = null;
+  function setStage(stage, scroll = false) {
+    if (!chapters[stage]) return;
+    state.stage = stage;
+    state.destination = chapters[stage].first;
+    const options = chapters[stage].ids
+      .filter(id => id !== 'vancouver' && placeById.has(id));
+    const select = $('compare-city');
+    select.replaceChildren(...options.map(id => {
+      const option = document.createElement('option');
+      option.value = id;
+      option.textContent = placeById.get(id).name;
+      return option;
+    }));
+    select.value = state.destination;
+    $('stage-caption').textContent = chapters[stage].caption;
+    document.querySelectorAll('[data-stage]').forEach(button => {
+      const selected = button.dataset.stage === stage;
+      button.classList.toggle('selected', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    render();
+    if (scroll) document.getElementById('clock-experience').scrollIntoView({
+      behavior: 'smooth', block: 'start'
+    });
+  }
   function renderClocks() {
     const scenario = scenarioById.get(state.scenario);
     const away = placeById.get(state.destination);
@@ -67,10 +119,15 @@
     $('distance-copy').textContent = `${home.name} → ${away.name}: about ${kilometres.toLocaleString()} km in a straight line. The distance is identical on both dates.`;
     if (!map || !map.getSource('link')) return;
     map.getSource('link').setData(turf.featureCollection([line]));
-    const fc = turf.featureCollection([home, away].map(p => turf.point(coords(p), {id:p.id, name:p.name})));
+    const visible = chapters[state.stage].ids.map(id => placeById.get(id)).filter(Boolean);
+    const fc = turf.featureCollection(visible.map(p =>
+      turf.point(coords(p), {id:p.id, name:p.name,
+                             selected: p.id === away.id || p.id === home.id ? 1 : 0})
+    ));
     map.getSource('cities').setData(fc);
     const bbox = turf.bbox(fc);
-    map.fitBounds([[bbox[0],bbox[1]],[bbox[2],bbox[3]]], {padding:75, maxZoom:8, duration:550});
+    map.fitBounds([[bbox[0],bbox[1]],[bbox[2],bbox[3]]],
+                  {padding:{top:75,bottom:75,left:75,right:75}, maxZoom:8, duration:650});
   }
 
   function render() { renderClocks(); renderMap(); }
@@ -82,6 +139,10 @@
     state.destination = e.target.value;
     render();
   });
+  document.querySelectorAll('[data-stage]').forEach(button =>
+    button.addEventListener('click', () => setStage(button.dataset.stage)));
+  document.querySelectorAll('[data-open-stage]').forEach(link =>
+    link.addEventListener('click', () => setStage(link.dataset.openStage)));
 
   if (data.metadata?.data_status === 'demo_seed') {
     $('data-status').textContent = 'DEMO SEED: coordinates are illustrative. Run scripts/03_build_clock_story.R to replace with GeoNames-sourced points.';
@@ -89,7 +150,7 @@
     $('data-status').textContent = 'Coordinates: GeoNames (CC BY 4.0). Dated clock offsets: independently curated and sourced.';
   }
 
-  render(); // clocks work even if the map/CDN does not
+  setStage('border'); // clocks work even if map/CDN is unavailable
   if (!window.maplibregl || !window.turf) {
     status('The map libraries could not load. Clocks still work; check network access for MapLibre/Turf.');
     return;
@@ -107,14 +168,22 @@
     map.addLayer({id:'story-link', type:'line', source:'link',
       paint:{'line-color':'#d94d34','line-width':3,'line-dasharray':[2,1.5]}});
     map.addLayer({id:'story-points', type:'circle', source:'cities',
-      paint:{'circle-radius':8,'circle-color':'#193c4b', 'circle-stroke-color':'#ffffff','circle-stroke-width':2}});
+      paint:{'circle-radius':['case',['==',['get','selected'],1],9,6],
+             'circle-color':['case',['==',['get','selected'],1],'#193c4b','#91a5aa'],
+             'circle-stroke-color':'#ffffff','circle-stroke-width':2}});
     map.addLayer({id:'story-labels', type:'symbol', source:'cities',
       layout:{'text-field':['get','name'],'text-size':13,'text-offset':[0,1.4], 'text-anchor':'top'},
       paint:{'text-color':'#142a36','text-halo-color':'#fff','text-halo-width':1.5}});
     map.on('click','story-points', event => {
-      const name = event.features?.[0]?.properties?.name;
-      if (name) new maplibregl.Popup({offset:10}).setLngLat(event.lngLat).setText(name).addTo(map);
+      const id = event.features?.[0]?.properties?.id;
+      if (id && id !== 'vancouver' && chapters[state.stage].ids.includes(id)) {
+        state.destination = id;
+        $('compare-city').value = id;
+        render();
+      }
     });
+    map.on('mouseenter', 'story-points', () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave', 'story-points', () => { map.getCanvas().style.cursor = ''; });
     renderMap();
     status('');
   });

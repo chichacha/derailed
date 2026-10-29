@@ -66,34 +66,41 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="editorial">
 <div class="eyebrow">
-<p>DERAILED / CLOCKS &amp; COORDINATES / OCTOBER 2026</p>
+<p>DERAILED / CLOCKS &amp; COORDINATES / NOVEMBER 2026</p>
 </div>
 <section id="how-did-vancouver-move-one-hour-away-from-seattle" class="level1">
 <h1>How did Vancouver move one hour away from Seattle?</h1>
 <div class="deck">
-<p>The border didn’t move. The distance didn’t change. But on November 1, 2026, the clocks on either side stopped agreeing.</p>
+<p>Nothing moved on the map. But on November 1, 2026, the clocks on either side of the border stopped agreeing.</p>
 </div>
-<p>Until recently, winter worked the same way in Vancouver and Seattle: both fell back together. In 2026, British Columbia decided that most of the province would stay at UTC−7 year-round. Washington would continue to change clocks.</p>
-<section id="same-cities.-different-clocks." class="level2 story-section">
-<h2 data-anchor-id="same-cities.-different-clocks.">Same cities. Different clocks.</h2>
-<p>Choose a date, then compare Vancouver with another city. The two examples use <strong>16:00 UTC</strong> on different dates—so the clock differences are directly comparable.</p>
-<section class="interactive" aria-label="Interactive clock and map comparison">
-  <div class="interactive-top">
-    <div class="controls-label">COMPARE THE CLOCKS</div>
-    <div class="date-switch" role="group" aria-label="Comparison date">
-      <button type="button" data-scenario="before" class="selected" aria-pressed="true">October 31, 2026</button>
-      <button type="button" data-scenario="after" aria-pressed="false">November 2, 2026</button>
-    </div>
-    <label for="compare-city" class="controls-label">VANCOUVER COMPARED WITH</label>
-    <select id="compare-city">
-      <option value="seattle">Seattle</option>
-      <option value="san-francisco">San Francisco</option>
-      <option value="toronto">Toronto</option>
-      <option value="victoria">Victoria</option>
-      <option value="fort-st-john">Fort St. John</option>
-    </select>
+<p>The two cities are as close as they were yesterday. British Columbia decided to keep most of its clocks on UTC−7, while Washington State still turns back to UTC−8 for winter. The result? Vancouver and Seattle no longer share the same winter time.</p>
+<section id="a-border-between-two-clocks" class="level2 story-section">
+<h2 data-anchor-id="a-border-between-two-clocks">01 / A border between two clocks</h2>
+<p>A clock is a surprisingly political object. Start with Vancouver and Seattle; switch the date and watch what changes.</p>
+<div class="interaction-intro">
+<p><span class="interaction-rule"></span> <span>INTERACTIVE EXPLORATION</span> <span class="interaction-rule"></span></p>
+</div>
+<section class="interactive" id="clock-experience" aria-label="Interactive time-zone comparison">
+  <div class="stage-switch" role="group" aria-label="Choose a chapter">
+    <button type="button" data-stage="border" class="selected" aria-pressed="true"><span class="step-number">01</span><span>The border</span></button>
+    <button type="button" data-stage="west" aria-pressed="false"><span class="step-number">02</span><span>The West</span></button>
+    <button type="button" data-stage="continent" aria-pressed="false"><span class="step-number">03</span><span>Across Canada</span></button>
   </div>
-  <div class="clock-pair" role="region" aria-live="polite" aria-label="Clock comparison">
+  <p class="stage-caption" id="stage-caption">Two neighbouring cities. One hour of difference.</p>
+  <div class="interactive-top">
+    <div class="control-group">
+      <span class="controls-label">CHOOSE A DATE</span>
+      <div class="date-switch" role="group" aria-label="Comparison date">
+        <button type="button" data-scenario="before" class="selected" aria-pressed="true">Oct 31, 2026</button>
+        <button type="button" data-scenario="after" aria-pressed="false">Nov 2, 2026</button>
+      </div>
+    </div>
+    <div class="control-group city-control">
+      <label for="compare-city" class="controls-label">VANCOUVER COMPARED WITH</label>
+      <select id="compare-city"><option value="seattle">Seattle</option></select>
+    </div>
+  </div>
+  <div class="clock-pair" role="region" aria-label="Clock comparison">
     <div class="clock-card home">
       <span class="clock-kicker">BRITISH COLUMBIA</span>
       <h3>Vancouver</h3>
@@ -108,46 +115,56 @@ ul.task-list li input[type="checkbox"] {
       <div class="utc-tag" id="away-offset">UTC−7</div>
     </div>
   </div>
-  <p id="time-difference" class="difference" role="status">Loading clock comparison…</p>
+  <p id="time-difference" class="difference" role="status" aria-live="polite">Loading clock comparison…</p>
   <div class="map-panel">
-    <div id="clock-map" role="region" aria-label="Map showing Vancouver and the comparison city"></div>
+    <div id="clock-map" role="region" aria-label="Map of the cities in the selected chapter"></div>
     <p id="map-status" class="map-status" role="status">Loading geographic data…</p>
+    <div class="map-key"><span class="key-dot"></span> Selected cities <span class="key-line"></span> Great-circle distance</div>
   </div>
   <div class="map-footer">
     <p id="distance-copy">The physical distance doesn't change.</p>
-    <p><small>Straight line between representative GeoNames points; not a driving route or a time-zone boundary.</small></p>
+    <p><small>GeoNames representative points. Turf.js computes great-circle distance; the line is illustrative, not a driving route or time-zone boundary.</small></p>
   </div>
   <p id="data-status" class="data-status"></p>
 </section>
 <div class="editorial-prompt">
-<p><strong>Try it:</strong> Start with Seattle. Switch from October 31 to November 2. Then switch the destination to San Francisco. The geography is unchanged; the time difference is not.</p>
+<p><strong>Try it:</strong> Start with Seattle and flip the date. Then select <strong>The West</strong>, add San Francisco or Calgary, and finally select <strong>Across Canada</strong> to discover Newfoundland’s half-hour offset.</p>
 </div>
 </section>
-<section id="an-international-border-became-a-clock-boundary." class="level2 story-section">
-<h2 data-anchor-id="an-international-border-became-a-clock-boundary.">An international border became a clock boundary.</h2>
-<p>On <strong>October 31</strong>, Vancouver, Seattle and San Francisco all observe UTC−7. After the change in the United States on <strong>November 1</strong>, Seattle and San Francisco observe UTC−8. Vancouver stays at UTC−7.</p>
-<p>When Vancouver says <strong>9:00 AM</strong> on November 2, Seattle and San Francisco say <strong>8:00 AM</strong>.</p>
-<p>The effect lasts through the US winter. When the US springs forward again in March 2027, the West Coast cities share the same clock once more—unless the rules change again.</p>
+<section id="same-coastline-different-winter" class="level2 story-section">
+<h2 data-anchor-id="same-coastline-different-winter">02 / Same coastline, different winter</h2>
+<p>On <strong>October 31</strong>, Vancouver, Seattle and San Francisco are all at UTC−7. On <strong>November 2</strong>, Washington and California have fallen back to UTC−8 while Vancouver stays on UTC−7.</p>
+<p>At 9:00 AM in Vancouver, the clock in Seattle reads 8:00 AM. The difference will disappear again when the U.S. starts daylight saving time in March 2027, assuming the rules stay the same.</p>
+<p><strong>And the travel distance?</strong> Exactly unchanged. The Washington State Department of Transportation notes that an approximately four-hour Amtrak journey can appear as three hours in one direction and five in the other when shown in local departure and arrival times.</p>
+<p><a class="story-action" href="#clock-experience" data-open-stage="west">Explore the Western cities ↑</a></p>
 </section>
-<section id="british-columbia-wasnt-uniform-before-2026." class="level2 story-section">
-<h2 data-anchor-id="british-columbia-wasnt-uniform-before-2026.">British Columbia wasn’t uniform before 2026.</h2>
-<p>Vancouver and Victoria formerly moved their clocks twice a year. Fort St.&nbsp;John, by contrast, already observed UTC−7 year-round. Some communities in southeastern BC have followed other Mountain Time arrangements. The 2026 change affects the relationships between those clocks; it doesn’t erase their histories.</p>
-<p><strong>A place name doesn’t determine the clock rule.</strong> Neither does its province, by itself.</p>
+<section id="british-columbia-never-had-just-one-clock-rule" class="level2 story-section">
+<h2 data-anchor-id="british-columbia-never-had-just-one-clock-rule">03 / British Columbia never had just one clock rule</h2>
+<p>Before 2026, Vancouver and Victoria moved their clocks twice a year. Fort St.&nbsp;John already stayed at UTC−7 all year. Southeastern BC communities historically followed Mountain Time arrangements.</p>
+<p>Calgary is another twist: Alberta is also staying on UTC−6 year-round from November 2026. That keeps Calgary one hour ahead of Vancouver while Seattle moves one hour behind.</p>
+<p>One provincial boundary never guaranteed one clock rule. And a place’s IANA time-zone ID does not, by itself, explain which local government made that rule.</p>
+<p><a class="story-action" href="#clock-experience" data-open-stage="west">Compare BC and Alberta ↑</a></p>
 </section>
-<section id="one-place.-three-different-pieces-of-data." class="level2 story-section">
-<h2 data-anchor-id="one-place.-three-different-pieces-of-data.">One place. Three different pieces of data.</h2>
-<p><strong>Location:</strong> GeoNames supplies representative points for the cities shown above.</p>
-<p><strong>Time-zone identity:</strong> GeoNames also supplies IANA names like <code>America/Vancouver</code> and <code>America/Los_Angeles</code>. These are not numerical UTC offsets.</p>
-<p><strong>Applicable clock rule:</strong> Government decisions and time-zone software determine which offset applies at a particular date. For this demonstration, we have explicitly recorded and sourced the offsets for two UTC instants so that older computers cannot silently rewrite BC’s new rules.</p>
-<p>This is why the map and the clocks are built from separate data. Turf.js calculates geographical distance; it does <strong>not</strong> calculate time zones.</p>
+<section id="one-continent-several-ideas-of-time" class="level2 story-section">
+<h2 data-anchor-id="one-continent-several-ideas-of-time">04 / One continent, several ideas of time</h2>
+<p>Toronto still falls back, so its winter difference from Vancouver shrinks from three hours to two. And St.&nbsp;John’s, Newfoundland, follows a half-hour time zone: its winter UTC offset is −3:30 rather than a whole number of hours.</p>
+<p>The map expands, but the governing idea remains small: <strong>a geographic distance is not a time difference.</strong></p>
+<p><a class="story-action" href="#clock-experience" data-open-stage="continent">Explore across Canada ↑</a></p>
 </section>
-<section id="nothing-moved.-except-the-relationship." class="level2 story-section closing">
-<h2 data-anchor-id="nothing-moved.-except-the-relationship.">Nothing moved. Except the relationship.</h2>
-<p>A four-hour journey across a border is still four hours. But the local departure and arrival clocks can now suggest something different.</p>
-<p><em>Where else have we mistaken a convenient label for a fixed fact?</em></p>
+<section id="how-the-data-works" class="level2 story-section">
+<h2 data-anchor-id="how-the-data-works">05 / How the data works</h2>
+<p><strong>A point.</strong> GeoNames provides representative city coordinates and identifiers.</p>
+<p><strong>A name.</strong> GeoNames also supplies IANA identifiers such as <code>America/Vancouver</code>, <code>America/Edmonton</code>, and <code>America/St_Johns</code>. They encode time-zone histories, not a single permanent offset.</p>
+<p><strong>A rule on a date.</strong> Government decisions determine local time policies. The R + DuckDB preparation script joins the GeoNames places to explicitly documented UTC offsets for two instants and exports a small JSON file. JavaScript reads that file to update the clocks; Turf.js computes the distances.</p>
+<p>This is deliberately a <strong>dated editorial snapshot</strong>, not a universal time-zone conversion service. The source definitions and the rules are kept separate.</p>
+</section>
+<section id="the-map-didnt-change.-the-clocks-did." class="level2 story-section closing">
+<h2 data-anchor-id="the-map-didnt-change.-the-clocks-did.">The map didn’t change. The clocks did.</h2>
+<p>The next time someone says two cities are “in the same time zone,” there’s a useful follow-up question:</p>
+<p><em>On which date?</em></p>
 </section>
 <div class="footer-note">
-<p><strong>Sources &amp; method.</strong> Place points: <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a>, CC BY 4.0. Clock rules: <a href="https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time">Government of British Columbia</a>, <a href="https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051">Washington State law</a>, and <a href="https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time">NIST</a>. Two deliberately selected UTC instants, not a real-time clock service. The current version compares city points, not time-zone boundary polygons. <a href="https://github.com/chichacha/derailed/issues/12">Editorial issue</a> · <a href="https://github.com/chichacha/derailed/issues/13">Research issue</a>.</p>
+<p><strong>Sources &amp; method.</strong> Place coordinates: <a href="https://www.geonames.org/" target="_blank" rel="noopener">GeoNames</a> (CC BY 4.0). Clock policies: <a href="https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time">Government of BC</a>, <a href="https://www.alberta.ca/albertas-new-time-system-abt">Government of Alberta</a>, <a href="https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051">Washington State</a>, <a href="https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst">NIST</a>, and <a href="https://www.timeanddate.com/time/zone/canada/st-johns">St.&nbsp;John’s 2026 clock-change history</a>. <a href="https://wsdot.wa.gov/about/news/2026/amtrak-cascades-please-note-daylight-savings-time-differences-when-traveling-and-canada">Amtrak travel example: WSDOT</a>. The comparison uses 16:00 UTC on October 31 and November 2, not live clocks. Selected city points are not time-zone polygons. <a href="https://github.com/chichacha/derailed/issues/12">Editorial issue</a> · <a href="https://github.com/chichacha/derailed/issues/13">Research issue</a>.</p>
 </div>
 </section>
 </div>

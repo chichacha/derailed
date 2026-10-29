@@ -1,11 +1,11 @@
 {
   "metadata": {
     "data_status": "geonames_rebuilt",
-    "generated_utc": "2026-10-28T23:22:34Z",
+    "generated_utc": "2026-10-29T00:32:49Z",
     "place_source": "GeoNames cities15000 (CC BY 4.0)",
     "place_source_url": "https://download.geonames.org/export/dump/cities15000.zip",
-    "explanation": "GeoNames provides representative place coordinates and IANA IDs. Clock offsets are explicitly curated for these two UTC instants, not derived from GeoNames or inferred from the host time-zone database.",
-    "rule_sources": ["https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time", "https://news.gov.bc.ca/releases/2026CITZ0009-001073", "https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051", "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-rules"]
+    "explanation": "GeoNames provides representative place coordinates and IANA IDs. Clock offsets are explicitly curated for these two UTC instants, not inferred from GeoNames or the host time-zone database.",
+    "rule_sources": ["https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time", "https://news.gov.bc.ca/releases/2026CITZ0009-001073", "https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051", "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst", "https://www.alberta.ca/albertas-new-time-system-abt", "https://www.timeanddate.com/time/zone/canada/st-johns"]
   },
   "places": [
     {
@@ -121,9 +121,19 @@
           "utc_offset_minutes": -420
         },
         {
+          "id": "calgary",
+          "local_time": "10:00",
+          "utc_offset_minutes": -360
+        },
+        {
           "id": "toronto",
           "local_time": "12:00",
           "utc_offset_minutes": -240
+        },
+        {
+          "id": "st-johns",
+          "local_time": "13:30",
+          "utc_offset_minutes": -150
         }
       ]
     },
@@ -158,9 +168,19 @@
           "utc_offset_minutes": -420
         },
         {
+          "id": "calgary",
+          "local_time": "10:00",
+          "utc_offset_minutes": -360
+        },
+        {
           "id": "toronto",
           "local_time": "11:00",
           "utc_offset_minutes": -300
+        },
+        {
+          "id": "st-johns",
+          "local_time": "12:30",
+          "utc_offset_minutes": -210
         }
       ]
     }
