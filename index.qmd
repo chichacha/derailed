@@ -1,0 +1,88 @@
+---
+title: "DERAILED. — One thing led to another."
+description: "An independent collection of curious detours, interactive stories, open-data explorations, and questions that got a little out of hand."
+format:
+  html:
+    page-layout: full
+    title-block-banner: false
+    toc: false
+---
+
+```{=html}
+<div class="derailed-home">
+
+  <header class="home-hero" aria-labelledby="home-title">
+    <div class="hero-copy">
+      <p class="home-eyebrow">AN INDEPENDENT JOURNAL OF CURIOUS DETOURS</p>
+      <h1 id="home-title">One thing led to <em>another.</em></h1>
+      <p class="hero-lede">A collection of questions that got a little out of hand. Maps, open data, photographs, experiments, and the occasional investigation nobody asked for.</p>
+      <a class="home-primary-link" href="#stories">Follow the first detour <span aria-hidden="true">↗</span></a>
+      <p class="hero-smallprint">NO FIXED DESTINATION &nbsp;·&nbsp; EST. 2026</p>
+    </div>
+
+    <div class="home-doodle" aria-hidden="true">
+      <div class="doodle-ring doodle-ring-one"></div>
+      <div class="doodle-ring doodle-ring-two"></div>
+      <div class="doodle-route"></div>
+      <span class="doodle-start"></span>
+      <span class="doodle-end">?</span>
+      <span class="doodle-label">DET<span class="doodle-label-o">O</span>UR NO. 001</span>
+    </div>
+  </header>
+
+  <section class="home-stories" id="stories" aria-labelledby="stories-title">
+    <div class="home-section-heading">
+      <div>
+        <p class="home-eyebrow">THE COLLECTION / 001</p>
+        <h2 id="stories-title">Latest detour<span class="home-period">.</span></h2>
+      </div>
+      <p>Start somewhere. See where it leads.</p>
+    </div>
+
+    <article class="home-feature">
+      <div class="feature-copy">
+        <p class="home-eyebrow">01 &nbsp;/&nbsp; CLOCKS &amp; COORDINATES &nbsp;/&nbsp; INTERACTIVE STORY</p>
+        <h3><a href="stories/vancouver-seattle/index.html">How did Vancouver move one hour away from Seattle?</a></h3>
+        <p class="feature-deck">The cities haven't moved. The clocks stopped agreeing. Explore what changes when a border becomes a border between two different times.</p>
+        <div class="feature-footer">
+          <span class="feature-tag">GEOGRAPHY</span>
+          <span class="feature-tag">TIME</span>
+          <span class="feature-tag">OPEN DATA</span>
+        </div>
+        <a class="feature-read" href="stories/vancouver-seattle/index.html">Explore the story <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="feature-art" aria-label="Illustrative winter comparison: Vancouver 9 AM, Seattle 8 AM at the same moment on November 2, 2026.">
+        <div class="feature-art-top">SAME MOMENT &nbsp;·&nbsp; NOV 02, 2026</div>
+        <div class="feature-clock-row">
+          <div class="feature-city">
+            <span>VANCOUVER</span>
+            <strong>09:00</strong>
+            <small>UTC−7</small>
+          </div>
+          <div class="feature-difference" aria-hidden="true">≠</div>
+          <div class="feature-city">
+            <span>SEATTLE</span>
+            <strong>08:00</strong>
+            <small>UTC−8</small>
+          </div>
+        </div>
+        <div class="feature-art-bottom"><span class="art-line"></span> DISTANCE UNCHANGED</div>
+      </div>
+    </article>
+  </section>
+
+  <section class="home-about" id="about" aria-labelledby="about-title">
+    <p class="home-eyebrow">THE IDEA BEHIND DERAILED</p>
+    <div class="about-layout">
+      <h2 id="about-title">Not everything needs a destination.</h2>
+      <div class="about-copy">
+        <p>Sometimes it's geography. Sometimes marine life, photography, mathematics, or a completely unnecessary investigation into something surprisingly interesting.</p>
+        <p>This is a place to make those detours visible: a field notebook for stories, observations, and small experiments built with whatever tools the question calls for.</p>
+        <p class="about-manifesto">A question doesn't need to be important to be worth exploring.</p>
+        <a class="about-repo" href="https://github.com/chichacha/derailed" target="_blank" rel="noopener">Explore the working notebook on GitHub ↗</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+```

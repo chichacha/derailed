@@ -32,3 +32,33 @@ Nobody knows what potential-octo-couscous is yet. That seems like a perfectly re
 ---
 
 **DERAILED.** — One thing led to another.
+
+## Preview the website
+
+The repository is a Quarto website with a home page at `index.qmd` and
+self-contained interactive articles under `stories/`.
+
+From the repository root:
+
+```bash
+quarto preview
+```
+
+Render the whole website before publishing:
+
+```bash
+quarto render
+```
+
+The site is written to `_site/`, which is ignored by Git. Quarto
+automatically finds new `.qmd` articles, so future story pages do not
+need to be registered in `_quarto.yml`.
+
+**Publishing is separate from building.** Once ready, the site can be
+published to GitHub Pages using `quarto publish gh-pages`; the public
+site has not been enabled merely by adding the website files.
+
+The clock story reads its generated snapshot from
+`stories/vancouver-seattle/data/clock_story.json`. The R/GeoNames
+data preparation is a separate step and is not required for a normal
+Quarto website render.

@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* DERAILED site shell. Story-specific design lives with each story. */
+:root {
+  --dera-paper: #faf8f2;
+  --dera-ink: #242823;
+  --dera-muted: #5c665e;
+  --dera-line: #d7d8cf;
+  --dera-accent: #d94d34;
+  --dera-deep: #193c4b;
+}
+
+body {
+  background: var(--dera-paper);
+  color: var(--dera-ink);
+  font-family: 'DM Sans', sans-serif;
+}
+
+#title-block-header { display: none; }
+
+#quarto-header .navbar {
+  border-bottom: 1px solid var(--dera-line);
+  box-shadow: none;
+}
+
+#quarto-header .navbar-brand {
+  font: 700 1.15rem 'Space Grotesk', sans-serif;
+  letter-spacing: -.06em;
+}
+
+#quarto-header .navbar-nav .nav-link {
+  font-size: .84rem;
+  font-weight: 700;
+}
+
+.nav-footer {
+  color: var(--dera-muted);
+  border-top: 1px solid var(--dera-line);
+  font-size: .78rem;
+}
+
+/* Home page: generous editorial space with one real featured story. */
+.derailed-home {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 clamp(18px, 4vw, 64px) 110px;
+}
+
+.derailed-home h1,
+.derailed-home h2,
+.derailed-home h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: -.065em;
+}
+
+.derailed-home a { text-decoration: none; }
+
+.home-eyebrow {
+  margin: 0;
+  font-size: .69rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--dera-accent);
+}
+
+.home-hero {
+  min-height: 530px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(270px, .7fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 80px);
+  padding: clamp(60px, 7vw, 115px) 0 82px;
+  border-bottom: 1px solid var(--dera-line);
+}
+
+.home-hero h1 {
+  max-width: 790px;
+  font-size: clamp(3.8rem, 7.8vw, 7.6rem);
+  line-height: .99;
+  font-weight: 700;
+  margin: 22px 0 26px;
+}
+
+.home-hero h1 em {
+  font-style: normal;
+  color: var(--dera-accent);
+}
+
+.hero-lede {
+  max-width: 620px;
+  color: var(--dera-muted);
+  font-size: clamp(1.1rem, 1.65vw, 1.35rem);
+  line-height: 1.65;
+  margin: 0 0 26px;
+}
+
+.home-primary-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  color: #fff !important;
+  background: var(--dera-deep);
+  padding: 13px 18px;
+  border-radius: 8px;
+  font-size: .88rem;
+  font-weight: 700;
+}
+
+.home-primary-link:hover,
+.home-primary-link:focus-visible { background: var(--dera-accent); }
+.hero-smallprint {
+  color: var(--dera-muted);
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  margin: 28px 0 0;
+}
+
+.home-doodle {
+  width: min(100%, 350px);
+  aspect-ratio: 1;
+  position: relative;
+  justify-self: center;
+  border-radius: 50%;
+  background: #eeeae0;
+  overflow: hidden;
+}
+
+.doodle-ring {
+  border: 1px solid #b8beb6;
+  border-radius: 50%;
+  position: absolute;
+  inset: 16%;
+}
+
+.doodle-ring-two { inset: 30%; }
+.doodle-route {
+  position: absolute;
+  top: 50%; left: 22%;
+  width: 62%; height: 0;
+  border-top: 3px dashed var(--dera-accent);
+  transform: rotate(-35deg);
+}
+
+.doodle-start, .doodle-end {
+  position: absolute;
+  border-radius: 50%;
+  width: 19px; height: 19px;
+  left: 20%; top: 68%;
+  background: var(--dera-deep);
+  box-shadow: 0 0 0 5px #eeeae0;
+}
+
+.doodle-end {
+  width: 82px; height: 82px;
+  display: grid;
+  place-items: center;
+  left: 62%; top: 21%;
+  background: var(--dera-accent);
+  color: #fff;
+  font: 700 3rem 'Space Grotesk', sans-serif;
+}
+
+.doodle-label {
+  position: absolute;
+  bottom: 11%; left: 15%;
+  font: 700 .7rem 'Space Grotesk', sans-serif;
+  color: var(--dera-deep);
+  letter-spacing: .16em;
+}
+
+.home-stories { padding-top: 92px; scroll-margin-top: 30px; }
+
+.home-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.home-section-heading h2 {
+  margin: 8px 0 0;
+  font-size: clamp(2.6rem, 5vw, 4.2rem);
+  line-height: 1.06;
+}
+
+.home-period { color: var(--dera-accent); }
+.home-section-heading > p {
+  margin: 0 0 7px;
+  color: var(--dera-muted);
+  font-size: .9rem;
+}
+
+.home-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  background: #fff;
+  border: 1px solid var(--dera-line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.feature-copy { padding: clamp(28px, 4vw, 52px); }
+
+.feature-copy h3 {
+  font-size: clamp(2rem, 3.25vw, 3.3rem);
+  line-height: 1.12;
+  margin: 24px 0;
+  max-width: 650px;
+}
+
+.feature-copy h3 a { color: var(--dera-ink); }
+.feature-copy h3 a:hover { color: var(--dera-accent); }
+.feature-deck {
+  max-width: 565px;
+  line-height: 1.75;
+  color: var(--dera-muted);
+  font-size: 1.03rem;
+}
+
+.feature-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 30px 0 23px;
+}
+
+.feature-tag {
+  border: 1px solid var(--dera-line);
+  border-radius: 20px;
+  padding: 5px 9px;
+  color: var(--dera-muted);
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.feature-read, .about-repo {
+  color: var(--dera-deep);
+  font-size: .88rem;
+  font-weight: 700;
+  border-bottom: 2px solid var(--dera-accent);
+  padding-bottom: 5px;
+}
+
+.feature-read:hover, .about-repo:hover { color: var(--dera-accent); }
+
+/* An illustrative pair of clocks, not a live-time widget. */
+.feature-art {
+  background: var(--dera-deep);
+  color: #fff;
+  padding: 26px clamp(18px, 2.4vw, 35px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.feature-art-top,
+.feature-art-bottom {
+  font-size: .65rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  opacity: .72;
+}
+
+.feature-clock-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 27px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 35px 0;
+}
+
+.feature-city { min-width: 0; }
+.feature-city span, .feature-city small { display: block; }
+.feature-city span { font-size: .67rem; font-weight: 700; letter-spacing: .1em; }
+.feature-city strong {
+  display: block;
+  font: 700 clamp(2.1rem, 3.5vw, 3.55rem) 'Space Grotesk', sans-serif;
+  letter-spacing: -.08em;
+  white-space: nowrap;
+  margin: 11px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.feature-city small { opacity: .7; font-size: .8rem; }
+.feature-difference {
+  font: 700 2rem 'Space Grotesk', sans-serif;
+  color: #f1a08c;
+  text-align: center;
+}
+
+.feature-art-bottom { display: flex; align-items: center; gap: 12px; }
+.art-line { width: 30px; border-top: 2px dashed #f1a08c; }
+
+/* About is an editorial statement, not an empty category listing. */
+.home-about {
+  border-top: 1px solid var(--dera-line);
+  padding-top: 38px;
+  margin-top: 110px;
+  scroll-margin-top: 30px;
+}
+
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 100px);
+  padding-top: 22px;
+}
+
+.about-layout h2 {
+  max-width: 650px;
+  margin: 0;
+  font-size: clamp(2.5rem, 4.7vw, 4.3rem);
+  line-height: 1.13;
+}
+
+.about-copy { max-width: 510px; }
+.about-copy p { color: var(--dera-muted); line-height: 1.85; }
+.about-copy .about-manifesto {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--dera-deep);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 30px 0 22px;
+}
+
+@media (max-width: 1000px) {
+  .home-hero { grid-template-columns: minmax(0, 1fr) 240px; min-height: 0; }
+  .home-doodle { width: 235px; }
+  .doodle-end { width: 65px; height: 65px; font-size: 2.6rem; }
+  .feature-clock-row { grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr); }
+  .feature-city strong { font-size: clamp(1.5rem, 3vw, 2.6rem); }
+  .feature-difference { font-size: 1.6rem; }
+}
+
+@media (max-width: 760px) {
+  .derailed-home { padding-bottom: 70px; }
+  .home-hero { display: block; padding: 65px 0 60px; }
+  .home-hero h1 { font-size: clamp(3.5rem, 12vw, 5.7rem); }
+  .home-doodle { display: none; }
+  .home-stories { padding-top: 70px; }
+  .home-section-heading { display: block; }
+  .home-section-heading > p { margin-top: 14px; }
+  .home-feature { grid-template-columns: 1fr; }
+  .feature-copy { padding: 28px 22px; }
+  .feature-art { min-height: 245px; }
+  .feature-city strong { font-size: clamp(2rem, 8.5vw, 3.3rem); }
+  .about-layout { grid-template-columns: 1fr; }
+  .home-about { margin-top: 76px; }
+}
