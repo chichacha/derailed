@@ -1,0 +1,34 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "DERAILED."
+  description: "One thing led to another. An independent journal of curious detours, visual investigations, and interactive stories."
+  navbar:
+    title: "DERAILED."
+    background: "#faf8f2"
+    foreground: "#193c4b"
+    search: false
+    pinned: false
+    left:
+      - text: "Stories"
+        href: index.qmd#stories
+      - text: "About"
+        href: index.qmd#about
+    right:
+      - icon: github
+        href: https://github.com/chichacha/derailed
+        aria-label: "DERAILED on GitHub"
+  page-footer:
+    border: false
+    left: "DERAILED. · One thing led to another."
+    right: "No fixed destination."
+
+format:
+  html:
+    theme: cosmo
+    css: site.css
+    toc: false
+    anchor-sections: false
+    smooth-scroll: true
