@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "stories/vancouver-seattle/index.html",
+    "href": "stories/vancouver-seattle/index.html",
+    "title": "How did Vancouver move one hour away from Seattle?",
+    "section": "",
+    "text": "DERAILED / CLOCKS & COORDINATES / NOVEMBER 2026\n\n\n\n\nNothing moved on the map. But on November 1, 2026, the clocks on either side of the border stopped agreeing.\n\nThe two cities are as close as they were yesterday. British Columbia decided to keep most of its clocks on UTC−7, while Washington State still turns back to UTC−8 for winter. The result? Vancouver and Seattle no longer share the same winter time.\n\n\nA clock is a surprisingly political object. Start with Vancouver and Seattle; switch the date and watch what changes.\n\n INTERACTIVE EXPLORATION \n\n\n  \n    01The border\n    02The West\n    03Across Canada\n  \n  Two neighbouring cities. One hour of difference.\n  \n    \n      CHOOSE A DATE\n      \n        Oct 31, 2026\n        Nov 2, 2026\n      \n    \n    \n      VANCOUVER COMPARED WITH\n      Seattle\n    \n  \n  \n    \n      BRITISH COLUMBIA\n      \n      9:00 AM\n      UTC−7\n    \n    =\n    \n      WASHINGTON\n      \n      9:00 AM\n      UTC−7\n    \n  \n  Loading clock comparison…\n  \n    \n    Loading geographic data…\n     Selected cities  Great-circle distance\n  \n  \n    The physical distance doesn't change.\n    GeoNames representative points. Turf.js computes great-circle distance; the line is illustrative, not a driving route or time-zone boundary.\n  \n  \n\n\nTry it: Start with Seattle and flip the date. Then select The West, add San Francisco or Calgary, and finally select Across Canada to discover Newfoundland’s half-hour offset.\n\n\n\n\nOn October 31, Vancouver, Seattle and San Francisco are all at UTC−7. On November 2, Washington and California have fallen back to UTC−8 while Vancouver stays on UTC−7.\nAt 9:00 AM in Vancouver, the clock in Seattle reads 8:00 AM. The difference will disappear again when the U.S. starts daylight saving time in March 2027, assuming the rules stay the same.\nAnd the travel distance? Exactly unchanged. The Washington State Department of Transportation notes that an approximately four-hour Amtrak journey can appear as three hours in one direction and five in the other when shown in local departure and arrival times.\nExplore the Western cities ↑\n\n\n\nBefore 2026, Vancouver and Victoria moved their clocks twice a year. Fort St. John already stayed at UTC−7 all year. Southeastern BC communities historically followed Mountain Time arrangements.\nCalgary is another twist: Alberta is also staying on UTC−6 year-round from November 2026. That keeps Calgary one hour ahead of Vancouver while Seattle moves one hour behind.\nOne provincial boundary never guaranteed one clock rule. And a place’s IANA time-zone ID does not, by itself, explain which local government made that rule.\nCompare BC and Alberta ↑\n\n\n\nToronto still falls back, so its winter difference from Vancouver shrinks from three hours to two. And St. John’s, Newfoundland, follows a half-hour time zone: its winter UTC offset is −3:30 rather than a whole number of hours.\nThe map expands, but the governing idea remains small: a geographic distance is not a time difference.\nExplore across Canada ↑\n\n\n\nA point. GeoNames provides representative city coordinates and identifiers.\nA name. GeoNames also supplies IANA identifiers such as America/Vancouver, America/Edmonton, and America/St_Johns. They encode time-zone histories, not a single permanent offset.\nA rule on a date. Government decisions determine local time policies. The R + DuckDB preparation script joins the GeoNames places to explicitly documented UTC offsets for two instants and exports a small JSON file. JavaScript reads that file to update the clocks; Turf.js computes the distances.\nThis is deliberately a dated editorial snapshot, not a universal time-zone conversion service. The source definitions and the rules are kept separate.\n\n\n\nThe next time someone says two cities are “in the same time zone,” there’s a useful follow-up question:\nOn which date?\n\n\nSources & method. Place coordinates: GeoNames (CC BY 4.0). Clock policies: Government of BC, Government of Alberta, Washington State, NIST, and St. John’s 2026 clock-change history. Amtrak travel example: WSDOT. The comparison uses 16:00 UTC on October 31 and November 2, not live clocks. Selected city points are not time-zone polygons. Editorial issue · Research issue."
+  },
+  {
+    "objectID": "stories/vancouver-seattle/index.html#a-border-between-two-clocks",
+    "href": "stories/vancouver-seattle/index.html#a-border-between-two-clocks",
+    "title": "How did Vancouver move one hour away from Seattle?",
+    "section": "",
+    "text": "A clock is a surprisingly political object. Start with Vancouver and Seattle; switch the date and watch what changes.\n\n INTERACTIVE EXPLORATION \n\n\n  \n    01The border\n    02The West\n    03Across Canada\n  \n  Two neighbouring cities. One hour of difference.\n  \n    \n      CHOOSE A DATE\n      \n        Oct 31, 2026\n        Nov 2, 2026\n      \n    \n    \n      VANCOUVER COMPARED WITH\n      Seattle\n    \n  \n  \n    \n      BRITISH COLUMBIA\n      \n      9:00 AM\n      UTC−7\n    \n    =\n    \n      WASHINGTON\n      \n      9:00 AM\n      UTC−7\n    \n  \n  Loading clock comparison…\n  \n    \n    Loading geographic data…\n     Selected cities  Great-circle distance\n  \n  \n    The physical distance doesn't change.\n    GeoNames representative points. Turf.js computes great-circle distance; the line is illustrative, not a driving route or time-zone boundary.\n  \n  \n\n\nTry it: Start with Seattle and flip the date. Then select The West, add San Francisco or Calgary, and finally select Across Canada to discover Newfoundland’s half-hour offset."
+  },
+  {
+    "objectID": "stories/vancouver-seattle/index.html#same-coastline-different-winter",
+    "href": "stories/vancouver-seattle/index.html#same-coastline-different-winter",
+    "title": "How did Vancouver move one hour away from Seattle?",
+    "section": "",
+    "text": "On October 31, Vancouver, Seattle and San Francisco are all at UTC−7. On November 2, Washington and California have fallen back to UTC−8 while Vancouver stays on UTC−7.\nAt 9:00 AM in Vancouver, the clock in Seattle reads 8:00 AM. The difference will disappear again when the U.S. starts daylight saving time in March 2027, assuming the rules stay the same.\nAnd the travel distance? Exactly unchanged. The Washington State Department of Transportation notes that an approximately four-hour Amtrak journey can appear as three hours in one direction and five in the other when shown in local departure and arrival times.\nExplore the Western cities ↑"
+  },
+  {
+    "objectID": "stories/vancouver-seattle/index.html#british-columbia-never-had-just-one-clock-rule",
+    "href": "stories/vancouver-seattle/index.html#british-columbia-never-had-just-one-clock-rule",
+    "title": "How did Vancouver move one hour away from Seattle?",
+    "section": "",
+    "text": "Before 2026, Vancouver and Victoria moved their clocks twice a year. Fort St. John already stayed at UTC−7 all year. Southeastern BC communities historically followed Mountain Time arrangements.\nCalgary is another twist: Alberta is also staying on UTC−6 year-round from November 2026. That keeps Calgary one hour ahead of Vancouver while Seattle moves one hour behind.\nOne provincial boundary never guaranteed one clock rule. And a place’s IANA time-zone ID does not, by itself, explain which local government made that rule.\nCompare BC and Alberta ↑"
+  },
+  {
+    "objectID": "stories/vancouver-seattle/index.html#one-continent-several-ideas-of-time",
+    "href": "stories/vancouver-seattle/index.html#one-continent-several-ideas-of-time",
+    "title": "How did Vancouver move one hour away from Seattle?",
+    "section": "",
+    "text": "Toronto still falls back, so its winter difference from Vancouver shrinks from three hours to two. And St. John’s, Newfoundland, follows a half-hour time zone: its winter UTC offset is −3:30 rather than a whole number of hours.\nThe map expands, but the governing idea remains small: a geographic distance is not a time difference.\nExplore across Canada ↑"
+  },
+  {
+    "objectID": "stories/vancouver-seattle/index.html#how-the-data-works",
+    "href": "stories/vancouver-seattle/index.html#how-the-data-works",
+    "title": "How did Vancouver move one hour away from Seattle?",
+    "section": "",
+    "text": "A point. GeoNames provides representative city coordinates and identifiers.\nA name. GeoNames also supplies IANA identifiers such as America/Vancouver, America/Edmonton, and America/St_Johns. They encode time-zone histories, not a single permanent offset.\nA rule on a date. Government decisions determine local time policies. The R + DuckDB preparation script joins the GeoNames places to explicitly documented UTC offsets for two instants and exports a small JSON file. JavaScript reads that file to update the clocks; Turf.js computes the distances.\nThis is deliberately a dated editorial snapshot, not a universal time-zone conversion service. The source definitions and the rules are kept separate."
+  },
+  {
+    "objectID": "stories/vancouver-seattle/index.html#the-map-didnt-change.-the-clocks-did.",
+    "href": "stories/vancouver-seattle/index.html#the-map-didnt-change.-the-clocks-did.",
+    "title": "How did Vancouver move one hour away from Seattle?",
+    "section": "",
+    "text": "The next time someone says two cities are “in the same time zone,” there’s a useful follow-up question:\nOn which date?"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DERAILED. — One thing led to another.",
+    "section": "",
+    "text": "AN INDEPENDENT JOURNAL OF CURIOUS DETOURS\n      One thing led to another.\n      A collection of questions that got a little out of hand. Maps, open data, photographs, experiments, and the occasional investigation nobody asked for.\n      Follow the first detour ↗\n      NO FIXED DESTINATION  ·  EST. 2026\n    \n\n    \n      \n      \n      \n      \n      ?\n      DETOUR NO. 001\n    \n  \n\n  \n    \n      \n        THE COLLECTION / 001\n        Latest detour.\n      \n      Start somewhere. See where it leads.\n    \n\n    \n      \n        01  /  CLOCKS & COORDINATES  /  INTERACTIVE STORY\n        How did Vancouver move one hour away from Seattle?\n        The cities haven't moved. The clocks stopped agreeing. Explore what changes when a border becomes a border between two different times.\n        \n          GEOGRAPHY\n          TIME\n          OPEN DATA\n        \n        Explore the story ↗\n      \n      \n        SAME MOMENT  ·  NOV 02, 2026\n        \n          \n            VANCOUVER\n            09:00\n            UTC−7\n          \n          ≠\n          \n            SEATTLE\n            08:00\n            UTC−8\n          \n        \n         DISTANCE UNCHANGED\n      \n    \n  \n\n  \n    THE IDEA BEHIND DERAILED\n    \n      Not everything needs a destination.\n      \n        Sometimes it's geography. Sometimes marine life, photography, mathematics, or a completely unnecessary investigation into something surprisingly interesting.\n        This is a place to make those detours visible: a field notebook for stories, observations, and small experiments built with whatever tools the question calls for.\n        A question doesn't need to be important to be worth exploring.\n        Explore the working notebook on GitHub ↗"
+  }
+]

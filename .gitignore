@@ -19,6 +19,6 @@ data/raw/
 
 # macOS
 .DS_Store
-_site/
+
 
 /.quarto/

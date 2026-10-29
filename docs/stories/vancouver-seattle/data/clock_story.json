@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "data_status": "geonames_rebuilt",
+    "generated_utc": "2026-10-29T00:32:49Z",
+    "place_source": "GeoNames cities15000 (CC BY 4.0)",
+    "place_source_url": "https://download.geonames.org/export/dump/cities15000.zip",
+    "explanation": "GeoNames provides representative place coordinates and IANA IDs. Clock offsets are explicitly curated for these two UTC instants, not inferred from GeoNames or the host time-zone database.",
+    "rule_sources": ["https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time", "https://news.gov.bc.ca/releases/2026CITZ0009-001073", "https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051", "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst", "https://www.alberta.ca/albertas-new-time-system-abt", "https://www.timeanddate.com/time/zone/canada/st-johns"]
+  },
+  "places": [
+    {
+      "id": "vancouver",
+      "name": "Vancouver",
+      "region": "British Columbia",
+      "country_code": "CA",
+      "geonameid": 6173331,
+      "latitude": 49.24966,
+      "longitude": -123.11934,
+      "geonames_timezone": "America/Vancouver"
+    },
+    {
+      "id": "seattle",
+      "name": "Seattle",
+      "region": "Washington",
+      "country_code": "US",
+      "geonameid": 5809844,
+      "latitude": 47.60621,
+      "longitude": -122.33207,
+      "geonames_timezone": "America/Los_Angeles"
+    },
+    {
+      "id": "san-francisco",
+      "name": "San Francisco",
+      "region": "California",
+      "country_code": "US",
+      "geonameid": 5391959,
+      "latitude": 37.77493,
+      "longitude": -122.41942,
+      "geonames_timezone": "America/Los_Angeles"
+    },
+    {
+      "id": "victoria",
+      "name": "Victoria",
+      "region": "British Columbia",
+      "country_code": "CA",
+      "geonameid": 6174041,
+      "latitude": 48.4359,
+      "longitude": -123.35155,
+      "geonames_timezone": "America/Vancouver"
+    },
+    {
+      "id": "fort-st-john",
+      "name": "Fort St. John",
+      "region": "British Columbia",
+      "country_code": "CA",
+      "geonameid": 5955960,
+      "latitude": 56.24988,
+      "longitude": -120.85292,
+      "geonames_timezone": "America/Dawson_Creek"
+    },
+    {
+      "id": "calgary",
+      "name": "Calgary",
+      "region": "Alberta",
+      "country_code": "CA",
+      "geonameid": 5913490,
+      "latitude": 51.05011,
+      "longitude": -114.08529,
+      "geonames_timezone": "America/Edmonton"
+    },
+    {
+      "id": "toronto",
+      "name": "Toronto",
+      "region": "Ontario",
+      "country_code": "CA",
+      "geonameid": 6167865,
+      "latitude": 43.70643,
+      "longitude": -79.39864,
+      "geonames_timezone": "America/Toronto"
+    },
+    {
+      "id": "st-johns",
+      "name": "St. John's",
+      "region": "Newfoundland and Labrador",
+      "country_code": "CA",
+      "geonameid": 6324733,
+      "latitude": 47.56494,
+      "longitude": -52.70931,
+      "geonames_timezone": "America/St_Johns"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "before",
+      "label": "October 31, 2026",
+      "utc_instant": "2026-10-31T16:00:00Z",
+      "clocks": [
+        {
+          "id": "vancouver",
+          "local_time": "09:00",
+          "utc_offset_minutes": -420
+        },
+        {
+          "id": "seattle",
+          "local_time": "09:00",
+          "utc_offset_minutes": -420
+        },
+        {
+          "id": "san-francisco",
+          "local_time": "09:00",
+          "utc_offset_minutes": -420
+        },
+        {
+          "id": "victoria",
+          "local_time": "09:00",
+          "utc_offset_minutes": -420
+        },
+        {
+          "id": "fort-st-john",
+          "local_time": "09:00",
+          "utc_offset_minutes": -420
+        },
+        {
+          "id": "calgary",
+          "local_time": "10:00",
+          "utc_offset_minutes": -360
+        },
+        {
+          "id": "toronto",
+          "local_time": "12:00",
+          "utc_offset_minutes": -240
+        },
+        {
+          "id": "st-johns",
+          "local_time": "13:30",
+          "utc_offset_minutes": -150
+        }
+      ]
+    },
+    {
+      "id": "after",
+      "label": "November 2, 2026",
+      "utc_instant": "2026-11-02T16:00:00Z",
+      "clocks": [
+        {
+          "id": "vancouver",
+          "local_time": "09:00",
+          "utc_offset_minutes": -420
+        },
+        {
+          "id": "seattle",
+          "local_time": "08:00",
+          "utc_offset_minutes": -480
+        },
+        {
+          "id": "san-francisco",
+          "local_time": "08:00",
+          "utc_offset_minutes": -480
+        },
+        {
+          "id": "victoria",
+          "local_time": "09:00",
+          "utc_offset_minutes": -420
+        },
+        {
+          "id": "fort-st-john",
+          "local_time": "09:00",
+          "utc_offset_minutes": -420
+        },
+        {
+          "id": "calgary",
+          "local_time": "10:00",
+          "utc_offset_minutes": -360
+        },
+        {
+          "id": "toronto",
+          "local_time": "11:00",
+          "utc_offset_minutes": -300
+        },
+        {
+          "id": "st-johns",
+          "local_time": "12:30",
+          "utc_offset_minutes": -210
+        }
+      ]
+    }
+  ]
+}
