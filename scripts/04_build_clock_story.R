@@ -1,255 +1,260 @@
 # DERAILED GeoLab — How did Vancouver move one hour away from Seattle?
-# Run from the DERAILED repository root, after your GeoNames import:
+# Run from the repository in Positron, after importing GeoNames:
 #   source("scripts/04_build_clock_story.R")
-# Requires: DBI, duckdb, jsonlite
 #
-# GeoNames supplies coordinates and place identifiers, NOT legal time rules.
-# Clock offsets below are explicitly verified editorial facts for TWO dates.
-# Do not generalize these rows into a full time-zone conversion service.
+# Packages: DBI, duckdb, fs, here, tibble, jsonlite
+# GeoNames supplies place coordinates and time-zone IDs, not legal clock rules.
+# The offsets below are editorial facts for TWO specified UTC instants,
+# not a general-purpose time-zone conversion service.
 
-library(DBI)
-library(duckdb)
-library(jsonlite)
+build_clock_story <- function() {
 
-stopifnot(file.exists("geolab.duckdb"))
-output_path <- "stories/vancouver-seattle/data/clock_story.json"
-dir.create(dirname(output_path), recursive = TRUE, showWarnings = FALSE)
+  # 1 / Locate inputs and output -----------------------------------------------
+  # here finds the repository root; fs makes paths and directories explicit.
+  root <- here::here()
+  database_path <- fs::path(root, "geolab.duckdb")
+  output_path <- fs::path(
+    root, "stories", "vancouver-seattle", "data", "clock_story.json"
+  )
 
-con <- dbConnect(duckdb::duckdb(), dbdir = "geolab.duckdb")
-## Close connection at end of script; avoid opening another writable connection in Positron.
+  if (!fs::file_exists(database_path)) {
+    stop("DuckDB database not found: ", database_path,
+         "\nRun scripts/02_import_geonames.R first.")
+  }
 
-dbExecute(con, "CREATE SCHEMA IF NOT EXISTS analysis")
+  # A function lets on.exit() close DuckDB even when a validation fails.
+  con <- DBI::dbConnect(duckdb::duckdb(), dbdir = database_path)
+  on.exit(DBI::dbDisconnect(con, shutdown = TRUE), add = TRUE)
 
-# Step 1: select a SMALL group of places for the editorial comparison.
-# This list supplies editorial identities; GeoNames supplies coordinates.
+  DBI::dbExecute(con, "CREATE SCHEMA IF NOT EXISTS analysis")
 
-wanted <- data.frame(
-  id = c(
-    "vancouver",
-    "seattle",
-    "san-francisco",
-    "victoria",
-    "fort-st-john",
-    "calgary",
-    "toronto",
-    "st-johns"
-  ),
-  lookup_name = c(
-    "Vancouver",
-    "Seattle",
-    "San Francisco",
-    "Victoria",
-    "Fort St. John",
-    "Calgary",
-    "Toronto",
-    "St. John's"
-  ),
-  country_code = c(
-    "CA", "US", "US", "CA",
-    "CA", "CA", "CA", "CA"
-  ),
-  display_name = c(
-    "Vancouver",
-    "Seattle",
-    "San Francisco",
-    "Victoria",
-    "Fort St. John",
-    "Calgary",
-    "Toronto",
-    "St. John's"
-  ),
-  region = c(
-    "British Columbia",
-    "Washington",
-    "California",
-    "British Columbia",
-    "British Columbia",
-    "Alberta",
-    "Ontario",
-    "Newfoundland and Labrador"
-  ),
-  display_order = seq_len(8),
-  stringsAsFactors = FALSE
-)
+  # 2 / Choose places ----------------------------------------------------------
+  # tribble is easy to scan and edit as the editorial cast grows.
+  # Display labels currently match lookup names; they can diverge later.
+  wanted <- tibble::tribble(
+    ~id,             ~lookup_name,   ~country_code, ~region,
+    "vancouver",     "Vancouver",    "CA",          "British Columbia",
+    "seattle",       "Seattle",      "US",          "Washington",
+    "san-francisco", "San Francisco","US",          "California",
+    "victoria",      "Victoria",     "CA",          "British Columbia",
+    "fort-st-john",  "Fort St. John","CA",          "British Columbia",
+    "calgary",       "Calgary",      "CA",          "Alberta",
+    "toronto",       "Toronto",      "CA",          "Ontario",
+    "st-johns",      "St. John's",   "CA",          "Newfoundland and Labrador"
+  )
+  wanted$display_name <- wanted$lookup_name
+  wanted$display_order <- seq_len(nrow(wanted))
 
+  DBI::dbWriteTable(
+    con, DBI::Id(schema = "analysis", table = "clock_place_selection"),
+    wanted, overwrite = TRUE
+  )
 
-dbWriteTable(con, Id(schema = "analysis", table = "clock_place_selection"),
-             wanted, overwrite = TRUE)
-
-# Step 2: join curated place names to source-aligned GeoNames records.
-# Higher-population names win if names happen to repeat within a country.
-places <- dbGetQuery(con, "
-  SELECT
-    p.id, p.display_name, p.region, p.country_code, p.display_order,
-    g.geonameid, g.name AS source_name,
-    g.latitude, g.longitude, g.timezone AS geonames_timezone,
-    g.population
-  FROM analysis.clock_place_selection p
-  JOIN raw.geonames_cities15000 g
-    ON lower(p.lookup_name) = lower(g.name)
-   AND p.country_code = g.country_code
-  QUALIFY row_number() OVER (
-    PARTITION BY p.id
-    ORDER BY g.population DESC NULLS LAST, g.geonameid
-  ) = 1
-  ORDER BY p.display_order
-")
-
-missing <- setdiff(wanted$id, places$id)
-if (length(missing)) {
-  stop("GeoNames match missing for: ", paste(missing, collapse = ", "),
-       ". Check spellings/coverage; don't silently invent coordinates.")
-}
-stopifnot(nrow(places) == nrow(wanted))
-
-# Step 3: dated clock facts, independently verified against the applicable
-# policies, NOT inferred from GeoNames' IANA IDs.
-# 2026-10-31 16:00 UTC and 2026-11-02 16:00 UTC.
-# Both instants show 9:00 AM in Vancouver; other clocks are comparable.
-# Alberta Time remains UTC-6 after Nov 1, and St. John's returns to
-# Newfoundland Standard Time (UTC-3:30).
-before <- c(vancouver = -420L, seattle = -420L,
-            `san-francisco` = -420L, victoria = -420L,
-            `fort-st-john` = -420L, calgary = -360L,
-            toronto = -240L, `st-johns` = -150L)
-after <- c(vancouver = -420L, seattle = -480L,
-           `san-francisco` = -480L, victoria = -420L,
-           `fort-st-john` = -420L, calgary = -360L,
-           toronto = -300L, `st-johns` = -210L)
-
-stopifnot(setequal(names(before), wanted$id),
-          setequal(names(after), wanted$id))
-
-scenarios <- data.frame(
-  id = c("before", "after"),
-  label = c("October 31, 2026", "November 2, 2026"),
-  utc_instant = c("2026-10-31T16:00:00Z", "2026-11-02T16:00:00Z"),
-  stringsAsFactors = FALSE
-)
-
-facts <- do.call(rbind, lapply(scenarios$id, function(s) {
-  offsets <- if (s == "before") before else after
-  data.frame(scenario_id = s, id = names(offsets),
-             utc_offset_minutes = as.integer(offsets),
-             stringsAsFactors = FALSE)
-}))
-row.names(facts) <- NULL
-
-dbWriteTable(con, Id(schema = "analysis", table = "clock_scenario_offsets"),
-             facts, overwrite = TRUE)
-
-# Use SQL to combine places, scenarios, and authored offset facts.
-rows <- dbGetQuery(con, "
-  SELECT
-    o.scenario_id, o.id,
-    o.utc_offset_minutes,
-    p.display_name, p.region,
-    p.country_code, p.latitude, p.longitude,
-    p.geonameid, p.geonames_timezone
-  FROM analysis.clock_scenario_offsets o
-  JOIN analysis.clock_place_selection w ON w.id = o.id
-  JOIN (
+  # 3 / Join GeoNames ----------------------------------------------------------
+  # Prefer the largest population when names are duplicated in a country.
+  # Preserve source fields so the result is traceable back to GeoNames.
+  places <- DBI::dbGetQuery(con, "
     SELECT
       w.id, w.display_name, w.region, w.country_code, w.display_order,
-      g.geonameid, g.latitude, g.longitude,
-      g.timezone AS geonames_timezone
-    FROM analysis.clock_place_selection w
-    JOIN raw.geonames_cities15000 g
+      g.geonameid, g.name AS source_name,
+      g.latitude, g.longitude, g.timezone AS geonames_timezone,
+      g.population
+    FROM analysis.clock_place_selection AS w
+    JOIN raw.geonames_cities15000 AS g
       ON lower(w.lookup_name) = lower(g.name)
      AND w.country_code = g.country_code
     QUALIFY row_number() OVER (
-      PARTITION BY w.id ORDER BY g.population DESC NULLS LAST, g.geonameid
+      PARTITION BY w.id
+      ORDER BY g.population DESC NULLS LAST, g.geonameid
     ) = 1
-  ) p ON p.id = o.id
-  ORDER BY CASE WHEN o.scenario_id = 'before' THEN 1 ELSE 2 END,
-           w.display_order
-")
+    ORDER BY w.display_order
+  ") |>
+    tibble::as_tibble()
 
-# Convert UTC instant + AUTHORITATIVELY CHECKED offset, not host time-zone DB.
-# This guards against older Macs that haven't yet received the 2026 BC rule.
-format_local <- function(utc_string, offset_minutes) {
-  instant <- as.POSIXct(utc_string, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
-  format(instant + offset_minutes * 60, "%H:%M", tz = "UTC")
-}
-rows$local_time <- vapply(seq_len(nrow(rows)), function(i) {
-  s <- scenarios$utc_instant[match(rows$scenario_id[i], scenarios$id)]
-  format_local(s, rows$utc_offset_minutes[i])
-}, character(1))
-
-# Fail rather than shipping partial story data: all cities require both dates.
-stopifnot(nrow(rows) == nrow(wanted) * nrow(scenarios))
-stopifnot(!anyNA(rows$utc_offset_minutes), !anyNA(rows$local_time))
-
-# Persist a documented, reusable snapshot table to explore inside Positron.
-dbWriteTable(con, Id(schema = "analysis", table = "clock_story_snapshot"),
-             rows, overwrite = TRUE)
-dbExecute(con, "COMMENT ON TABLE analysis.clock_story_snapshot IS
-  'Editorial clock comparison for Oct 31 and Nov 2 2026. GeoNames places; externally verified date-specific UTC offsets. Not a general time-zone rules engine.'")
-
-place_list <- lapply(seq_len(nrow(places)), function(i) {
-  list(
-    id = places$id[i], name = places$display_name[i],
-    region = places$region[i], country_code = places$country_code[i],
-    geonameid = as.integer(places$geonameid[i]),
-    latitude = as.numeric(places$latitude[i]),
-    longitude = as.numeric(places$longitude[i]),
-    geonames_timezone = places$geonames_timezone[i]
+  missing <- setdiff(wanted$id, places$id)
+  if (length(missing) > 0) {
+    stop("No GeoNames match for: ", paste(missing, collapse = ", "),
+         ". Check spelling and cities15000 coverage.")
+  }
+  stopifnot(
+    nrow(places) == nrow(wanted),
+    !anyNA(places$latitude),
+    !anyNA(places$longitude)
   )
-})
 
-scenario_list <- lapply(seq_len(nrow(scenarios)), function(i) {
-  s <- scenarios[i, ]
-  selected <- rows[rows$scenario_id == s$id, ]
-  list(
-    id = s$id, label = s$label, utc_instant = s$utc_instant,
-    clocks = lapply(seq_len(nrow(selected)), function(j) {
-      list(id = selected$id[j], local_time = selected$local_time[j],
-           utc_offset_minutes = as.integer(selected$utc_offset_minutes[j]))
-    })
+  # Save this resolved selection so later SQL doesn't repeat the GeoNames join.
+  DBI::dbWriteTable(
+    con, DBI::Id(schema = "analysis", table = "clock_story_places"),
+    places, overwrite = TRUE
   )
-})
 
-payload <- list(
-  metadata = list(
-    data_status = "geonames_rebuilt",
-    generated_utc = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
-    place_source = "GeoNames cities15000 (CC BY 4.0)",
-    place_source_url = "https://download.geonames.org/export/dump/cities15000.zip",
-    explanation = paste("GeoNames provides representative place coordinates and IANA IDs.",
-                        "Clock offsets are explicitly curated for these two UTC instants,",
-                        "not derived from GeoNames or inferred from the host time-zone database."),
-    rule_sources = c(
-      "https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time",
-      "https://news.gov.bc.ca/releases/2026CITZ0009-001073",
-      "https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051",
-      "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst",
-      "https://www.alberta.ca/albertas-new-time-system-abt",
-      "https://www.timeanddate.com/time/zone/canada/st-johns"
+  # 4 / Define dates and clock rules ------------------------------------------
+  # Both snapshots are at 16:00 UTC, i.e. 09:00 in Vancouver.
+  scenarios <- tibble::tribble(
+    ~id,      ~label,              ~utc_instant,
+    "before", "October 31, 2026",  "2026-10-31T16:00:00Z",
+    "after",  "November 2, 2026",  "2026-11-02T16:00:00Z"
+  )
+
+  # Offsets are in MINUTES, not hours (Newfoundland needs a half-hour).
+  # These are explicitly authored for the dates above, not derived from
+  # GeoNames timezone strings or the machine's installed tzdb.
+  offsets <- tibble::tribble(
+    ~id,             ~before, ~after,
+    "vancouver",       -420L,   -420L,
+    "seattle",         -420L,   -480L,
+    "san-francisco",   -420L,   -480L,
+    "victoria",        -420L,   -420L,
+    "fort-st-john",    -420L,   -420L,
+    "calgary",         -360L,   -360L,
+    "toronto",         -240L,   -300L,
+    "st-johns",        -150L,   -210L
+  )
+
+  # Same place IDs, same order: easier to see missing or accidental edits.
+  stopifnot(identical(wanted$id, offsets$id))
+
+  facts <- tibble::tibble(
+    scenario_id = rep(scenarios$id, each = nrow(offsets)),
+    id = rep(offsets$id, times = nrow(scenarios)),
+    utc_offset_minutes = c(offsets$before, offsets$after)
+  )
+
+  DBI::dbWriteTable(
+    con, DBI::Id(schema = "analysis", table = "clock_scenario_offsets"),
+    facts, overwrite = TRUE
+  )
+
+  # 5 / Build a scenario × place snapshot in DuckDB ---------------------------
+  rows <- DBI::dbGetQuery(con, "
+    SELECT
+      o.scenario_id, o.id, o.utc_offset_minutes,
+      p.display_name, p.region, p.country_code,
+      p.latitude, p.longitude, p.geonameid, p.geonames_timezone
+    FROM analysis.clock_scenario_offsets AS o
+    JOIN analysis.clock_story_places AS p ON p.id = o.id
+    ORDER BY
+      CASE o.scenario_id WHEN 'before' THEN 1 ELSE 2 END,
+      p.display_order
+  ") |>
+    tibble::as_tibble()
+
+  # Only the two specified UTC instants are converted.
+  # Adding minutes to a UTC timestamp avoids stale BC tzdb on older Macs.
+  utc_strings <- scenarios$utc_instant[
+    match(rows$scenario_id, scenarios$id)
+  ]
+  utc_times <- as.POSIXct(
+    utc_strings, format = "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"
+  )
+  rows$local_time <- format(
+    utc_times + rows$utc_offset_minutes * 60,
+    "%H:%M", tz = "UTC"
+  )
+
+  # Validate all eight cities and both dates before writing publishable JSON.
+  stopifnot(
+    nrow(rows) == nrow(wanted) * nrow(scenarios),
+    !anyDuplicated(rows[c("scenario_id", "id")]),
+    !anyNA(rows$utc_offset_minutes),
+    !anyNA(rows$local_time)
+  )
+
+  get_offset <- function(scene, city) {
+    rows$utc_offset_minutes[rows$scenario_id == scene & rows$id == city]
+  }
+  stopifnot(
+    get_offset("before", "vancouver") == get_offset("before", "seattle"),
+    get_offset("after", "vancouver") - get_offset("after", "seattle") == 60L,
+    get_offset("after", "vancouver") - get_offset("after", "san-francisco") == 60L,
+    get_offset("after", "toronto") - get_offset("after", "vancouver") == 120L,
+    get_offset("before", "calgary") == get_offset("after", "calgary"),
+    get_offset("before", "st-johns") == -150L,
+    get_offset("after", "st-johns") == -210L
+  )
+
+  DBI::dbWriteTable(
+    con, DBI::Id(schema = "analysis", table = "clock_story_snapshot"),
+    rows, overwrite = TRUE
+  )
+  DBI::dbExecute(con, "
+    COMMENT ON TABLE analysis.clock_story_snapshot IS
+    'Dated editorial clock comparison for Oct 31 and Nov 2 2026.
+     GeoNames coordinates plus independently sourced offset facts.
+     Not a general time-zone rules engine.'
+  ")
+
+  # 6 / Export the browser's JSON contract ------------------------------------
+  # Keep the shape expected by stories/vancouver-seattle/clock.js:
+  # { metadata, places: [...], scenarios: [{ id, label, utc_instant, clocks }] }
+  place_list <- lapply(seq_len(nrow(places)), function(i) {
+    list(
+      id = places$id[[i]],
+      name = places$display_name[[i]],
+      region = places$region[[i]],
+      country_code = places$country_code[[i]],
+      geonameid = as.integer(places$geonameid[[i]]),
+      latitude = as.numeric(places$latitude[[i]]),
+      longitude = as.numeric(places$longitude[[i]]),
+      geonames_timezone = places$geonames_timezone[[i]]
     )
-  ),
-  places = place_list,
-  scenarios = scenario_list
-)
+  })
 
-write_json(payload, output_path, auto_unbox = TRUE, pretty = TRUE, digits = 7)
-cat("Wrote:", output_path, "\n")
-cat("GeoNames places:", length(place_list), "\n")
-print(rows[, c("scenario_id", "display_name", "geonames_timezone",
-               "utc_offset_minutes", "local_time")])
+  scenario_list <- lapply(seq_len(nrow(scenarios)), function(i) {
+    scenario <- scenarios[i, ]
+    selected <- rows[rows$scenario_id == scenario$id, ]
 
-# Story assertions. Same UTC instant within each scenario, different dates.
-get_offset <- function(scene, city) {
-  rows$utc_offset_minutes[rows$scenario_id == scene & rows$id == city]
+    list(
+      id = scenario$id[[1]],
+      label = scenario$label[[1]],
+      utc_instant = scenario$utc_instant[[1]],
+      clocks = lapply(seq_len(nrow(selected)), function(j) {
+        list(
+          id = selected$id[[j]],
+          local_time = selected$local_time[[j]],
+          utc_offset_minutes = as.integer(selected$utc_offset_minutes[[j]])
+        )
+      })
+    )
+  })
+
+  payload <- list(
+    metadata = list(
+      data_status = "geonames_rebuilt",
+      generated_utc = format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC"),
+      place_source = "GeoNames cities15000 (CC BY 4.0)",
+      place_source_url = "https://download.geonames.org/export/dump/cities15000.zip",
+      explanation = paste(
+        "GeoNames provides representative place coordinates and IANA IDs.",
+        "Clock offsets are explicitly curated for these two UTC instants,",
+        "not inferred from GeoNames or the host time-zone database."
+      ),
+      rule_sources = c(
+        "https://www2.gov.bc.ca/gov/content/governments/celebrating-british-columbia/daylight-saving-time",
+        "https://news.gov.bc.ca/releases/2026CITZ0009-001073",
+        "https://apps.leg.wa.gov/rcw/default.aspx?cite=1.20.051",
+        "https://www.nist.gov/pml/time-and-frequency-division/popular-links/daylight-saving-time-dst",
+        "https://www.alberta.ca/albertas-new-time-system-abt",
+        "https://www.timeanddate.com/time/zone/canada/st-johns"
+      )
+    ),
+    places = place_list,
+    scenarios = scenario_list
+  )
+
+  fs::dir_create(fs::path_dir(output_path))
+  jsonlite::write_json(
+    payload, output_path, auto_unbox = TRUE, pretty = TRUE, digits = 7
+  )
+
+  message("Wrote ", output_path)
+  message("Places: ", nrow(places), " | scenarios: ", nrow(scenarios))
+  print(rows[, c(
+    "scenario_id", "display_name", "geonames_timezone",
+    "utc_offset_minutes", "local_time"
+  )])
+
+  invisible(output_path)
 }
-stopifnot(
-  get_offset("before", "vancouver") == get_offset("before", "seattle"),
-  get_offset("after", "vancouver") - get_offset("after", "seattle") == 60L,
-  get_offset("after", "vancouver") - get_offset("after", "san-francisco") == 60L,
-  get_offset("after", "toronto") - get_offset("after", "vancouver") == 120L,
-  get_offset("before", "calgary") == get_offset("after", "calgary"),
-  get_offset("before", "st-johns") == -150L,
-  get_offset("after", "st-johns") == -210L
-)
 
-# Close the file-backed database before opening it from Positron Data Connections.
-dbDisconnect(con, shutdown = TRUE)
+build_clock_story()
