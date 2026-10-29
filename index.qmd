@@ -74,7 +74,7 @@ format:
   <section class="home-about" id="about" aria-labelledby="about-title">
     <p class="home-eyebrow">THE IDEA BEHIND DERAILED</p>
     <div class="about-layout">
-      <h2 id="about-title">Curiosity doesn't need a business case.</h2>
+      <h2 id="about-title">Not everything needs a destination.</h2>
       <div class="about-copy">
         <p>Sometimes it's geography. Sometimes marine life, photography, mathematics, or a completely unnecessary investigation into something surprisingly interesting.</p>
         <p>This is a place to make those detours visible: a field notebook for stories, observations, and small experiments built with whatever tools the question calls for.</p>
