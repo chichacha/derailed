@@ -1,0 +1,64 @@
+---
+title: "Sardine Lab — One fish, then a thousand"
+description: "A tiny interactive experiment in fish geometry, motion, and eventually collective behaviour."
+format:
+  html:
+    page-layout: full
+    title-block-banner: false
+    toc: false
+    anchor-sections: false
+    css: sardine.css
+    include-after-body:
+      text: |
+        <script src="sardine.js" defer></script>
+resources:
+  - sardine.js
+---
+
+::: {.sardine-story}
+
+<p class="sardine-eyebrow">DERAILED / MARINE LIFE / EXPERIMENT NO. 016</p>
+
+# First, make a sardine.
+
+<p class="sardine-lede">At Aquamarine Fukushima, thousands of Japanese sardines moved together like one enormous creature. Before trying to explain a school, let's build just one fish.</p>
+
+<div class="sardine-intro">ONE FISH → MOVEMENT → A SCHOOL</div>
+
+```{=html}
+<section class="sardine-lab" aria-label="Interactive sardine generator">
+  <div class="lab-heading">
+    <div><span class="lab-kicker">01 / A LITTLE FISH FACTORY</span><h2>Meet your sardine.</h2></div>
+    <div class="lab-state" id="fish-status" role="status" aria-live="polite">One fish, no leader.</div>
+  </div>
+  <div class="tank-shell">
+    <canvas id="sardine-canvas" aria-label="Animated silver sardine swimming in a blue aquarium" role="img"></canvas>
+    <div class="tank-caption"><span>THE TANK / LIVE SIMULATION</span><span id="fish-count-label">1 SARDINE</span></div>
+  </div>
+  <div class="lab-controls">
+    <div class="sliders">
+      <label for="fish-length">Body length <output id="length-value">120</output><input id="fish-length" type="range" min="65" max="180" value="120" step="1"></label>
+      <label for="fish-depth">Body depth <output id="depth-value">32</output><input id="fish-depth" type="range" min="16" max="55" value="32" step="1"></label>
+      <label for="fish-speed">Swim speed <output id="speed-value">1.0</output><input id="fish-speed" type="range" min="0" max="3" value="1" step="0.1"></label>
+    </div>
+    <div class="lab-actions"><button id="randomize-fish" type="button">↝ Generate another</button><button id="toggle-swim" type="button" aria-pressed="false">Pause swimming</button><button id="reset-fish" type="button">Reset</button></div>
+  </div>
+  <p class="lab-note">Try changing its proportions. The fish is drawn using JavaScript Canvas paths—not an image file. Speed affects how fast it swims; the tail swishes even when the fish is staying in place.</p>
+</section>
+```
+
+## 02 / A tiny set of instructions
+
+This sardine has a body shape and a little state: its position, direction, speed, and tail phase. On every animation frame we update that state and draw it again.
+
+The first experiment deliberately contains **one** fish. We can understand its shape and motion before adding interactions with neighbours.
+
+## 03 / What if there were hundreds?
+
+That is the next detour: **separation** (don't crowd), **alignment** (head the same way), and **cohesion** (stay near neighbours). Together, those local rules form a simplified model called *Boids*. They help us explore emergence, but they are not a complete explanation of real sardine behaviour.
+
+<p class="sardine-outro">The first question isn't “Who leads the school?” It's “What does each fish do?”</p>
+
+<p class="sardine-source">Inspired by a visit to Aquamarine Fukushima. <a href="https://github.com/chichacha/derailed/issues/16">DERAILED issue #16</a> · <a href="https://github.com/chichacha/psychic-pento-guacamole/issues/115">Gomasu story #115</a>.</p>
+
+:::
