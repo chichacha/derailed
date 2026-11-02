@@ -1,0 +1,98 @@
+:root { --sea-ink:#183844; --sea-muted:#5e777b; --sea-paper:#faf8f2; --sea-line:#d8e4e1; --sea-accent:#df7656; }
+.sardine-story { max-width:1000px; margin:2rem auto 6rem; color:var(--sea-ink); }
+.sardine-story > h1 { font-size:clamp(3rem,7vw,6rem); letter-spacing:-.06em; line-height:1.02; max-width:850px; margin:.5rem 0 1.3rem; }
+.sardine-eyebrow,.lab-kicker,.sardine-intro,.tank-caption { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.1em; font-size:.74rem; font-weight:700; }
+.sardine-eyebrow {color:#a5533e;}
+.sardine-lede {font-size:clamp(1.2rem,2.2vw,1.65rem);line-height:1.55;max-width:740px;color:#395963;}
+.sardine-intro {border-top:1px solid var(--sea-line);padding:1.2rem 0;margin:2.5rem 0;color:var(--sea-muted);}
+.sardine-lab {background:#f1f6f3; border:1px solid var(--sea-line);border-radius:14px;padding:clamp(1rem,3vw,2rem);margin:2rem 0 3.5rem;}
+.lab-heading {display:flex;gap:1rem;justify-content:space-between;align-items:end;margin-bottom:1rem;}
+.lab-heading h2 {margin:.4rem 0 0;font-size:clamp(1.4rem,3vw,2.4rem);}
+.lab-kicker,.lab-state {color:#607e81; font-size:.77rem;}
+.tank-shell {position:relative;background:#092b3d;border-radius:9px;overflow:hidden;}
+#sardine-canvas {display:block;width:100%;height:min(56vw,380px);min-height:245px;touch-action:pan-y;}
+.tank-caption {display:flex;justify-content:space-between;gap:1rem;color:#c5dce1; padding:.7rem 1rem;background:#0d3548;}
+.lab-controls {display:flex;gap:2rem;justify-content:space-between;align-items:end;margin-top:1.4rem;flex-wrap:wrap;}
+.sliders {display:grid;gap:1.1rem;flex:1 1 280px;}
+.sliders label {display:grid;grid-template-columns:1fr auto;gap:.2rem 1rem;font-size:.85rem;font-weight:600;}
+.sliders output {font-variant-numeric:tabular-nums;color:#496771;}
+.sliders input {grid-column:1/-1;width:100%;accent-color:var(--sea-accent);}
+.lab-actions {display:flex;flex-wrap:wrap;gap:.6rem;flex:1 1 220px;}
+.lab-actions button {appearance:none;border:1px solid #8dacb0;background:#fff;border-radius:7px;padding:.75rem .95rem;color:var(--sea-ink);font-size:.85rem;font-weight:650;cursor:pointer;}
+.lab-actions button:first-child {background:var(--sea-ink);border-color:var(--sea-ink);color:white;}
+.lab-actions button:hover {filter:brightness(.93);}
+.lab-actions button:focus-visible {outline:3px solid var(--sea-accent);outline-offset:2px;}
+.lab-note,.sardine-source {font-size:.85rem;line-height:1.7;color:var(--sea-muted);}
+.lab-note {margin:1.1rem 0 0;}
+.sardine-story > h2 {margin-top:2.6rem;font-size:1.7rem;}
+.sardine-story > p {max-width:740px;}
+.sardine-outro {font-size:1.45rem;font-weight:650;margin:3rem 0 2rem;line-height:1.4;}
+.sardine-source {border-top:1px solid var(--sea-line);padding-top:1.2rem;}
+@media(max-width:600px) {.lab-heading {align-items:start;flex-direction:column;}.sardine-story {margin:1rem auto 4rem;} .tank-caption {font-size:.58rem;} }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after {scroll-behavior:auto!important;} }
+
+
+/* Two independent labs: fish shape and movement behaviour. */
+.lab-controls { align-items: stretch; gap: 1rem; }
+.lab-panel { flex: 1 1 320px; min-width: 0; background: rgba(255,255,255,.72); border: 1px solid var(--sea-line); border-radius: 9px; padding: 1.2rem; }
+.lab-panel-title { display: flex; flex-direction: column; gap: .3rem; margin-bottom: 1.2rem; }
+.lab-panel-title span { font: 700 .73rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing: .10em; color: #a5533e; }
+.lab-panel-title small { color: var(--sea-muted); font-size: .88rem; }
+.lab-panel .sliders { margin-bottom: 1.2rem; }
+.mode-switch { display: grid; grid-template-columns: 1fr 1fr; gap: .35rem; padding: .25rem; border: 1px solid var(--sea-line); border-radius: 8px; background: #e9f0ed; }
+.mode-switch button { appearance: none; border: 0; background: transparent; color: var(--sea-ink); border-radius: 5px; padding: .6rem .55rem; cursor: pointer; font-size: .82rem; font-weight: 650; }
+.mode-switch button.selected { color: white; background: var(--sea-ink); box-shadow: 0 1px 4px rgba(8,32,42,.18); }
+.mode-switch button:focus-visible { outline: 3px solid var(--sea-accent); outline-offset: 2px; }
+.motion-hint { color: var(--sea-muted); font-size: .82rem; line-height: 1.55; min-height: 2.5em; margin: .6rem 0 1.1rem; }
+.path-choice { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem 0; font-size: .82rem; font-weight: 600; cursor: pointer; color: var(--sea-ink); }
+.path-choice input { accent-color: var(--sea-accent); width: 1rem; height: 1rem; }
+.lab-bottom { display: flex; flex-wrap: wrap; gap: .6rem; padding-top: 1.3rem; border-top: 1px solid var(--sea-line); margin-top: 1.3rem; }
+.lab-bottom button { appearance:none; border: 1px solid #8dacb0; background: white; border-radius:7px; padding:.75rem .95rem; color:var(--sea-ink); font-weight:650; font-size:.85rem; cursor:pointer; }
+.lab-bottom button:first-child { background:var(--sea-ink); border-color:var(--sea-ink); color:white; }
+.lab-bottom button:hover { filter: brightness(.93); }
+.lab-bottom button:focus-visible { outline:3px solid var(--sea-accent); outline-offset:2px; }
+#sardine-canvas { cursor: crosshair; }
+@media (max-width:600px) {
+  .lab-panel { flex-basis: 100%; padding: 1rem; }
+  .motion-hint { min-height: 0; }
+}
+
+
+/* Sardine school: three compact laboratories side by side on wide displays. */
+.lab-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .85rem;
+  align-items: stretch;
+}
+.lab-panel { padding: 1.05rem; }
+.lab-panel .lab-actions { align-items: center; }
+.lab-panel .lab-actions button { flex: 0 1 auto; }
+.school-rule-fields {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+  margin: 0;
+}
+.school-rule-fields legend {
+  margin-bottom: .8rem;
+  color: var(--sea-muted);
+  font-size: .75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .07em;
+}
+.school-rule-fields:disabled { opacity: .45; }
+.school-rule-fields .sliders { margin-bottom: 0; }
+.lab-panel .sliders label { font-size: .8rem; }
+.lab-panel .lab-actions button { padding: .6rem .7rem; }
+.tank-shell { box-shadow: 0 12px 30px rgba(4,35,46,.14); }
+#sardine-canvas { height: clamp(280px, 43vw, 460px); }
+@media (max-width: 940px) {
+  .lab-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lab-panel:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .lab-controls { grid-template-columns: 1fr; }
+  .lab-panel:last-child { grid-column: auto; }
+  #sardine-canvas { height: 300px; }
+}

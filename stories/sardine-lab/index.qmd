@@ -27,7 +27,7 @@ resources:
 
 <div class="sardine-intro">GEOMETRY → MOVEMENT → NEIGHBOURS → EMERGENCE</div>
 
-\`\`\`{=html}
+```{=html}
 <section class="sardine-lab" aria-label="Interactive sardine schooling simulation">
   <div class="lab-heading">
     <div>
@@ -131,7 +131,7 @@ resources:
   </div>
   <p class="lab-note">Start with <strong>Independent</strong>. Then turn on <strong>Schooling</strong> without resetting the fish. Switch individual rules down to zero to see their contribution. The dotted amber path belongs to one observed fish, not a designated leader. Tap the tank to offer all fish the same destination.</p>
 </section>
-\`\`\`
+```
 
 ## 01 / Many fish, one recipe
 
