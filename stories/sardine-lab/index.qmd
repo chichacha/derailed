@@ -1,6 +1,6 @@
 ---
-title: "Sardine Lab — One fish, then a thousand"
-description: "A tiny interactive experiment in fish geometry, motion, and eventually collective behaviour."
+title: "Sardine Lab — One fish, then a school"
+description: "Build a sardine, set dozens swimming, and discover how simple local rules shape a school."
 format:
   html:
     page-layout: full
@@ -14,78 +14,156 @@ format:
 resources:
   - sardine.js
   - motion.js
+  - school.js
 ---
 
 ::: {.sardine-story}
 
 <p class="sardine-eyebrow">DERAILED / MARINE LIFE / EXPERIMENT NO. 016</p>
 
-# First, make a sardine.
+# One sardine is a fish. Fifty are a question.
 
-<p class="sardine-lede">At Aquamarine Fukushima, thousands of Japanese sardines moved together like one enormous creature. Before trying to explain a school, let's build just one fish.</p>
+<p class="sardine-lede">At Aquamarine Fukushima, a shimmering school of Japanese sardines moved as though it were a single creature. Nobody seemed to be in charge. What happens if we start with one fish, make a lot more, and give them a handful of rules?</p>
 
-<div class="sardine-intro">ONE FISH → MOVEMENT → A SCHOOL</div>
+<div class="sardine-intro">GEOMETRY → MOVEMENT → NEIGHBOURS → EMERGENCE</div>
 
-```{=html}
-<section class="sardine-lab" aria-label="Interactive sardine generator and swimming movement engine">
+\`\`\`{=html}
+<section class="sardine-lab" aria-label="Interactive sardine schooling simulation">
   <div class="lab-heading">
-    <div><span class="lab-kicker">01 / A LITTLE FISH FACTORY</span><h2>Meet your sardine.</h2></div>
-    <div class="lab-state" id="fish-status" role="status" aria-live="polite">One fish, no leader.</div>
+    <div>
+      <span class="lab-kicker">THE SARDINE LAB / 01—03</span>
+      <h2>No leader. Just neighbours.</h2>
+    </div>
+    <div class="lab-state" id="fish-status" role="status" aria-live="polite">No leader. Just neighbours.</div>
   </div>
+
   <div class="tank-shell">
-    <canvas id="sardine-canvas" aria-label="Animated silver sardine in a blue aquarium. Tap to set a destination, or use the new destination button." role="img"></canvas>
-    <div class="tank-caption"><span>THE TANK / 1 SARDINE</span><span id="motion-data" aria-hidden="true">HEADING 0° · 0 PX/S</span></div>
+    <canvas id="sardine-canvas" role="img" aria-label="An animated school of small silver sardines. Tap to set a shared destination."></canvas>
+    <div class="tank-caption">
+      <span id="fish-count-label">48 SARDINES</span>
+      <span id="motion-data" aria-hidden="true">48 FISH · AVG 0 PX/S</span>
+    </div>
   </div>
+
   <div class="lab-controls">
     <div class="lab-panel">
-      <div class="lab-panel-title"><span>01 / SHAPE GENERATOR</span><small>What does the fish look like?</small></div>
-      <div class="sliders">
-        <label for="fish-length">Body length <output id="length-value">120</output><input id="fish-length" type="range" min="65" max="180" value="120" step="1"></label>
-        <label for="fish-depth">Body depth <output id="depth-value">32</output><input id="fish-depth" type="range" min="16" max="55" value="32" step="1"></label>
+      <div class="lab-panel-title">
+        <span>01 / FISH GENERATOR</span>
+        <small>Same species. Slightly different individuals.</small>
       </div>
-      <div class="lab-actions"><button id="randomize-fish" type="button">↝ Generate another</button></div>
+      <div class="sliders">
+        <label for="fish-count">Number of fish <output id="count-value">48</output>
+          <input id="fish-count" type="range" min="1" max="120" step="1" value="48">
+        </label>
+        <label for="fish-scale">Fish size <output id="scale-value">38%</output>
+          <input id="fish-scale" type="range" min=".20" max="1" step=".02" value=".38">
+        </label>
+        <label for="fish-length">Body length <output id="length-value">120</output>
+          <input id="fish-length" type="range" min="65" max="180" step="1" value="120">
+        </label>
+        <label for="fish-depth">Body depth <output id="depth-value">32</output>
+          <input id="fish-depth" type="range" min="16" max="55" step="1" value="32">
+        </label>
+      </div>
+      <div class="lab-actions">
+        <button id="randomize-fish" type="button">↝ New proportions</button>
+        <button id="reseed-school" type="button">↻ New school</button>
+      </div>
     </div>
+
     <div class="lab-panel">
-      <div class="lab-panel-title"><span>02 / MOVEMENT ENGINE</span><small>Where should it swim?</small></div>
-      <div class="mode-switch" role="group" aria-label="Swim behaviour">
-        <button data-swim-mode="wander" class="selected" aria-pressed="true" type="button">Free swim</button>
-        <button data-swim-mode="follow" aria-pressed="false" type="button">Follow target</button>
+      <div class="lab-panel-title">
+        <span>02 / MOVEMENT ENGINE</span>
+        <small>Each fish has its own heading and speed.</small>
       </div>
-      <p class="motion-hint" id="motion-hint">The fish picks a new heading now and then.</p>
+      <div class="mode-switch" role="group" aria-label="Swimming destination mode">
+        <button data-swim-mode="wander" type="button" class="selected" aria-pressed="true">Free swim</button>
+        <button data-swim-mode="follow" type="button" aria-pressed="false">Follow target</button>
+      </div>
+      <p class="motion-hint" id="motion-hint">Fish choose their own paths.</p>
       <div class="sliders">
-        <label for="fish-speed">Swim speed <output id="speed-value">1.0</output><input id="fish-speed" type="range" min="0" max="3" value="1" step="0.1"></label>
-        <label for="fish-turn">Turning agility <output id="turn-value">2.0</output><input id="fish-turn" type="range" min="0.5" max="4" value="2" step="0.1"></label>
+        <label for="fish-speed">Swim speed <output id="speed-value">1.1</output>
+          <input id="fish-speed" type="range" min="0" max="3" step=".1" value="1.05">
+        </label>
+        <label for="fish-turn">Turning agility <output id="turn-value">2.5</output>
+          <input id="fish-turn" type="range" min=".5" max="4" step=".1" value="2.5">
+        </label>
       </div>
-      <div class="lab-actions"><button id="new-destination" type="button">✳ New destination</button><label class="path-choice"><input id="show-path" type="checkbox" checked> Show swim path</label></div>
+      <div class="lab-actions">
+        <button id="new-destination" type="button">✳ New destination</button>
+        <label class="path-choice">
+          <input id="show-path" type="checkbox" checked>
+          <span id="path-note">Trace one fish (not the leader)</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-panel-title">
+        <span>03 / SCHOOLING RULES</span>
+        <small>What if each fish notices its neighbours?</small>
+      </div>
+      <div class="mode-switch" role="group" aria-label="Compare independent swimming with schooling">
+        <button data-school-mode="independent" type="button" aria-pressed="false">Independent</button>
+        <button data-school-mode="school" type="button" class="selected" aria-pressed="true">Schooling</button>
+      </div>
+      <p class="motion-hint" id="school-hint">Each fish notices only nearby neighbours.</p>
+      <fieldset class="school-rule-fields" id="school-rules">
+        <legend>Three local rules</legend>
+        <div class="sliders">
+          <label for="rule-separation">Separation <output id="separation-value">1.4</output>
+            <input id="rule-separation" type="range" min="0" max="3" step=".1" value="1.4">
+          </label>
+          <label for="rule-alignment">Alignment <output id="alignment-value">1.0</output>
+            <input id="rule-alignment" type="range" min="0" max="3" step=".1" value="1">
+          </label>
+          <label for="rule-cohesion">Cohesion <output id="cohesion-value">1.0</output>
+            <input id="rule-cohesion" type="range" min="0" max="3" step=".1" value="1">
+          </label>
+        </div>
+      </fieldset>
     </div>
   </div>
+
   <div class="lab-bottom">
     <button id="toggle-swim" type="button" aria-pressed="false">Pause swimming</button>
     <button id="reset-fish" type="button">Reset experiment</button>
   </div>
-  <p class="lab-note">Shape is drawn with Canvas paths, while <code>motion.js</code> decides where the fish goes. In free swim it wanders and avoids walls; in follow mode it steers towards a point you choose, slowing as it arrives. Try changing the turning agility to see sharper or gentler curves. Its back stays up—even when it reverses course.</p>
+  <p class="lab-note">Start with <strong>Independent</strong>. Then turn on <strong>Schooling</strong> without resetting the fish. Switch individual rules down to zero to see their contribution. The dotted amber path belongs to one observed fish, not a designated leader. Tap the tank to offer all fish the same destination.</p>
 </section>
-```
+\`\`\`
 
-## 02 / An engine for movement
+## 01 / Many fish, one recipe
 
-One fish, two independent systems. The **generator** creates a body. The **movement engine** updates where that body is and which way it faces. The renderer just draws the current state.
+The generator draws one recognizable sardine using Canvas paths: silver back, pale belly, forked tail, and an eye. We make an array of fish, each with a slightly different size, heading, and tail rhythm. The **fish size** slider makes them small enough to share the tank.
 
-The engine runs the same tiny loop every frame:
+Each fish keeps its own movement state. Its direction of travel can change all the way around the tank, but we draw it from the side and mirror left to right, so its belly stays down.
 
-**Choose a direction → limit the turn → move forward → draw.**
+## 02 / Before the school: independence
 
-Try **Free swim** to watch small changes in direction accumulate into a path. Switch to **Follow target**, then tap anywhere in the tank or press **New destination**. The fish turns towards its goal without snapping instantly to it.
+Switch to **Independent**. Each fish wanders and steers away from the tank walls, but it does not know where the other sardines are. More fish alone doesn't create a coordinated school.
 
-The speed is measured in pixels per second and updates use elapsed time, so the fish doesn't swim faster just because a display has more frames per second. The heading is measured in radians; the turning agility slider controls the maximum radians it can turn per second.
+Try raising the count, then dropping it to **1** to inspect the individual generator again. If you'd like a closer look, increase the fish size.
 
-The dotted swim path reveals where the fish *travels*. Its body, though, is deliberately drawn as a **side-view illustration**: when it turns around, we mirror it left-to-right instead of rotating it upside down. We allow a little nose-up or nose-down pitch, while keeping the dorsal fin and eye on top. This is a small movement model, not a biological account of how a sardine swims.
+## 03 / A school without a conductor
 
-## 03 / What if there were hundreds?
+Turn on **Schooling**. Each sardine now responds only to nearby fish, using three ideas from the classic *Boids* simulation:
 
-That is the next detour: **separation** (don't crowd), **alignment** (head the same way), and **cohesion** (stay near neighbours). Together, those local rules form a simplified model called *Boids*. They help us explore emergence, but they are not a complete explanation of real sardine behaviour.
+- **Separation:** don't crowd your closest neighbours.
+- **Alignment:** turn toward the direction nearby neighbours are moving.
+- **Cohesion:** steer toward the neighbourhood, not a central leader.
 
-<p class="sardine-outro">The first question isn't “Who leads the school?” It's “What does each fish do?”</p>
+Try reducing **alignment** to zero. Do the fish still travel together? Try removing **cohesion**. Do they gradually drift apart? Raise **separation** and notice how tightly they can pack.
+
+The simulation computes all the neighbour suggestions from the **same moment**, and only then updates the fish. That prevents the order of the array from accidentally giving some fish an informational advantage.
+
+## 04 / What this is—and isn't
+
+There is no invisible leader fish. Every swimmer runs the same local instructions. And the rules aren't hard-coded fish formations: the patterns emerge from repeated interactions.
+
+This is a playful, intentionally simplified computational model. **Real sardines have sensory systems, predators, currents, and three-dimensional movement** that our two-dimensional tank doesn't attempt to reproduce.
+
+<p class="sardine-outro">If nobody is in charge, who decides where the school goes?</p>
 
 <p class="sardine-source">Inspired by a visit to Aquamarine Fukushima. <a href="https://github.com/chichacha/derailed/issues/16">DERAILED issue #16</a> · <a href="https://github.com/chichacha/psychic-pento-guacamole/issues/115">Gomasu story #115</a>.</p>
 
