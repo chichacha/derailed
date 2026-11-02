@@ -1,27 +1,32 @@
-// DERAILED #16 · Sardine Lab: geometry first, schooling later.
-// A single model for fish state, a renderer for its shape, and an animation loop.
-(() => {
-  "use strict";
-  const canvas = document.getElementById("sardine-canvas");
-  if (!canvas) return;
+// DERAILED #16 · Sardine Lab.
+// Geometry lives in drawSardine; swimming behaviour lives in motion.js.
+// This separation lets us add more fish without rebuilding the renderer.
+import { createSwimmer, resizeSwimmer, setDestination, stepSwimmer } from "./motion.js";
+
+const canvas = document.getElementById("sardine-canvas");
+if (canvas) {
   const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+  if (!ctx) throw new Error("Sardine Lab needs a 2D canvas.");
   const $ = id => document.getElementById(id);
-  const defaults = { length: 120, depth: 32, speed: 1 };
-  const fish = { ...defaults, x: 0.5, y: 0.52, direction: 1, phase: 0, time: 0 };
+  const defaults = { length: 120, depth: 32, speed: 1, turnRate: 2.0 };
+  const shape = { length: defaults.length, depth: defaults.depth };
+  const motion = { speed: defaults.speed, turnRate: defaults.turnRate };
+  let width = 600, height = 340;
+  let swimmer = createSwimmer(width, height);
+  let showTrail = true;
   let playing = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let lastTime = 0, width = 600, height = 340, raf = 0;
-  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+  let lastTime = 0, raf = 0, telemetryAt = 0;
 
   function resize() {
-    const bounds = canvas.getBoundingClientRect();
-    const previousWidth = width, previousHeight = height;
-    width = Math.max(1, bounds.width); height = Math.max(1, bounds.height);
+    const rect = canvas.getBoundingClientRect();
+    const old = { width, height };
+    width = Math.max(1, rect.width);
+    height = Math.max(1, rect.height);
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (!previousWidth || !previousHeight) { fish.x = .5; fish.y = .52; }
+    resizeSwimmer(swimmer, old, { width, height });
     render();
   }
 
@@ -70,58 +75,165 @@
     ctx.fillStyle="rgba(79,128,144,.5)";ctx.beginPath();ctx.moveTo(L*.20,D*.10);ctx.lineTo(-L*.04,D*.42);ctx.lineTo(L*.13,D*.18);ctx.fill();
   }
 
-  function render() {
-    drawWater(fish.time);
+  function drawTrail() {
+    if (!showTrail || swimmer.trail.length < 2) return;
     ctx.save();
-    const px = fish.x * width, py = fish.y * height;
-    ctx.translate(px, py);
-    if (fish.direction < 0) ctx.scale(-1,1);
-    // Subtle body yaw makes the tail movement read as swimming.
-    ctx.rotate(Math.sin(fish.phase)*.018);
-    drawSardine(fish.length,fish.depth,fish.phase);
+    ctx.strokeStyle = "rgba(176, 224, 226, 0.34)";
+    ctx.lineWidth = 1.5;
+    ctx.lineCap = "round";
+    ctx.setLineDash([3, 5]);
+    ctx.beginPath();
+    const first = swimmer.trail[0];
+    ctx.moveTo(first.x, first.y);
+    swimmer.trail.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+    ctx.stroke();
     ctx.restore();
   }
 
-  function tick(timestamp) {
-    const dt = lastTime ? clamp((timestamp-lastTime)/1000,0,.05) : 0;
-    lastTime=timestamp;
-    if (playing) {
-      fish.time += dt;
-      fish.phase += dt*(7 + fish.speed * 2);
-      fish.x += fish.direction * fish.speed * dt * (75/width);
-      // Change course at the tank edge, allowing the fish to turn fully within view.
-      const margin = Math.min(.3,(fish.length*.55)/width);
-      if (fish.x > 1-margin) {fish.x=1-margin;fish.direction=-1;}
-      if (fish.x < margin) {fish.x=margin;fish.direction=1;}
-    }
-    render();
-    raf=requestAnimationFrame(tick);
+  function drawDestination() {
+    if (swimmer.mode !== "follow" || !swimmer.target) return;
+    const { x, y } = swimmer.target;
+    ctx.save();
+    ctx.strokeStyle = "rgba(240, 221, 169, 0.9)";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(x, y, 11, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x - 17, y); ctx.lineTo(x - 7, y);
+    ctx.moveTo(x + 7, y); ctx.lineTo(x + 17, y);
+    ctx.moveTo(x, y - 17); ctx.lineTo(x, y - 7);
+    ctx.moveTo(x, y + 7); ctx.lineTo(x, y + 17);
+    ctx.stroke();
+    ctx.restore();
   }
 
-  function sync() {
-    for (const [name,id,out] of [["length","fish-length","length-value"],["depth","fish-depth","depth-value"],["speed","fish-speed","speed-value"]]) {
-      $(id).value=fish[name];$(out).textContent=name==="speed"?fish[name].toFixed(1):String(fish[name]);
+  function render() {
+    drawWater(swimmer.time);
+    drawTrail();
+    drawDestination();
+    ctx.save();
+    ctx.translate(swimmer.x, swimmer.y);
+    ctx.rotate(swimmer.heading + Math.sin(swimmer.tailPhase) * 0.016);
+    drawSardine(shape.length, shape.depth, swimmer.tailPhase);
+    ctx.restore();
+  }
+
+  function telemetry() {
+    const angle = (swimmer.heading * 180 / Math.PI + 360) % 360;
+    $("motion-data").textContent = "HEADING " + Math.round(angle) +
+      "° · " + Math.round(swimmer.speedPx) + " PX/S";
+  }
+
+  function tick(timestamp) {
+    const dt = lastTime ? Math.min((timestamp - lastTime) / 1000, 0.05) : 0;
+    lastTime = timestamp;
+    if (playing) {
+      stepSwimmer(swimmer, dt, { width, height }, {
+        length: shape.length,
+        depth: shape.depth,
+        speed: motion.speed,
+        turnRate: motion.turnRate
+      });
     }
-    $("toggle-swim").textContent=playing?"Pause swimming":"Resume swimming";
-    $("toggle-swim").setAttribute("aria-pressed",String(!playing));
-    $("fish-status").textContent=playing?"One fish, no leader.":"Swimming paused.";
     render();
+    if (timestamp - telemetryAt > 200) { telemetry(); telemetryAt = timestamp; }
+    raf = requestAnimationFrame(tick);
   }
-  for (const [name,id] of [["length","fish-length"],["depth","fish-depth"],["speed","fish-speed"]]) {
-    $(id).addEventListener("input",e=>{fish[name]=Number(e.target.value);sync();});
+
+  function syncControls() {
+    for (const [name, input, output, source] of [
+      ["length", "fish-length", "length-value", shape],
+      ["depth", "fish-depth", "depth-value", shape],
+      ["speed", "fish-speed", "speed-value", motion],
+      ["turnRate", "fish-turn", "turn-value", motion]
+    ]) {
+      $(input).value = source[name];
+      $(output).textContent = ["speed", "turnRate"].includes(name)
+        ? source[name].toFixed(1) : String(source[name]);
+    }
+    document.querySelectorAll("[data-swim-mode]").forEach(button => {
+      const selected = button.dataset.swimMode === swimmer.mode;
+      button.setAttribute("aria-pressed", String(selected));
+      button.classList.toggle("selected", selected);
+    });
+    $("show-path").checked = showTrail;
+    $("toggle-swim").textContent = playing ? "Pause swimming" : "Resume swimming";
+    $("toggle-swim").setAttribute("aria-pressed", String(!playing));
+    $("fish-status").textContent = !playing
+      ? "Swimming paused."
+      : swimmer.mode === "follow" ? "Following a destination." : "Exploring the tank.";
+    $("motion-hint").textContent = swimmer.mode === "follow"
+      ? "Tap or click anywhere in the tank to choose a new destination. Or use 'New destination'."
+      : "The fish picks a new heading now and then. Walls gently steer it away from the edge.";
+    render();
+    telemetry();
   }
-  $("randomize-fish").addEventListener("click",()=>{
-    fish.length=Math.round(70+Math.random()*105);
-    fish.depth=Math.round(18+Math.random()*33);
-    fish.speed=+(0.4+Math.random()*2).toFixed(1);
-    sync();
+
+  [["length", "fish-length", shape], ["depth", "fish-depth", shape],
+   ["speed", "fish-speed", motion], ["turnRate", "fish-turn", motion]]
+    .forEach(([name, input, source]) => {
+      $(input).addEventListener("input", event => {
+        source[name] = Number(event.target.value);
+        syncControls();
+      });
+    });
+
+  $("randomize-fish").addEventListener("click", () => {
+    shape.length = Math.round(70 + Math.random() * 105);
+    shape.depth = Math.round(18 + Math.random() * 33);
+    syncControls();
   });
-  $("toggle-swim").addEventListener("click",()=>{playing=!playing;lastTime=0;sync();});
-  $("reset-fish").addEventListener("click",()=>{
-    Object.assign(fish,defaults,{x:.5,y:.52,direction:1,phase:0,time:0});
-    sync();
+
+  document.querySelectorAll("[data-swim-mode]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (button.dataset.swimMode === "wander") {
+        swimmer.mode = "wander";
+        swimmer.target = null;
+        swimmer.wanderCountdown = 0;
+      } else {
+        if (!swimmer.target) {
+          setDestination(swimmer, width * .72, height * .37, { width, height });
+        } else {
+          swimmer.mode = "follow";
+        }
+      }
+      syncControls();
+    });
   });
-  window.addEventListener("resize",resize);
-  resize();sync();raf=requestAnimationFrame(tick);
-  window.addEventListener("pagehide",()=>cancelAnimationFrame(raf),{once:true});
-})();
+
+  function newDestination() {
+    setDestination(swimmer, width * (.2 + Math.random() * .6),
+      height * (.22 + Math.random() * .56), { width, height });
+    syncControls();
+  }
+  $("new-destination").addEventListener("click", newDestination);
+  canvas.addEventListener("pointerdown", event => {
+    const rect = canvas.getBoundingClientRect();
+    setDestination(swimmer, event.clientX - rect.left, event.clientY - rect.top,
+      { width, height });
+    syncControls();
+  });
+  $("show-path").addEventListener("change", event => {
+    showTrail = event.target.checked;
+    syncControls();
+  });
+  $("toggle-swim").addEventListener("click", () => {
+    playing = !playing;
+    lastTime = 0;
+    syncControls();
+  });
+  $("reset-fish").addEventListener("click", () => {
+    shape.length = defaults.length;
+    shape.depth = defaults.depth;
+    motion.speed = defaults.speed;
+    motion.turnRate = defaults.turnRate;
+    swimmer = createSwimmer(width, height);
+    showTrail = true;
+    syncControls();
+  });
+  window.addEventListener("resize", resize);
+  document.addEventListener("visibilitychange", () => { lastTime = 0; });
+  window.addEventListener("pagehide", () => cancelAnimationFrame(raf), { once: true });
+  resize();
+  syncControls();
+  raf = requestAnimationFrame(tick);
+}
