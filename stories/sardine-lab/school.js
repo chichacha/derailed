@@ -43,6 +43,8 @@ export function resizeSchool(fish, oldBounds, newBounds) {
 export function schoolHeadings(fish, settings) {
   const output = new Array(fish.length).fill(null);
   if (!settings.schooling || fish.length < 2) return output;
+  // With every rule at zero there is no social steering: revert to free wandering.
+  if (settings.separation === 0 && settings.alignment === 0 && settings.cohesion === 0) return output;
 
   const distance = Math.max(30, settings.neighbourRadius);
   const radiusSq = distance * distance;
