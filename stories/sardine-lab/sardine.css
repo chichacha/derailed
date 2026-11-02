@@ -56,3 +56,43 @@
   .lab-panel { flex-basis: 100%; padding: 1rem; }
   .motion-hint { min-height: 0; }
 }
+
+
+/* Sardine school: three compact laboratories side by side on wide displays. */
+.lab-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .85rem;
+  align-items: stretch;
+}
+.lab-panel { padding: 1.05rem; }
+.lab-panel .lab-actions { align-items: center; }
+.lab-panel .lab-actions button { flex: 0 1 auto; }
+.school-rule-fields {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+  margin: 0;
+}
+.school-rule-fields legend {
+  margin-bottom: .8rem;
+  color: var(--sea-muted);
+  font-size: .75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .07em;
+}
+.school-rule-fields:disabled { opacity: .45; }
+.school-rule-fields .sliders { margin-bottom: 0; }
+.lab-panel .sliders label { font-size: .8rem; }
+.lab-panel .lab-actions button { padding: .6rem .7rem; }
+.tank-shell { box-shadow: 0 12px 30px rgba(4,35,46,.14); }
+#sardine-canvas { height: clamp(280px, 43vw, 460px); }
+@media (max-width: 940px) {
+  .lab-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lab-panel:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .lab-controls { grid-template-columns: 1fr; }
+  .lab-panel:last-child { grid-column: auto; }
+  #sardine-canvas { height: 300px; }
+}
