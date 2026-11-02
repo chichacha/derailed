@@ -1,22 +1,26 @@
-// DERAILED #16 · Sardine Lab.
-// Geometry lives in drawSardine; swimming behaviour lives in motion.js.
-// This separation lets us add more fish without rebuilding the renderer.
-import { createSwimmer, resizeSwimmer, setDestination, stepSwimmer } from "./motion.js";
+// DERAILED #16 — Sardine Lab: generator + movement engine + local schooling.
+// The drawing, motion engine and Boids calculations are intentionally separate.
+import { resizeSchool, createSchool, setSchoolCount, stepSchool } from "./school.js";
 
 const canvas = document.getElementById("sardine-canvas");
 if (canvas) {
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Sardine Lab needs a 2D canvas.");
+  if (!ctx) throw new Error("Sardine Lab requires a 2D canvas.");
   const $ = id => document.getElementById(id);
-  const defaults = { length: 120, depth: 32, speed: 1, turnRate: 2.0 };
-  const shape = { length: defaults.length, depth: defaults.depth };
-  const motion = { speed: defaults.speed, turnRate: defaults.turnRate };
+  const defaults = {
+    length: 120, depth: 32, scale: .38, count: 48,
+    speed: 1.05, turnRate: 2.5,
+    separation: 1.4, alignment: 1.0, cohesion: 1.0,
+    neighbourRadius: 108, personalSpace: 26,
+    schooling: true, mode: "wander", target: null, trackedIndex: 0
+  };
+  const settings = { ...defaults };
   let width = 600, height = 340;
-  let swimmer = createSwimmer(width, height);
+  let fish = createSchool(settings.count, { width, height });
   let showTrail = true;
   let playing = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let lastTime = 0, raf = 0, telemetryAt = 0;
-  let facing = 1; // +1 = swimming right, -1 = swimming left
+  let waterTime = 0;
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -27,7 +31,13 @@ if (canvas) {
     canvas.width = Math.round(width * dpr);
     canvas.height = Math.round(height * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    resizeSwimmer(swimmer, old, { width, height });
+    resizeSchool(fish, old, { width, height });
+    if (settings.target) {
+      settings.target = {
+        x: settings.target.x * width / old.width,
+        y: settings.target.y * height / old.height
+      };
+    }
     render();
   }
 
@@ -76,28 +86,30 @@ if (canvas) {
     ctx.fillStyle="rgba(79,128,144,.5)";ctx.beginPath();ctx.moveTo(L*.20,D*.10);ctx.lineTo(-L*.04,D*.42);ctx.lineTo(L*.13,D*.18);ctx.fill();
   }
 
+
   function drawTrail() {
-    if (!showTrail || swimmer.trail.length < 2) return;
+    if (!showTrail || !fish.length) return;
+    const tracked = fish[Math.min(settings.trackedIndex, fish.length - 1)];
+    if (tracked.trail.length < 2) return;
     ctx.save();
-    ctx.strokeStyle = "rgba(176, 224, 226, 0.34)";
+    ctx.strokeStyle = "rgba(252, 205, 125, 0.65)";
     ctx.lineWidth = 1.5;
     ctx.lineCap = "round";
     ctx.setLineDash([3, 5]);
     ctx.beginPath();
-    const first = swimmer.trail[0];
-    ctx.moveTo(first.x, first.y);
-    swimmer.trail.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+    ctx.moveTo(tracked.trail[0].x, tracked.trail[0].y);
+    tracked.trail.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
     ctx.stroke();
     ctx.restore();
   }
 
   function drawDestination() {
-    if (swimmer.mode !== "follow" || !swimmer.target) return;
-    const { x, y } = swimmer.target;
+    if (settings.mode !== "follow" || !settings.target) return;
+    const { x, y } = settings.target;
     ctx.save();
     ctx.strokeStyle = "rgba(240, 221, 169, 0.9)";
     ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.arc(x, y, 11, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y, 11, 0, 2 * Math.PI); ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(x - 17, y); ctx.lineTo(x - 7, y);
     ctx.moveTo(x + 7, y); ctx.lineTo(x + 17, y);
@@ -107,9 +119,6 @@ if (canvas) {
     ctx.restore();
   }
 
-  // The engine moves in two dimensions, but we draw a side-view fish.
-  // Never rotate the entire sprite 180°: that puts its dorsal fin underneath!
-  // Mirror horizontally for a change of direction; tilt only slightly for ascent/descent.
   function uprightPose(heading, previousFacing) {
     const horizontal = Math.cos(heading);
     const vertical = Math.sin(heading);
@@ -123,116 +132,168 @@ if (canvas) {
     return { facing, pitch, widthScale };
   }
 
+
   function render() {
-    drawWater(swimmer.time);
+    drawWater(waterTime);
     drawTrail();
     drawDestination();
-    const pose = uprightPose(swimmer.heading, facing);
-    facing = pose.facing;
-    ctx.save();
-    ctx.translate(swimmer.x, swimmer.y);
-    ctx.rotate(pose.pitch + Math.sin(swimmer.tailPhase) * 0.012);
-    // Negative X mirrors head/tail, but leaves the back, fin and eye on top.
-    ctx.scale(pose.facing * pose.widthScale, 1);
-    drawSardine(shape.length, shape.depth, swimmer.tailPhase);
-    ctx.restore();
+    for (const swimmer of fish) {
+      const pose = uprightPose(swimmer.heading, swimmer.facing);
+      swimmer.facing = pose.facing;
+      const size = settings.scale * swimmer.sizeJitter;
+      ctx.save();
+      ctx.translate(swimmer.x, swimmer.y);
+      ctx.rotate(pose.pitch + Math.sin(swimmer.tailPhase) * .012);
+      ctx.scale(pose.facing * pose.widthScale, 1);
+      drawSardine(settings.length * size, settings.depth * size, swimmer.tailPhase);
+      ctx.restore();
+    }
+    // Observe one fish, not a leader: highlight only the fish whose path is traced.
+    if (showTrail && fish.length > 1) {
+      const tracked = fish[Math.min(settings.trackedIndex, fish.length - 1)];
+      ctx.save();
+      ctx.strokeStyle = "#f0cd8e";
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.arc(tracked.x, tracked.y, 7, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
   }
 
   function telemetry() {
-    const angle = (swimmer.heading * 180 / Math.PI + 360) % 360;
-    $("motion-data").textContent = "HEADING " + Math.round(angle) +
-      "° · " + Math.round(swimmer.speedPx) + " PX/S";
+    const average = fish.reduce((sum, item) => sum + item.speedPx, 0) / fish.length;
+    $("motion-data").textContent = fish.length + (fish.length === 1 ? " FISH" : " FISH") +
+      " · AVG " + Math.round(average) + " PX/S";
   }
 
   function tick(timestamp) {
     const dt = lastTime ? Math.min((timestamp - lastTime) / 1000, 0.05) : 0;
     lastTime = timestamp;
     if (playing) {
-      stepSwimmer(swimmer, dt, { width, height }, {
-        length: shape.length,
-        depth: shape.depth,
-        speed: motion.speed,
-        turnRate: motion.turnRate
-      });
+      waterTime += dt;
+      stepSchool(fish, dt, { width, height }, settings);
     }
     render();
-    if (timestamp - telemetryAt > 200) { telemetry(); telemetryAt = timestamp; }
+    if (timestamp - telemetryAt > 250) {
+      telemetry();
+      telemetryAt = timestamp;
+    }
     raf = requestAnimationFrame(tick);
   }
 
   function syncControls() {
-    for (const [name, input, output, source] of [
-      ["length", "fish-length", "length-value", shape],
-      ["depth", "fish-depth", "depth-value", shape],
-      ["speed", "fish-speed", "speed-value", motion],
-      ["turnRate", "fish-turn", "turn-value", motion]
-    ]) {
-      $(input).value = source[name];
-      $(output).textContent = ["speed", "turnRate"].includes(name)
-        ? source[name].toFixed(1) : String(source[name]);
+    const controls = [
+      ["length", "fish-length", "length-value", 0],
+      ["depth", "fish-depth", "depth-value", 0],
+      ["scale", "fish-scale", "scale-value", 2],
+      ["count", "fish-count", "count-value", 0],
+      ["speed", "fish-speed", "speed-value", 1],
+      ["turnRate", "fish-turn", "turn-value", 1],
+      ["separation", "rule-separation", "separation-value", 1],
+      ["alignment", "rule-alignment", "alignment-value", 1],
+      ["cohesion", "rule-cohesion", "cohesion-value", 1]
+    ];
+    for (const [key, input, output, digits] of controls) {
+      $(input).value = settings[key];
+      $(output).textContent = key === "scale"
+        ? Math.round(settings.scale * 100) + "%"
+        : Number(settings[key]).toFixed(digits);
     }
     document.querySelectorAll("[data-swim-mode]").forEach(button => {
-      const selected = button.dataset.swimMode === swimmer.mode;
-      button.setAttribute("aria-pressed", String(selected));
-      button.classList.toggle("selected", selected);
+      const active = button.dataset.swimMode === settings.mode;
+      button.classList.toggle("selected", active);
+      button.setAttribute("aria-pressed", String(active));
+    });
+    document.querySelectorAll("[data-school-mode]").forEach(button => {
+      const active = (button.dataset.schoolMode === "school") === settings.schooling;
+      button.classList.toggle("selected", active);
+      button.setAttribute("aria-pressed", String(active));
     });
     $("show-path").checked = showTrail;
     $("toggle-swim").textContent = playing ? "Pause swimming" : "Resume swimming";
     $("toggle-swim").setAttribute("aria-pressed", String(!playing));
     $("fish-status").textContent = !playing
-      ? "Swimming paused."
-      : swimmer.mode === "follow" ? "Following a destination." : "Exploring the tank.";
-    $("motion-hint").textContent = swimmer.mode === "follow"
-      ? "Tap or click anywhere in the tank to choose a new destination. Or use 'New destination'."
-      : "The fish picks a new heading now and then. Walls gently steer it away from the edge.";
+      ? "Paused · " + fish.length + " fish"
+      : settings.schooling && fish.length > 1
+        ? "No leader. Just neighbours."
+        : "Every fish swims independently.";
+    $("motion-hint").textContent = settings.mode === "follow"
+      ? "Tap the tank to move the shared destination. Each fish steers for itself."
+      : "The fish choose where to go themselves, turning gently away from the edges.";
+    $("school-hint").textContent = settings.schooling
+      ? "Each fish pays attention only to nearby neighbours. Change one rule and watch what happens."
+      : "Nobody looks at their neighbours. Turn schooling on to see the difference.";
+    $("school-rules").disabled = !settings.schooling;
+    $("fish-count-label").textContent = fish.length + (fish.length === 1 ? " SARDINE" : " SARDINES");
+    $("path-note").textContent = fish.length > 1 ? "Trace one fish (not the leader)" : "Show swim path";
     render();
     telemetry();
   }
 
-  [["length", "fish-length", shape], ["depth", "fish-depth", shape],
-   ["speed", "fish-speed", motion], ["turnRate", "fish-turn", motion]]
-    .forEach(([name, input, source]) => {
-      $(input).addEventListener("input", event => {
-        source[name] = Number(event.target.value);
-        syncControls();
-      });
-    });
+  [
+    ["length", "fish-length"], ["depth", "fish-depth"],
+    ["scale", "fish-scale"], ["speed", "fish-speed"], ["turnRate", "fish-turn"],
+    ["separation", "rule-separation"], ["alignment", "rule-alignment"],
+    ["cohesion", "rule-cohesion"]
+  ].forEach(([key, id]) => $(id).addEventListener("input", event => {
+    settings[key] = Number(event.target.value);
+    syncControls();
+  }));
+
+  $("fish-count").addEventListener("input", event => {
+    settings.count = Number(event.target.value);
+    setSchoolCount(fish, settings.count, { width, height });
+    syncControls();
+  });
 
   $("randomize-fish").addEventListener("click", () => {
-    shape.length = Math.round(70 + Math.random() * 105);
-    shape.depth = Math.round(18 + Math.random() * 33);
+    settings.length = Math.round(75 + Math.random() * 100);
+    settings.depth = Math.round(18 + Math.random() * 34);
+    syncControls();
+  });
+  $("reseed-school").addEventListener("click", () => {
+    fish = createSchool(settings.count, { width, height });
     syncControls();
   });
 
   document.querySelectorAll("[data-swim-mode]").forEach(button => {
     button.addEventListener("click", () => {
-      if (button.dataset.swimMode === "wander") {
-        swimmer.mode = "wander";
-        swimmer.target = null;
-        swimmer.wanderCountdown = 0;
-      } else {
-        if (!swimmer.target) {
-          setDestination(swimmer, width * .72, height * .37, { width, height });
-        } else {
-          swimmer.mode = "follow";
-        }
+      settings.mode = button.dataset.swimMode;
+      if (settings.mode === "follow" && !settings.target) {
+        settings.target = { x: width * .73, y: height * .41 };
       }
+      if (settings.mode === "wander") settings.target = null;
+      syncControls();
+    });
+  });
+
+  document.querySelectorAll("[data-school-mode]").forEach(button => {
+    button.addEventListener("click", () => {
+      settings.schooling = button.dataset.schoolMode === "school";
       syncControls();
     });
   });
 
   function newDestination() {
-    setDestination(swimmer, width * (.2 + Math.random() * .6),
-      height * (.22 + Math.random() * .56), { width, height });
+    settings.target = {
+      x: width * (.2 + Math.random() * .6),
+      y: height * (.22 + Math.random() * .56)
+    };
+    settings.mode = "follow";
     syncControls();
   }
   $("new-destination").addEventListener("click", newDestination);
   canvas.addEventListener("pointerdown", event => {
     const rect = canvas.getBoundingClientRect();
-    setDestination(swimmer, event.clientX - rect.left, event.clientY - rect.top,
-      { width, height });
+    settings.target = {
+      x: Math.max(12, Math.min(width - 12, event.clientX - rect.left)),
+      y: Math.max(12, Math.min(height - 12, event.clientY - rect.top))
+    };
+    settings.mode = "follow";
     syncControls();
   });
+
   $("show-path").addEventListener("change", event => {
     showTrail = event.target.checked;
     syncControls();
@@ -243,15 +304,13 @@ if (canvas) {
     syncControls();
   });
   $("reset-fish").addEventListener("click", () => {
-    shape.length = defaults.length;
-    shape.depth = defaults.depth;
-    motion.speed = defaults.speed;
-    motion.turnRate = defaults.turnRate;
-    swimmer = createSwimmer(width, height);
-    facing = 1;
+    Object.assign(settings, defaults);
+    fish = createSchool(settings.count, { width, height });
     showTrail = true;
+    waterTime = 0;
     syncControls();
   });
+
   window.addEventListener("resize", resize);
   document.addEventListener("visibilitychange", () => { lastTime = 0; });
   window.addEventListener("pagehide", () => cancelAnimationFrame(raf), { once: true });
