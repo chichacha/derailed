@@ -63,7 +63,7 @@ resources:
     <button id="toggle-swim" type="button" aria-pressed="false">Pause swimming</button>
     <button id="reset-fish" type="button">Reset experiment</button>
   </div>
-  <p class="lab-note">Shape is drawn with Canvas paths, while <code>motion.js</code> decides where the fish goes. In free swim it wanders and avoids walls; in follow mode it steers towards a point you choose, slowing as it arrives. Try changing the turning agility to see sharper or gentler curves.</p>
+  <p class="lab-note">Shape is drawn with Canvas paths, while <code>motion.js</code> decides where the fish goes. In free swim it wanders and avoids walls; in follow mode it steers towards a point you choose, slowing as it arrives. Try changing the turning agility to see sharper or gentler curves. Its back stays up—even when it reverses course.</p>
 </section>
 ```
 
@@ -79,7 +79,7 @@ Try **Free swim** to watch small changes in direction accumulate into a path. Sw
 
 The speed is measured in pixels per second and updates use elapsed time, so the fish doesn't swim faster just because a display has more frames per second. The heading is measured in radians; the turning agility slider controls the maximum radians it can turn per second.
 
-The dotted swim path reveals the difference between where the fish *points* and where it *travels*. This is a small movement model, not a biological account of how a sardine swims.
+The dotted swim path reveals where the fish *travels*. Its body, though, is deliberately drawn as a **side-view illustration**: when it turns around, we mirror it left-to-right instead of rotating it upside down. We allow a little nose-up or nose-down pitch, while keeping the dorsal fin and eye on top. This is a small movement model, not a biological account of how a sardine swims.
 
 ## 03 / What if there were hundreds?
 
