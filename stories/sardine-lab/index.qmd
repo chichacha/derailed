@@ -83,7 +83,7 @@ resources:
       <p class="motion-hint" id="motion-hint">Fish choose their own paths.</p>
       <div class="sliders">
         <label for="fish-speed">Swim speed <output id="speed-value">1.1</output>
-          <input id="fish-speed" type="range" min="0" max="3" step=".1" value="1.05">
+          <input id="fish-speed" type="range" min="0" max="3" step=".1" value="1.1">
         </label>
         <label for="fish-turn">Turning agility <output id="turn-value">2.5</output>
           <input id="fish-turn" type="range" min=".5" max="4" step=".1" value="2.5">
