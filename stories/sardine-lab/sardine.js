@@ -16,6 +16,7 @@ if (canvas) {
   let showTrail = true;
   let playing = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let lastTime = 0, raf = 0, telemetryAt = 0;
+  let facing = 1; // +1 = swimming right, -1 = swimming left
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -106,13 +107,33 @@ if (canvas) {
     ctx.restore();
   }
 
+  // The engine moves in two dimensions, but we draw a side-view fish.
+  // Never rotate the entire sprite 180°: that puts its dorsal fin underneath!
+  // Mirror horizontally for a change of direction; tilt only slightly for ascent/descent.
+  function uprightPose(heading, previousFacing) {
+    const horizontal = Math.cos(heading);
+    const vertical = Math.sin(heading);
+    // Hysteresis stops rapid left/right flipping when swimming nearly vertically.
+    const facing = horizontal > 0.16 ? 1 : horizontal < -0.16 ? -1 : previousFacing;
+    // Gentle body pitch, not a full rotation. Positive canvas Y points down.
+    const rawPitch = Math.atan2(vertical * facing, Math.max(Math.abs(horizontal), 0.1));
+    const pitch = Math.max(-0.30, Math.min(0.30, rawPitch));
+    // Slight foreshortening suggests a turn through the page, without vanishing.
+    const widthScale = 0.42 + 0.58 * Math.abs(horizontal);
+    return { facing, pitch, widthScale };
+  }
+
   function render() {
     drawWater(swimmer.time);
     drawTrail();
     drawDestination();
+    const pose = uprightPose(swimmer.heading, facing);
+    facing = pose.facing;
     ctx.save();
     ctx.translate(swimmer.x, swimmer.y);
-    ctx.rotate(swimmer.heading + Math.sin(swimmer.tailPhase) * 0.016);
+    ctx.rotate(pose.pitch + Math.sin(swimmer.tailPhase) * 0.012);
+    // Negative X mirrors head/tail, but leaves the back, fin and eye on top.
+    ctx.scale(pose.facing * pose.widthScale, 1);
     drawSardine(shape.length, shape.depth, swimmer.tailPhase);
     ctx.restore();
   }
@@ -227,6 +248,7 @@ if (canvas) {
     motion.speed = defaults.speed;
     motion.turnRate = defaults.turnRate;
     swimmer = createSwimmer(width, height);
+    facing = 1;
     showTrail = true;
     syncControls();
   });
