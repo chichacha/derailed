@@ -9,7 +9,7 @@ if (canvas) {
   const $ = id => document.getElementById(id);
   const defaults = {
     length: 120, depth: 32, scale: .38, count: 48,
-    speed: 1.05, turnRate: 2.5,
+    speed: 1.1, turnRate: 2.5,
     separation: 1.4, alignment: 1.0, cohesion: 1.0,
     neighbourRadius: 108, personalSpace: 26,
     schooling: true, mode: "wander", target: null, trackedIndex: 0
