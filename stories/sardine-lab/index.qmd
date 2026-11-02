@@ -10,9 +10,10 @@ format:
     css: sardine.css
     include-after-body:
       text: |
-        <script src="sardine.js" defer></script>
+        <script type="module" src="sardine.js"></script>
 resources:
   - sardine.js
+  - motion.js
 ---
 
 ::: {.sardine-story}
@@ -26,32 +27,59 @@ resources:
 <div class="sardine-intro">ONE FISH → MOVEMENT → A SCHOOL</div>
 
 ```{=html}
-<section class="sardine-lab" aria-label="Interactive sardine generator">
+<section class="sardine-lab" aria-label="Interactive sardine generator and swimming movement engine">
   <div class="lab-heading">
     <div><span class="lab-kicker">01 / A LITTLE FISH FACTORY</span><h2>Meet your sardine.</h2></div>
     <div class="lab-state" id="fish-status" role="status" aria-live="polite">One fish, no leader.</div>
   </div>
   <div class="tank-shell">
-    <canvas id="sardine-canvas" aria-label="Animated silver sardine swimming in a blue aquarium" role="img"></canvas>
-    <div class="tank-caption"><span>THE TANK / LIVE SIMULATION</span><span id="fish-count-label">1 SARDINE</span></div>
+    <canvas id="sardine-canvas" aria-label="Animated silver sardine in a blue aquarium. Tap to set a destination, or use the new destination button." role="img"></canvas>
+    <div class="tank-caption"><span>THE TANK / 1 SARDINE</span><span id="motion-data" aria-hidden="true">HEADING 0° · 0 PX/S</span></div>
   </div>
   <div class="lab-controls">
-    <div class="sliders">
-      <label for="fish-length">Body length <output id="length-value">120</output><input id="fish-length" type="range" min="65" max="180" value="120" step="1"></label>
-      <label for="fish-depth">Body depth <output id="depth-value">32</output><input id="fish-depth" type="range" min="16" max="55" value="32" step="1"></label>
-      <label for="fish-speed">Swim speed <output id="speed-value">1.0</output><input id="fish-speed" type="range" min="0" max="3" value="1" step="0.1"></label>
+    <div class="lab-panel">
+      <div class="lab-panel-title"><span>01 / SHAPE GENERATOR</span><small>What does the fish look like?</small></div>
+      <div class="sliders">
+        <label for="fish-length">Body length <output id="length-value">120</output><input id="fish-length" type="range" min="65" max="180" value="120" step="1"></label>
+        <label for="fish-depth">Body depth <output id="depth-value">32</output><input id="fish-depth" type="range" min="16" max="55" value="32" step="1"></label>
+      </div>
+      <div class="lab-actions"><button id="randomize-fish" type="button">↝ Generate another</button></div>
     </div>
-    <div class="lab-actions"><button id="randomize-fish" type="button">↝ Generate another</button><button id="toggle-swim" type="button" aria-pressed="false">Pause swimming</button><button id="reset-fish" type="button">Reset</button></div>
+    <div class="lab-panel">
+      <div class="lab-panel-title"><span>02 / MOVEMENT ENGINE</span><small>Where should it swim?</small></div>
+      <div class="mode-switch" role="group" aria-label="Swim behaviour">
+        <button data-swim-mode="wander" class="selected" aria-pressed="true" type="button">Free swim</button>
+        <button data-swim-mode="follow" aria-pressed="false" type="button">Follow target</button>
+      </div>
+      <p class="motion-hint" id="motion-hint">The fish picks a new heading now and then.</p>
+      <div class="sliders">
+        <label for="fish-speed">Swim speed <output id="speed-value">1.0</output><input id="fish-speed" type="range" min="0" max="3" value="1" step="0.1"></label>
+        <label for="fish-turn">Turning agility <output id="turn-value">2.0</output><input id="fish-turn" type="range" min="0.5" max="4" value="2" step="0.1"></label>
+      </div>
+      <div class="lab-actions"><button id="new-destination" type="button">✳ New destination</button><label class="path-choice"><input id="show-path" type="checkbox" checked> Show swim path</label></div>
+    </div>
   </div>
-  <p class="lab-note">Try changing its proportions. The fish is drawn using JavaScript Canvas paths—not an image file. Speed affects how fast it swims; the tail swishes even when the fish is staying in place.</p>
+  <div class="lab-bottom">
+    <button id="toggle-swim" type="button" aria-pressed="false">Pause swimming</button>
+    <button id="reset-fish" type="button">Reset experiment</button>
+  </div>
+  <p class="lab-note">Shape is drawn with Canvas paths, while <code>motion.js</code> decides where the fish goes. In free swim it wanders and avoids walls; in follow mode it steers towards a point you choose, slowing as it arrives. Try changing the turning agility to see sharper or gentler curves.</p>
 </section>
 ```
 
-## 02 / A tiny set of instructions
+## 02 / An engine for movement
 
-This sardine has a body shape and a little state: its position, direction, speed, and tail phase. On every animation frame we update that state and draw it again.
+One fish, two independent systems. The **generator** creates a body. The **movement engine** updates where that body is and which way it faces. The renderer just draws the current state.
 
-The first experiment deliberately contains **one** fish. We can understand its shape and motion before adding interactions with neighbours.
+The engine runs the same tiny loop every frame:
+
+**Choose a direction → limit the turn → move forward → draw.**
+
+Try **Free swim** to watch small changes in direction accumulate into a path. Switch to **Follow target**, then tap anywhere in the tank or press **New destination**. The fish turns towards its goal without snapping instantly to it.
+
+The speed is measured in pixels per second and updates use elapsed time, so the fish doesn't swim faster just because a display has more frames per second. The heading is measured in radians; the turning agility slider controls the maximum radians it can turn per second.
+
+The dotted swim path reveals the difference between where the fish *points* and where it *travels*. This is a small movement model, not a biological account of how a sardine swims.
 
 ## 03 / What if there were hundreds?
 
