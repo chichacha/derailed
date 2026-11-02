@@ -49,7 +49,7 @@ export function setDestination(fish, x, y, bounds) {
 
 // Pure movement update: destination/curiosity -> heading -> velocity -> position.
 // dt is measured in seconds so animation speed doesn't depend on monitor refresh.
-export function stepSwimmer(fish, dt, bounds, options) {
+export function stepSwimmer(fish, dt, bounds, options, headingOverride = null) {
   dt = clamp(dt, 0, 0.05);
   if (dt === 0) return;
   const { width, height } = bounds;
@@ -79,6 +79,9 @@ export function stepSwimmer(fish, dt, bounds, options) {
     }
     desiredHeading = fish.wanderHeading;
   }
+
+  // Schooling can suggest a heading, but every fish still handles its own walls.
+  if (Number.isFinite(headingOverride)) desiredHeading = headingOverride;
 
   // Soft tank avoidance: turn away before reaching an edge.
   // The centre isn't a leader or target; it is just a wall avoidance cue.
@@ -116,7 +119,7 @@ export function stepSwimmer(fish, dt, bounds, options) {
   fish.tailPhase = (fish.tailPhase + dt * (2.5 + 2.4 * speed * arrival)) % TAU;
 
   fish.trailCountdown -= dt;
-  if (fish.trailCountdown <= 0 && fish.speedPx > 0.5) {
+  if (options.recordTrail !== false && fish.trailCountdown <= 0 && fish.speedPx > 0.5) {
     fish.trail.push({ x: fish.x, y: fish.y });
     if (fish.trail.length > 110) fish.trail.shift();
     fish.trailCountdown = 0.065;
