@@ -1,6 +1,6 @@
 ---
-title: "Sardine Lab — One fish, then a school"
-description: "Build a sardine, set dozens swimming, and discover how simple local rules shape a school."
+title: "Who is leading the sardines? — Sardine Lab"
+description: "A ray appeared. The sardines scattered. My aunt had a theory, and I had a question."
 format:
   html:
     page-layout: full
@@ -19,13 +19,38 @@ resources:
 
 ::: {.sardine-story}
 
-<p class="sardine-eyebrow">DERAILED / MARINE LIFE / EXPERIMENT NO. 016</p>
+<p class="sardine-eyebrow">DERAILED / MARINE LIFE / AN AQUARIUM DETOUR</p>
 
-# One sardine is a fish. Fifty are a question.
+# Who is leading the sardines?
 
-<p class="sardine-lede">At Aquamarine Fukushima, a shimmering school of Japanese sardines moved as though it were a single creature. Nobody seemed to be in charge. What happens if we start with one fish, make a lot more, and give them a handful of rules?</p>
+<p class="sardine-lede">A ray appeared. The sardines scattered. My aunt had a theory. I had a question.</p>
 
-<div class="sardine-intro">GEOMETRY → MOVEMENT → NEIGHBOURS → EMERGENCE</div>
+## 01 / The moment behind the glass
+
+I was visiting **Aquamarine Fukushima** with my relatives when I stopped to watch the Japanese sardines. I love how fish swim together. So many silver bodies changing direction, apparently without bumping into one another.
+
+Then a large ray—an *エイ*—came into view. The sardines scattered around it so effortlessly that the movement looked almost choreographed.
+
+My aunt watched the same scene and offered a wonderfully natural explanation:
+
+<blockquote class="story-quote">
+  <p>“There must be a good leader.”</p>
+  <footer>— My aunt, watching the sardines</footer>
+</blockquote>
+
+Of course! When a group moves that beautifully, it's tempting to imagine someone giving excellent directions.
+
+But how would the others know when to turn? Could one fish possibly tell hundreds of fish where to go?
+
+And what if **there was no leader at all?**
+
+## 02 / Let's build a very small ocean
+
+I couldn't bring the aquarium home. But I could draw one sardine, give it a movement engine, make 47 more, and see what happens when they start paying attention to their neighbours.
+
+This is a little simulation, not a replica of the aquarium. There is no secret captain hidden among the fish.
+
+<div class="sardine-intro">ONE FISH → MANY FISH → NEIGHBOURS → A SCHOOL?</div>
 
 ```{=html}
 <section class="sardine-lab" aria-label="Interactive sardine schooling simulation">
@@ -133,38 +158,45 @@ resources:
 </section>
 ```
 
-## 01 / Many fish, one recipe
+## 03 / An experiment for my aunt
 
-The generator draws one recognizable sardine using Canvas paths: silver back, pale belly, forked tail, and an eye. We make an array of fish, each with a slightly different size, heading, and tail rhythm. The **fish size** slider makes them small enough to share the tank.
+The tank starts with a school of small sardines. They look similar, but each has its own position, direction, size variation, and tail rhythm.
 
-Each fish keeps its own movement state. Its direction of travel can change all the way around the tank, but we draw it from the side and mirror left to right, so its belly stays down.
+Try the experiment in this order:
 
-## 02 / Before the school: independence
+1. **Watch the school.** Is it obvious which fish is in charge? (Hint: none has been designated as the leader.)
+2. **Switch to Independent.** The fish keep swimming, but they no longer react to one another. Does the tank still look like a single group?
+3. **Switch back to Schooling.** The same fish now respond to nearby neighbours. Watch the paths change; no one receives a group-wide command.
+4. **Remove a rule.** Turn one of the three schooling sliders down to zero. What changes when the fish stop trying to align, stay together, or keep their distance?
 
-Switch to **Independent**. Each fish wanders and steers away from the tank walls, but it does not know where the other sardines are. More fish alone doesn't create a coordinated school.
+You can change the number of fish from **1 to 120**, or shrink them to make room for a denser crowd. For a different experiment, tap the tank to give everyone a **shared destination**. That is an external cue, not a leader fish—so use **Free swim** when you want to study coordination without a common goal.
 
-Try raising the count, then dropping it to **1** to inspect the individual generator again. If you'd like a closer look, increase the fish size.
+## 04 / Three tiny instructions
 
-## 03 / A school without a conductor
+The simulator borrows an idea from **Boids**, a computational model published by Craig Reynolds in 1987. Instead of scripting an impressive formation for the whole group, we give each individual a few local rules:
 
-Turn on **Schooling**. Each sardine now responds only to nearby fish, using three ideas from the classic *Boids* simulation:
+- **Separation:** don't get too close to the neighbours right beside you.
+- **Alignment:** turn roughly the way your nearby neighbours are facing.
+- **Cohesion:** stay near your neighbourhood instead of wandering away.
 
-- **Separation:** don't crowd your closest neighbours.
-- **Alignment:** turn toward the direction nearby neighbours are moving.
-- **Cohesion:** steer toward the neighbourhood, not a central leader.
+Each sardine calculates its own next move from the fish nearby. The simulator computes those suggestions from the same instant before anyone moves. There is no instruction saying, *“Form a beautiful school now.”*
 
-Try reducing **alignment** to zero. Do the fish still travel together? Try removing **cohesion**. Do they gradually drift apart? Raise **separation** and notice how tightly they can pack.
+When a pattern emerges from many small interactions, we call that **emergence**.
 
-The simulation computes all the neighbour suggestions from the **same moment**, and only then updates the fish. That prevents the order of the array from accidentally giving some fish an informational advantage.
+The surprising part isn't that the fish follow rules. It's that **none of the rules describes the whole school**.
 
-## 04 / What this is—and isn't
+## 05 / But what about the ray?
 
-There is no invisible leader fish. Every swimmer runs the same local instructions. And the rules aren't hard-coded fish formations: the patterns emerge from repeated interactions.
+That's the part of the aquarium moment this little tank **doesn't simulate yet**.
 
-This is a playful, intentionally simplified computational model. **Real sardines have sensory systems, predators, currents, and three-dimensional movement** that our two-dimensional tank doesn't attempt to reproduce.
+The ray caught our attention because the sardines suddenly made space around it. Our current model can explore coordination among neighbours, but it has no ray, no changing threat, and none of the sensory complexity of real fish. It cannot tell us exactly why the sardines moved as they did that day.
 
-<p class="sardine-outro">If nobody is in charge, who decides where the school goes?</p>
+That makes the next detour rather irresistible: *What if a ray moved through the simulated school?* Would local avoidance rules be enough for the fish to scatter around it—without anyone giving an order?
 
-<p class="sardine-source">Inspired by a visit to Aquamarine Fukushima. <a href="https://github.com/chichacha/derailed/issues/16">DERAILED issue #16</a> · <a href="https://github.com/chichacha/psychic-pento-guacamole/issues/115">Gomasu story #115</a>.</p>
+My aunt's explanation might still have seemed right to an observer. But a school can look coordinated even when no individual is coordinating it.
+
+<p class="sardine-outro">“There must be a good leader.”<br>Or perhaps there doesn't have to be one.</p>
+
+<p class="sardine-source">**Seen:** a school of sardines and a ray, on a family visit to Aquamarine Fukushima. **Model:** a simplified two-dimensional interpretation of Craig Reynolds' <a href="https://www.red3d.com/cwr/papers/1987/boids.html" target="_blank" rel="noopener">1987 Boids paper</a>, not a biological explanation of that specific encounter. <a href="https://github.com/chichacha/derailed/issues/16">DERAILED #16</a> · <a href="https://github.com/chichacha/psychic-pento-guacamole/issues/115">Gomasu #115</a>.</p>
 
 :::
