@@ -191,17 +191,23 @@ My aunt had a theory. The fish were not taking questions.
 </div>
 <p>Aquamarine’s Kuroshio tank deliberately brings small fish and larger fish together to show something of the ocean’s eat-or-be-eaten world. But I didn’t see the ray attack the sardines. What caught my eye was how beautifully the school made space as it passed.</p>
 </section>
-<section id="okay-but-who-is-in-charge" class="level2">
-<h2 data-anchor-id="okay-but-who-is-in-charge">03 / Okay, but who is in charge?</h2>
-<p>I couldn’t bring the aquarium home. So I drew one sardine, taught it to swim, and made 47 more. Then I gave each fish a way to react to its neighbours.</p>
-<p>No conductor. No group chat. No extremely organized fish manager.</p>
-<div class="sardine-intro">
-ONE FISH → MANY FISH → A FEW SIMPLE RULES → WHAT HAPPENS?
-</div>
+<section id="could-i-make-a-school-without-a-leader" class="level2">
+<h2 data-anchor-id="could-i-make-a-school-without-a-leader">03 / Could I make a school without a leader?</h2>
+<p>My aunt’s theory stayed with me. When hundreds of fish change direction together, it really does look as though someone must be giving instructions.</p>
+<p>But what if nobody is?</p>
+<p>I couldn’t bring the aquarium home, so I made a small version in my browser. First I drew one sardine. I gave it a direction, a speed, and a tail that moved. Then I made 47 more.</p>
+<p>Forty-eight swimming fish are not automatically a school. Without paying attention to one another, they’re simply 48 individuals sharing a tank.</p>
+<p>That gave me a better question: <strong>what does each fish need to notice about its neighbours for a school to appear?</strong></p>
+</section>
+<section id="a-little-experiment" class="level2">
+<h2 data-anchor-id="a-little-experiment">04 / A little experiment</h2>
+<p>Here’s the tank I built. Nobody has been appointed leader. Each fish has its own position and direction; the <strong>Schooling</strong> switch lets it respond to nearby fish.</p>
+<p>Try switching between <strong>Independent</strong> and <strong>Schooling</strong>. Don’t change anything else at first. Do you notice a difference in how the group moves?</p>
+<p>The three sliders below—separation, alignment, and cohesion—are the ingredients. You can play with them now, or meet them one at a time just below the tank.</p>
 <section class="sardine-lab" aria-label="Interactive sardine schooling simulation">
   <div class="lab-heading">
     <div>
-      <span class="lab-kicker">THE SARDINE LAB / 01—03</span>
+      <span class="lab-kicker">THE SARDINE LAB / AN EXPERIMENT</span>
       <h2>No leader. Just neighbours.</h2>
     </div>
     <div class="lab-state" id="fish-status" role="status" aria-live="polite">No leader. Just neighbours.</div>
@@ -299,42 +305,42 @@ ONE FISH → MANY FISH → A FEW SIMPLE RULES → WHAT HAPPENS?
     <button id="toggle-swim" type="button" aria-pressed="false">Pause swimming</button>
     <button id="reset-fish" type="button">Reset experiment</button>
   </div>
-  <p class="lab-note">Start with <strong>Independent</strong>. Then turn on <strong>Schooling</strong> without resetting the fish. Switch individual rules down to zero to see their contribution. The dotted amber path belongs to one observed fish, not a designated leader. Tap the tank to offer all fish the same destination.</p>
+  <p class="lab-note">Start by comparing <strong>Independent</strong> and <strong>Schooling</strong>. Then experiment with the separation, alignment, and cohesion sliders. The dotted amber path traces one fish—not a leader. For a leader-free experiment, stay in <strong>Free swim</strong>; tapping the tank gives every fish a shared destination.</p>
 </section>
 </section>
-<section id="try-taking-the-leader-away" class="level2">
-<h2 data-anchor-id="try-taking-the-leader-away">04 / Try taking the leader away</h2>
-<p>Here’s the experiment I’d love to show my aunt:</p>
-<ol type="1">
-<li><strong>Watch the school</strong> for a bit. Nobody has been assigned as the leader.</li>
-<li>Switch from <strong>Schooling</strong> to <strong>Independent</strong>. Same fish, same tank. They’re still swimming, but they aren’t paying attention to one another. What happens?</li>
-<li>Switch <strong>Schooling</strong> back on. Do you notice the difference?</li>
-<li>Turn down <strong>alignment</strong>, <strong>cohesion</strong>, or <strong>separation</strong>, one at a time. Which rule seems to matter most?</li>
-</ol>
-<p>Change the number of sardines, make them smaller, or follow the dotted path of one individual. That little highlighted fish is just the one we’re watching—not the captain.</p>
-<p>You can also click the tank to set a shared destination. That’s fun, but remember: giving everyone a common target is different from asking how a group coordinates without one. For that question, keep <strong>Free swim</strong> selected.</p>
+<section id="three-little-problems-with-swimming-together" class="level2">
+<h2 data-anchor-id="three-little-problems-with-swimming-together">05 / Three little problems with swimming together</h2>
+<p>I found it easier to understand the model by thinking about three ordinary problems. None requires a clever fish in charge. Each only requires a fish to pay attention to its neighbours.</p>
+<h3>Problem one: “You’re too close!” — Separation</h3>
+<p>Imagine walking through a crowded station. Someone steps into your personal space, and you move aside.</p>
+<p><strong>Separation</strong> is the fish version of that. In my model, a sardine turns away from neighbours that get too close. It doesn’t need to know where the whole school is headed; it only needs to avoid crowding the fish beside it.</p>
+<p><strong>Try it:</strong> With Schooling selected, slide <strong>Separation</strong> down to zero, then bring it back up. Look for changes in how closely the fish bunch together.</p>
+<h3>Problem two: “Oh, we’re going that way?” — Alignment</h3>
+<p>Now imagine walking with a group of friends. They’re all beginning to turn left, so you turn a little left too.</p>
+<p><strong>Alignment</strong> helps neighbouring fish face similar directions. Each fish considers the headings of fish nearby and adjusts its own. Nobody sends out a message saying, “Everyone turn now.”</p>
+<p><strong>Try it:</strong> Turn <strong>Alignment</strong> down to zero, then increase it again. Watch whether nearby fish tend to point the same way.</p>
+<h3>Problem three: “Hey, wait for me!” — Cohesion</h3>
+<p>If you get distracted while walking with friends, eventually you notice they’re farther away. You head back toward them.</p>
+<p><strong>Cohesion</strong> does something similar. Each simulated fish steers toward the average position of its nearby neighbours. It isn’t chasing a designated leader—just trying not to lose the group.</p>
+<p><strong>Try it:</strong> Reduce <strong>Cohesion</strong> to zero, then restore it. Does the group seem more scattered or more connected?</p>
+<p>These rules work <strong>together</strong>, so changing one slider won’t always produce an instant, tidy result. The tank is a place to observe, not a machine that guarantees the same pattern every time.</p>
 </section>
-<section id="three-rules.-no-boss." class="level2">
-<h2 data-anchor-id="three-rules.-no-boss.">05 / Three rules. No boss.</h2>
-<p>The simulation is inspired by <em>Boids</em>, a model introduced by computer graphics researcher Craig Reynolds in 1987. It starts with three surprisingly ordinary ideas:</p>
-<ul>
-<li><strong>Separation:</strong> “Excuse me, you’re a bit close.”</li>
-<li><strong>Alignment:</strong> “Oh, we’re going that way?”</li>
-<li><strong>Cohesion:</strong> “Hey, where did everyone go?”</li>
-</ul>
-<p>Each fish responds to the neighbours it can ‘see’ in our simplified model. None of them knows the shape of the whole school. Yet a recognizable group can take shape anyway.</p>
-<p>That kind of larger pattern arising from lots of small interactions has a name: <strong>emergence</strong>.</p>
-<p>The code is much simpler than a real sardine. Real fish have eyes, senses, three-dimensional water to navigate, currents, and much more going on. This experiment isn’t proof that real マイワシ behave according to exactly these rules. It’s a way to test whether a leader is <em>necessary</em> for coordinated-looking movement.</p>
+<section id="the-surprising-part-nobody-needs-the-whole-picture" class="level2">
+<h2 data-anchor-id="the-surprising-part-nobody-needs-the-whole-picture">06 / The surprising part: nobody needs the whole picture</h2>
+<p>This experiment is inspired by <em>Boids</em>, a model introduced by computer graphics researcher Craig Reynolds in 1987. The three rules are simple: give your neighbours room, pay attention to their direction, and stay near the group.</p>
+<p>Here’s the lovely part. <strong>No individual fish has to know what the whole school looks like.</strong> Each reacts to nearby fish, yet a larger, coordinated-looking pattern can appear.</p>
+<p>That has a name: <strong>emergence</strong>—a group-level pattern arising from many local interactions.</p>
+<p>Does that prove my aunt was wrong about the real sardines? No. A two-dimensional browser model isn’t a real aquarium. Real fish use their senses, navigate three-dimensional water, and respond to far more than three rules.</p>
+<p>But it shows something important: <strong>a leader isn’t necessary to produce movement that looks coordinated.</strong></p>
 </section>
-<section id="and-what-about-the-カラスエイ" class="level2">
-<h2 data-anchor-id="and-what-about-the-カラスエイ">06 / And what about the カラスエイ?</h2>
-<p>We haven’t put a ray in our simulated tank. <strong>Not yet.</strong></p>
-<p>That’s actually the part I’m most curious about. What if a big ray-shaped obstacle moved through the school? Would each sardine reacting locally be enough to make the whole school open up around it?</p>
-<p>There are other questions too. Were the fish avoiding the ray itself, the movement of nearby sardines, or a combination of cues? Watching them through the glass didn’t tell me—and this first model can’t tell me either.</p>
-<p>But now I have an experiment to try. All because my aunt made one little comment at the aquarium.</p>
-<p class="sardine-outro">
-“There must be a good leader.”<br>Maybe. Or maybe the fish just need good neighbours.
-</p>
+<section id="and-then-there-was-the-stingray" class="level2">
+<h2 data-anchor-id="and-then-there-was-the-stingray">07 / And then there was the stingray</h2>
+<p>Now I’m back at the moment that started this detour: the カラスエイ gliding through the マイワシ, and the school opening around it.</p>
+<p>My simulated tank doesn’t have a stingray. <strong>Not yet.</strong></p>
+<p>Would a moving obstacle be enough to make a similar gap appear? Would the fish react directly to the ray, to their neighbours’ reactions, or both? I can’t answer that from what I saw through the glass—and this first experiment can’t either.</p>
+<p>Which gives me another question to investigate. One aquarium visit, one comment from my aunt, and somehow I’ve ended up teaching 48 imaginary sardines to be good neighbours.</p>
+<p class="sardine-outro">“There must be a good leader.”<br>Maybe. Or maybe the fish just need good neighbours.</p>
+</section>
 <p class="sardine-source">
 <strong>The real animals:</strong> <a href="https://www.aquamarine.or.jp/animals/true-sardine/">マイワシ</a>, <a href="https://www.aquamarine.or.jp/animals/pelagic-stingray/">カラスエイ</a>, and Aquamarine Fukushima’s <a href="https://www.aquamarine.or.jp/exhibitions/sea-of-current-rip/">Kuroshio tank</a>. <strong>The model:</strong> inspired by <a href="https://www.red3d.com/cwr/papers/1987/boids.html">Craig Reynolds’ 1987 Boids work</a>; a two-dimensional illustration, not a reconstruction of the aquarium encounter. <a href="https://github.com/chichacha/derailed/issues/16">DERAILED #16</a> · <a href="https://github.com/chichacha/psychic-pento-guacamole/issues/115">Gomasu #115</a>.
 </p>
