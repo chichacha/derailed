@@ -116,7 +116,9 @@ export function stepSwimmer(fish, dt, bounds, options, headingOverride = null) {
   fish.y = clamp(fish.y, halfY, height - halfY);
 
   // Tail animation is connected to propulsion, not responsible for movement.
-  fish.tailPhase = (fish.tailPhase + dt * (2.5 + 2.4 * speed * arrival)) % TAU;
+  if (fish.speedPx > 0.5) {
+    fish.tailPhase = (fish.tailPhase + dt * (2.5 + 2.4 * speed * arrival)) % TAU;
+  }
 
   fish.trailCountdown -= dt;
   if (options.recordTrail !== false && fish.trailCountdown <= 0 && fish.speedPx > 0.5) {
