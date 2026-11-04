@@ -96,3 +96,89 @@
   .lab-panel:last-child { grid-column: auto; }
   #sardine-canvas { height: 300px; }
 }
+
+
+/* Editorial pull quote: the question that started Sardine Lab. */
+.story-quote {
+  margin: 2rem 0 2.4rem;
+  padding: 1.4rem 1.6rem;
+  border-left: 4px solid var(--sea-accent);
+  background: #edf4ef;
+  border-radius: 0 9px 9px 0;
+  max-width: 710px;
+}
+.story-quote p {
+  font-size: clamp(1.45rem, 3.2vw, 2rem);
+  line-height: 1.3;
+  font-weight: 700;
+  letter-spacing: -.025em;
+  color: var(--sea-ink);
+  margin: 0 0 .7rem;
+}
+.story-quote footer {
+  font-size: .8rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .03em;
+  color: var(--sea-muted);
+}
+.sardine-story > ol {
+  max-width: 760px;
+  padding-left: 1.5rem;
+}
+.sardine-story > ol li { margin: 0 0 .85rem; line-height: 1.65; }
+.sardine-story > h2 { border-top: 1px solid var(--sea-line); padding-top: 1.65rem; }
+.sardine-story > h2:first-of-type { border-top: 0; padding-top: 0; }
+@media (max-width: 600px) {
+  .story-quote { padding: 1rem 1.1rem; }
+}
+
+
+/* Small field-guide notes, not an encyclopedia: the real species behind the story. */
+.species-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 2rem;
+}
+.species-card {
+  background: #f1f5f1;
+  border: 1px solid var(--sea-line);
+  padding: clamp(1rem, 2.2vw, 1.35rem);
+  border-radius: 10px;
+}
+.species-label {
+  font: 700 .68rem/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing: .1em;
+  color: #a5533e;
+}
+.species-card h3 {
+  margin: .5rem 0 .2rem;
+  color: var(--sea-ink);
+  font-size: 1.26rem;
+  line-height: 1.35;
+}
+.species-card h3 em {
+  font-size: .87rem;
+  font-weight: 400;
+  color: var(--sea-muted);
+  white-space: nowrap;
+}
+.species-card .species-latin {
+  margin: 0 0 1rem;
+  font-style: italic;
+  color: var(--sea-muted);
+  font-size: .82rem;
+}
+.species-card p {
+  font-size: .9rem;
+  line-height: 1.65;
+}
+.species-card a {
+  display: inline-block;
+  font-size: .82rem;
+  font-weight: 650;
+  margin-top: .2rem;
+}
+@media(max-width: 680px) {
+  .species-pair { grid-template-columns: 1fr; }
+}

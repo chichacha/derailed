@@ -23,15 +23,17 @@ resources:
 
 # Who is leading the sardines?
 
-<p class="sardine-lede">My aunt had a theory. The fish were not taking questions.</p>
+<p class="sardine-lede">My aunt suspected there was a leader. The sardines declined to comment.</p>
 
 ## 01 / One ray. A lot of sardines.
 
-I went to **Aquamarine Fukushima** with my relatives. At the big Kuroshio tank, I got completely distracted by the sardines. I could have watched them all day. So many little silver fish moving together, changing direction, somehow not crashing into each other.
+I visited **Aquamarine Fukushima** with my relatives and found myself completely mesmerized by the sardines in the big Kuroshio tank.
 
-Then a **カラスエイ** (*pelagic stingray*) glided through. The **マイワシ** (*true sardines*) parted around it, so smoothly it barely seemed to interrupt the flow. Just like that, a gap appeared—and the school carried on.
+Hundreds of little silver fish, swimming together, turning together, somehow never bumping into one another. I could have watched them for hours.
 
-I said how much I loved watching them swim together. My aunt had an explanation:
+Then a **カラスエイ** (*pelagic stingray*) glided through. The **マイワシ** (*Japanese sardines*) scattered, only to regroup and carry on as if nothing had happened.
+
+My aunt had a theory:
 
 <blockquote class="story-quote">
   <p>“There must be a good leader.”</p>
@@ -46,6 +48,7 @@ But... **which fish?** And how would everyone else get the memo in time?
 
 Before making cartoon sardines swim around a browser, I wanted to know a little more about the two animals that started this whole detour.
 
+```{=html}
 <div class="species-pair">
   <div class="species-card">
     <span class="species-label">THE SCHOOL</span>
@@ -64,8 +67,11 @@ Before making cartoon sardines swim around a browser, I wanted to know a little 
     <a href="https://www.aquamarine.or.jp/animals/pelagic-stingray/" target="_blank" rel="noopener">Aquamarine's カラスエイ profile ↗</a>
   </div>
 </div>
+```
 
-Aquamarine's Kuroshio tank deliberately brings small fish and larger fish together to show something of the ocean's eat-or-be-eaten world. But I didn't see the ray attack the sardines. What caught my eye was how beautifully the school made space as it passed.
+Aquamarine Fukushima's Kuroshio tank recreates a little of the ocean's eat-or-be-eaten world, bringing predators and prey together.  Pelagic stingrays do eat sardines, but the one I watched wasn't visibly hunting. It simply glided through, and the school parted around it, then flowed back together.
+
+What fascinated me wasn't the predator. It was how effortlessly hundreds of little fish responded together.
 
 ## 03 / Okay, but who is in charge?
 
