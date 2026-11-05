@@ -150,13 +150,14 @@ DERAILED / MARINE LIFE / AN AQUARIUM DETOUR
 <section id="who-is-leading-the-sardines" class="level1">
 <h1>Who is leading the sardines?</h1>
 <p class="sardine-lede">
-My aunt had a theory. The fish were not taking questions.
+My aunt suspected there was a leader. The sardines declined to comment.
 </p>
 <section id="one-ray.-a-lot-of-sardines." class="level2">
 <h2 data-anchor-id="one-ray.-a-lot-of-sardines.">01 / One ray. A lot of sardines.</h2>
-<p>I went to <strong>Aquamarine Fukushima</strong> with my relatives. At the big Kuroshio tank, I got completely distracted by the sardines. I could have watched them all day. So many little silver fish moving together, changing direction, somehow not crashing into each other.</p>
-<p>Then a <strong>カラスエイ</strong> (<em>pelagic stingray</em>) glided through. The <strong>マイワシ</strong> (<em>true sardines</em>) parted around it, so smoothly it barely seemed to interrupt the flow. Just like that, a gap appeared—and the school carried on.</p>
-<p>I said how much I loved watching them swim together. My aunt had an explanation:</p>
+<p>I visited <strong>Aquamarine Fukushima</strong> with my relatives and found myself completely mesmerized by the sardines in the big Kuroshio tank.</p>
+<p>Hundreds of little silver fish, swimming together, turning together, somehow never bumping into one another. I could have watched them for hours.</p>
+<p>Then a <strong>カラスエイ</strong> (<em>pelagic stingray</em>) glided through. The <strong>マイワシ</strong> (<em>Japanese sardines</em>) scattered, only to regroup and carry on as if nothing had happened.</p>
+<p>My aunt had a theory:</p>
 <blockquote class="story-quote blockquote">
 <p>
 “There must be a good leader.”
@@ -189,7 +190,8 @@ My aunt had a theory. The fish were not taking questions.
     <a href="https://www.aquamarine.or.jp/animals/pelagic-stingray/" target="_blank" rel="noopener">Aquamarine's カラスエイ profile ↗</a>
   </div>
 </div>
-<p>Aquamarine’s Kuroshio tank deliberately brings small fish and larger fish together to show something of the ocean’s eat-or-be-eaten world. But I didn’t see the ray attack the sardines. What caught my eye was how beautifully the school made space as it passed.</p>
+<p>Aquamarine Fukushima’s Kuroshio tank recreates a little of the ocean’s eat-or-be-eaten world, bringing predators and prey together. Pelagic stingrays do eat sardines, but the one I watched wasn’t visibly hunting. It simply glided through, and the school parted around it, then flowed back together.</p>
+<p>What fascinated me wasn’t the predator. It was how effortlessly hundreds of little fish responded together.</p>
 </section>
 <section id="could-i-make-a-school-without-a-leader" class="level2">
 <h2 data-anchor-id="could-i-make-a-school-without-a-leader">03 / Could I make a school without a leader?</h2>
@@ -311,26 +313,32 @@ My aunt had a theory. The fish were not taking questions.
 <section id="three-little-problems-with-swimming-together" class="level2">
 <h2 data-anchor-id="three-little-problems-with-swimming-together">05 / Three little problems with swimming together</h2>
 <p>I found it easier to understand the model by thinking about three ordinary problems. None requires a clever fish in charge. Each only requires a fish to pay attention to its neighbours.</p>
-<h3>Problem one: “You’re too close!” — Separation</h3>
+<section id="problem-one-youre-too-close-separation" class="level3">
+<h3 data-anchor-id="problem-one-youre-too-close-separation">Problem one: “You’re too close!” — Separation</h3>
 <p>Imagine walking through a crowded station. Someone steps into your personal space, and you move aside.</p>
 <p><strong>Separation</strong> is the fish version of that. In my model, a sardine turns away from neighbours that get too close. It doesn’t need to know where the whole school is headed; it only needs to avoid crowding the fish beside it.</p>
 <p><strong>Try it:</strong> With Schooling selected, slide <strong>Separation</strong> down to zero, then bring it back up. Look for changes in how closely the fish bunch together.</p>
-<h3>Problem two: “Oh, we’re going that way?” — Alignment</h3>
+</section>
+<section id="problem-two-oh-were-going-that-way-alignment" class="level3">
+<h3 data-anchor-id="problem-two-oh-were-going-that-way-alignment">Problem two: “Oh, we’re going that way?” — Alignment</h3>
 <p>Now imagine walking with a group of friends. They’re all beginning to turn left, so you turn a little left too.</p>
 <p><strong>Alignment</strong> helps neighbouring fish face similar directions. Each fish considers the headings of fish nearby and adjusts its own. Nobody sends out a message saying, “Everyone turn now.”</p>
 <p><strong>Try it:</strong> Turn <strong>Alignment</strong> down to zero, then increase it again. Watch whether nearby fish tend to point the same way.</p>
-<h3>Problem three: “Hey, wait for me!” — Cohesion</h3>
+</section>
+<section id="problem-three-hey-wait-for-me-cohesion" class="level3">
+<h3 data-anchor-id="problem-three-hey-wait-for-me-cohesion">Problem three: “Hey, wait for me!” — Cohesion</h3>
 <p>If you get distracted while walking with friends, eventually you notice they’re farther away. You head back toward them.</p>
 <p><strong>Cohesion</strong> does something similar. Each simulated fish steers toward the average position of its nearby neighbours. It isn’t chasing a designated leader—just trying not to lose the group.</p>
 <p><strong>Try it:</strong> Reduce <strong>Cohesion</strong> to zero, then restore it. Does the group seem more scattered or more connected?</p>
 <p>These rules work <strong>together</strong>, so changing one slider won’t always produce an instant, tidy result. The tank is a place to observe, not a machine that guarantees the same pattern every time.</p>
+</section>
 </section>
 <section id="the-surprising-part-nobody-needs-the-whole-picture" class="level2">
 <h2 data-anchor-id="the-surprising-part-nobody-needs-the-whole-picture">06 / The surprising part: nobody needs the whole picture</h2>
 <p>This experiment is inspired by <em>Boids</em>, a model introduced by computer graphics researcher Craig Reynolds in 1987. The three rules are simple: give your neighbours room, pay attention to their direction, and stay near the group.</p>
 <p>Here’s the lovely part. <strong>No individual fish has to know what the whole school looks like.</strong> Each reacts to nearby fish, yet a larger, coordinated-looking pattern can appear.</p>
 <p>That has a name: <strong>emergence</strong>—a group-level pattern arising from many local interactions.</p>
-<p>Does that prove my aunt was wrong about the real sardines? No. A two-dimensional browser model isn’t a real aquarium. Real fish use their senses, navigate three-dimensional water, and respond to far more than three rules.</p>
+<p>Does that prove my aunt was wrong about the real sardines? No.&nbsp;A two-dimensional browser model isn’t a real aquarium. Real fish use their senses, navigate three-dimensional water, and respond to far more than three rules.</p>
 <p>But it shows something important: <strong>a leader isn’t necessary to produce movement that looks coordinated.</strong></p>
 </section>
 <section id="and-then-there-was-the-stingray" class="level2">
@@ -339,8 +347,9 @@ My aunt had a theory. The fish were not taking questions.
 <p>My simulated tank doesn’t have a stingray. <strong>Not yet.</strong></p>
 <p>Would a moving obstacle be enough to make a similar gap appear? Would the fish react directly to the ray, to their neighbours’ reactions, or both? I can’t answer that from what I saw through the glass—and this first experiment can’t either.</p>
 <p>Which gives me another question to investigate. One aquarium visit, one comment from my aunt, and somehow I’ve ended up teaching 48 imaginary sardines to be good neighbours.</p>
-<p class="sardine-outro">“There must be a good leader.”<br>Maybe. Or maybe the fish just need good neighbours.</p>
-</section>
+<p class="sardine-outro">
+“There must be a good leader.”<br>Maybe. Or maybe the fish just need good neighbours.
+</p>
 <p class="sardine-source">
 <strong>The real animals:</strong> <a href="https://www.aquamarine.or.jp/animals/true-sardine/">マイワシ</a>, <a href="https://www.aquamarine.or.jp/animals/pelagic-stingray/">カラスエイ</a>, and Aquamarine Fukushima’s <a href="https://www.aquamarine.or.jp/exhibitions/sea-of-current-rip/">Kuroshio tank</a>. <strong>The model:</strong> inspired by <a href="https://www.red3d.com/cwr/papers/1987/boids.html">Craig Reynolds’ 1987 Boids work</a>; a two-dimensional illustration, not a reconstruction of the aquarium encounter. <a href="https://github.com/chichacha/derailed/issues/16">DERAILED #16</a> · <a href="https://github.com/chichacha/psychic-pento-guacamole/issues/115">Gomasu #115</a>.
 </p>
