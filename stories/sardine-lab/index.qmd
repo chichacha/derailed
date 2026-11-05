@@ -1,0 +1,258 @@
+---
+title: "Who is leading the sardines? — Sardine Lab"
+description: "At Aquamarine Fukushima, a school of sardines parted around a ray. My aunt was sure there was a leader."
+format:
+  html:
+    page-layout: full
+    title-block-banner: false
+    toc: false
+    anchor-sections: false
+    css: sardine.css
+    include-after-body:
+      text: |
+        <script type="module" src="sardine.js"></script>
+resources:
+  - sardine.js
+  - motion.js
+  - school.js
+---
+
+::: {.sardine-story}
+
+<p class="sardine-eyebrow">DERAILED / MARINE LIFE / AN AQUARIUM DETOUR</p>
+
+# Who is leading the sardines?
+
+<p class="sardine-lede">My aunt suspected there was a leader. The sardines declined to comment.</p>
+
+## 01 / One ray. A lot of sardines.
+
+I visited **Aquamarine Fukushima** with my relatives and found myself completely mesmerized by the sardines in the big Kuroshio tank.
+
+Hundreds of little silver fish, swimming together, turning together, somehow never bumping into one another. I could have watched them for hours.
+
+Then a **カラスエイ** (*pelagic stingray*) glided through. The **マイワシ** (*Japanese sardines*) scattered, only to regroup and carry on as if nothing had happened.
+
+My aunt had a theory:
+
+<blockquote class="story-quote">
+  <p>“There must be a good leader.”</p>
+  <footer>— My aunt, at the aquarium</footer>
+</blockquote>
+
+I love this answer. It makes perfect sense from the outside. If a whole crowd moves in sync, surely someone must be calling the shots?
+
+But... **which fish?** And how would everyone else get the memo in time?
+
+## 02 / Meet the actual fish
+
+Before making cartoon sardines swim around a browser, I wanted to know a little more about the two animals that started this whole detour.
+
+```{=html}
+<div class="species-pair">
+  <div class="species-card">
+    <span class="species-label">THE SCHOOL</span>
+    <h3>マイワシ <em>True sardine</em></h3>
+    <p class="species-latin">Sardinops melanostictus</p>
+    <p>They gather near the sea surface, from coastal waters to offshore. Look closely: the row of dark spots along their sides has earned them the Japanese nickname <strong>七つ星</strong>—“Seven Stars.” They also migrate north and south with the seasons.</p>
+    <p>Why swim in a school? Possible advantages include safety in numbers, spotting danger sooner, and reproduction. There isn't just one explanation.</p>
+    <a href="https://www.aquamarine.or.jp/animals/true-sardine/" target="_blank" rel="noopener">Aquamarine's マイワシ profile ↗</a>
+  </div>
+  <div class="species-card">
+    <span class="species-label">THE SURPRISE VISITOR</span>
+    <h3>カラスエイ <em>Pelagic stingray</em></h3>
+    <p class="species-latin">Pteroplatytrygon violacea</p>
+    <p>A dark-backed ray that swims through open ocean water rather than spending most of its life along the seabed. It moves with those broad, wing-like fins.</p>
+    <p>Here's a fun twist: when feeding, it can actually <strong>turn belly-up</strong> and use its fins to help bring food toward its mouth. Our earlier upside-down sardine suddenly has some competition.</p>
+    <a href="https://www.aquamarine.or.jp/animals/pelagic-stingray/" target="_blank" rel="noopener">Aquamarine's カラスエイ profile ↗</a>
+  </div>
+</div>
+```
+
+Aquamarine Fukushima's Kuroshio tank recreates a little of the ocean's eat-or-be-eaten world, bringing predators and prey together.  Pelagic stingrays do eat sardines, but the one I watched wasn't visibly hunting. It simply glided through, and the school parted around it, then flowed back together.
+
+What fascinated me wasn't the predator. It was how effortlessly hundreds of little fish responded together.
+
+## 03 / Could I make a school without a leader?
+
+My aunt's theory stayed with me. When hundreds of fish change direction together, it really does look as though someone must be giving instructions.
+
+But what if nobody is?
+
+I couldn't bring the aquarium home, so I made a small version in my browser. First I drew one sardine. I gave it a direction, a speed, and a tail that moved. Then I made 47 more.
+
+Forty-eight swimming fish are not automatically a school. Without paying attention to one another, they're simply 48 individuals sharing a tank.
+
+That gave me a better question: **what does each fish need to notice about its neighbours for a school to appear?**
+
+## 04 / A little experiment
+
+Here's the tank I built. Nobody has been appointed leader. Each fish has its own position and direction; the **Schooling** switch lets it respond to nearby fish.
+
+Try switching between **Independent** and **Schooling**. Don't change anything else at first. Do you notice a difference in how the group moves?
+
+The three sliders below—separation, alignment, and cohesion—are the ingredients. You can play with them now, or meet them one at a time just below the tank.
+
+```{=html}
+<section class="sardine-lab" aria-label="Interactive sardine schooling simulation">
+  <div class="lab-heading">
+    <div>
+      <span class="lab-kicker">THE SARDINE LAB / AN EXPERIMENT</span>
+      <h2>No leader. Just neighbours.</h2>
+    </div>
+    <div class="lab-state" id="fish-status" role="status" aria-live="polite">No leader. Just neighbours.</div>
+  </div>
+
+  <div class="tank-shell">
+    <canvas id="sardine-canvas" role="img" aria-label="An animated school of small silver sardines. Tap to set a shared destination."></canvas>
+    <div class="tank-caption">
+      <span id="fish-count-label">48 SARDINES</span>
+      <span id="motion-data" aria-hidden="true">48 FISH · AVG 0 PX/S</span>
+    </div>
+  </div>
+
+  <div class="lab-controls">
+    <div class="lab-panel">
+      <div class="lab-panel-title">
+        <span>01 / FISH GENERATOR</span>
+        <small>Same species. Slightly different individuals.</small>
+      </div>
+      <div class="sliders">
+        <label for="fish-count">Number of fish <output id="count-value">48</output>
+          <input id="fish-count" type="range" min="1" max="120" step="1" value="48">
+        </label>
+        <label for="fish-scale">Fish size <output id="scale-value">38%</output>
+          <input id="fish-scale" type="range" min=".20" max="1" step=".02" value=".38">
+        </label>
+        <label for="fish-length">Body length <output id="length-value">120</output>
+          <input id="fish-length" type="range" min="65" max="180" step="1" value="120">
+        </label>
+        <label for="fish-depth">Body depth <output id="depth-value">32</output>
+          <input id="fish-depth" type="range" min="16" max="55" step="1" value="32">
+        </label>
+      </div>
+      <div class="lab-actions">
+        <button id="randomize-fish" type="button">↝ New proportions</button>
+        <button id="reseed-school" type="button">↻ New school</button>
+      </div>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-panel-title">
+        <span>02 / MOVEMENT ENGINE</span>
+        <small>Each fish has its own heading and speed.</small>
+      </div>
+      <div class="mode-switch" role="group" aria-label="Swimming destination mode">
+        <button data-swim-mode="wander" type="button" class="selected" aria-pressed="true">Free swim</button>
+        <button data-swim-mode="follow" type="button" aria-pressed="false">Follow target</button>
+      </div>
+      <p class="motion-hint" id="motion-hint">Fish choose their own paths.</p>
+      <div class="sliders">
+        <label for="fish-speed">Swim speed <output id="speed-value">1.1</output>
+          <input id="fish-speed" type="range" min="0" max="3" step=".1" value="1.1">
+        </label>
+        <label for="fish-turn">Turning agility <output id="turn-value">2.5</output>
+          <input id="fish-turn" type="range" min=".5" max="4" step=".1" value="2.5">
+        </label>
+      </div>
+      <div class="lab-actions">
+        <button id="new-destination" type="button">✳ New destination</button>
+        <label class="path-choice">
+          <input id="show-path" type="checkbox" checked>
+          <span id="path-note">Trace one fish (not the leader)</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="lab-panel">
+      <div class="lab-panel-title">
+        <span>03 / SCHOOLING RULES</span>
+        <small>What if each fish notices its neighbours?</small>
+      </div>
+      <div class="mode-switch" role="group" aria-label="Compare independent swimming with schooling">
+        <button data-school-mode="independent" type="button" aria-pressed="false">Independent</button>
+        <button data-school-mode="school" type="button" class="selected" aria-pressed="true">Schooling</button>
+      </div>
+      <p class="motion-hint" id="school-hint">Each fish notices only nearby neighbours.</p>
+      <fieldset class="school-rule-fields" id="school-rules">
+        <legend>Three local rules</legend>
+        <div class="sliders">
+          <label for="rule-separation">Separation <output id="separation-value">1.4</output>
+            <input id="rule-separation" type="range" min="0" max="3" step=".1" value="1.4">
+          </label>
+          <label for="rule-alignment">Alignment <output id="alignment-value">1.0</output>
+            <input id="rule-alignment" type="range" min="0" max="3" step=".1" value="1">
+          </label>
+          <label for="rule-cohesion">Cohesion <output id="cohesion-value">1.0</output>
+            <input id="rule-cohesion" type="range" min="0" max="3" step=".1" value="1">
+          </label>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="lab-bottom">
+    <button id="toggle-swim" type="button" aria-pressed="false">Pause swimming</button>
+    <button id="reset-fish" type="button">Reset experiment</button>
+  </div>
+  <p class="lab-note">Start by comparing <strong>Independent</strong> and <strong>Schooling</strong>. Then experiment with the separation, alignment, and cohesion sliders. The dotted amber path traces one fish—not a leader. For a leader-free experiment, stay in <strong>Free swim</strong>; tapping the tank gives every fish a shared destination.</p>
+</section>
+```
+
+## 05 / Three little problems with swimming together
+
+I found it easier to understand the model by thinking about three ordinary problems. None requires a clever fish in charge. Each only requires a fish to pay attention to its neighbours.
+
+### Problem one: “You're too close!” — Separation
+
+Imagine walking through a crowded station. Someone steps into your personal space, and you move aside.
+
+**Separation** is the fish version of that. In my model, a sardine turns away from neighbours that get too close. It doesn't need to know where the whole school is headed; it only needs to avoid crowding the fish beside it.
+
+**Try it:** With Schooling selected, slide **Separation** down to zero, then bring it back up. Look for changes in how closely the fish bunch together.
+
+### Problem two: “Oh, we're going that way?” — Alignment
+
+Now imagine walking with a group of friends. They're all beginning to turn left, so you turn a little left too.
+
+**Alignment** helps neighbouring fish face similar directions. Each fish considers the headings of fish nearby and adjusts its own. Nobody sends out a message saying, “Everyone turn now.”
+
+**Try it:** Turn **Alignment** down to zero, then increase it again. Watch whether nearby fish tend to point the same way.
+
+### Problem three: “Hey, wait for me!” — Cohesion
+
+If you get distracted while walking with friends, eventually you notice they're farther away. You head back toward them.
+
+**Cohesion** does something similar. Each simulated fish steers toward the average position of its nearby neighbours. It isn't chasing a designated leader—just trying not to lose the group.
+
+**Try it:** Reduce **Cohesion** to zero, then restore it. Does the group seem more scattered or more connected?
+
+These rules work **together**, so changing one slider won't always produce an instant, tidy result. The tank is a place to observe, not a machine that guarantees the same pattern every time.
+
+## 06 / The surprising part: nobody needs the whole picture
+
+This experiment is inspired by *Boids*, a model introduced by computer graphics researcher Craig Reynolds in 1987. The three rules are simple: give your neighbours room, pay attention to their direction, and stay near the group.
+
+Here's the lovely part. **No individual fish has to know what the whole school looks like.** Each reacts to nearby fish, yet a larger, coordinated-looking pattern can appear.
+
+That has a name: **emergence**—a group-level pattern arising from many local interactions.
+
+Does that prove my aunt was wrong about the real sardines? No. A two-dimensional browser model isn't a real aquarium. Real fish use their senses, navigate three-dimensional water, and respond to far more than three rules.
+
+But it shows something important: **a leader isn't necessary to produce movement that looks coordinated.**
+
+## 07 / And then there was the stingray
+
+Now I'm back at the moment that started this detour: the カラスエイ gliding through the マイワシ, and the school opening around it.
+
+My simulated tank doesn't have a stingray. **Not yet.**
+
+Would a moving obstacle be enough to make a similar gap appear? Would the fish react directly to the ray, to their neighbours' reactions, or both? I can't answer that from what I saw through the glass—and this first experiment can't either.
+
+Which gives me another question to investigate. One aquarium visit, one comment from my aunt, and somehow I've ended up teaching 48 imaginary sardines to be good neighbours.
+
+<p class="sardine-outro">“There must be a good leader.”<br>Maybe. Or maybe the fish just need good neighbours.</p>
+
+<p class="sardine-source"><strong>The real animals:</strong> <a href="https://www.aquamarine.or.jp/animals/true-sardine/">マイワシ</a>, <a href="https://www.aquamarine.or.jp/animals/pelagic-stingray/">カラスエイ</a>, and Aquamarine Fukushima's <a href="https://www.aquamarine.or.jp/exhibitions/sea-of-current-rip/">Kuroshio tank</a>. <strong>The model:</strong> inspired by <a href="https://www.red3d.com/cwr/papers/1987/boids.html">Craig Reynolds' 1987 Boids work</a>; a two-dimensional illustration, not a reconstruction of the aquarium encounter. <a href="https://github.com/chichacha/derailed/issues/16">DERAILED #16</a> · <a href="https://github.com/chichacha/psychic-pento-guacamole/issues/115">Gomasu #115</a>.</p>
+
+:::
