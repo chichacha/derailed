@@ -12,9 +12,12 @@ format:
     title-block-banner: false
     include-after-body:
       text: |
+        <script src="language.js" defer></script>
         <script src="monkey.js" defer></script>
 resources:
   - monkey.js
+  - language.js
+  - translations/ja.json
   - experiment-examples.json
   - assets/*
 execute:
@@ -23,7 +26,7 @@ execute:
 
 ```{=html}
 <a class="skip-link" href="#story">Skip to the story</a>
-<div class="monkey-page" id="top">
+<div class="monkey-page" id="top" lang="en">
   <div class="page-progress" aria-hidden="true"><span id="page-progress-fill"></span></div>
   <header class="site-header">
     <a class="brand" href="../../index.html"><span class="brand-mark">D<span>.</span></span> DERAILED <span class="brand-divider">/</span> SMALL LESSONS</a>
@@ -31,6 +34,11 @@ execute:
       <a href="#the-choice">THE CHOICE</a>
       <a href="#garden-choice">IN REAL LIFE</a>
       <a class="nav-pill" href="#the-lab">YOUR TURN ↗</a>
+      <div class="language-switch" id="language-switch" role="group" aria-label="Language">
+        <button type="button" data-language="en" lang="en" aria-pressed="true" aria-label="Read in English">EN</button>
+        <span aria-hidden="true" class="language-divider">/</span>
+        <button type="button" data-language="ja" lang="ja" aria-pressed="false" aria-label="日本語で読む">日本語</button>
+      </div>
     </nav>
   </header>
 
