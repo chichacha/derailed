@@ -6,7 +6,9 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:'DM Sans',Arial,sans-serif;line-height:1.55}
 body>header,body>footer,nav.navbar,footer.footer,.quarto-title-block,.quarto-page-breadcrumbs,#quarto-header,#quarto-footer{display:none!important}
 #quarto-content,.page-columns,.content,#quarto-document-content,main.content{padding:0!important;max-width:none!important;margin:0!important;width:100%!important}
-.monkey-page{overflow:hidden}
+/* overflow:hidden creates a scroll container and prevents the sticky story visual
+   from following the viewport. clip does not create a new scroll container. */
+.monkey-page{overflow:clip}
 .monkey-page a{color:inherit}
 .monkey-page h1,.monkey-page h2,.monkey-page h3,.monkey-page p{margin-top:0}
 .monkey-page h1,.monkey-page h2,.monkey-page .big-line,.closing-section h2{font-weight:400;line-height:.98;letter-spacing:-.047em}
@@ -210,3 +212,11 @@ body { background: var(--paper); color: var(--ink); }
 
 /* Keep small navigation links readable over the bright upper-right of the photograph. */
 .site-header { background: linear-gradient(180deg, rgba(13, 33, 27, .65), rgba(13, 33, 27, 0)); }
+
+/* Hero media: use native MP4 playback and preserve a still for reduced-motion visitors. */
+.hero-video { display: block; }
+.hero-static { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-video { display: none; }
+  .hero-static { display: block; }
+}
