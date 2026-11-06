@@ -36,7 +36,13 @@ execute:
 
   <main id="story">
     <section class="hero-section" aria-labelledby="hero-title">
-      <img class="hero-image" src="assets/monkey-juggling.mp4" alt="A curious monkey with three colorful juggling balls, perched on a small pedestal." onerror="this.onerror=null;this.src='assets/monkey-juggling.png'" />
+      <!-- The video plays silently behind the hero copy; the PNG is its poster/fallback. -->
+      <video class="hero-image hero-video" autoplay muted loop playsinline preload="metadata"
+             poster="assets/monkey-juggling.png" aria-hidden="true">
+        <source src="assets/monkey-juggling.mp4" type="video/mp4">
+      </video>
+      <!-- Prefer the still illustration when the visitor requests reduced motion. -->
+      <img class="hero-image hero-static" src="assets/monkey-juggling.png" alt="" aria-hidden="true" />
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-content">
         <p class="hero-eyebrow"><span aria-hidden="true">✳</span> A LITTLE LESSON IN THINKING BIG / 001</p>
