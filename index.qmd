@@ -120,6 +120,39 @@ format:
         <div class="feature-art-bottom"><span class="art-line"></span> THEN BUILD THE PEDESTAL</div>
       </div>
     </article>
+    <article class="home-feature">
+      <div class="feature-copy">
+        <p class="home-eyebrow">04 &nbsp;/&nbsp; MARINE LIFE &amp; CREATIVE CODING &nbsp;/&nbsp; INTERACTIVE EXPERIMENT</p>
+        <h3><a href="stories/puffer-lab/index.html">Puffer Lab: One fish, a thousand faces</a></h3>
+        <p class="feature-deck">A suspiciously boxy porcupinefish inspired an experiment in SVG, shape, and controlled randomness. Change the eyes, spots, and silhouette. The fish has opinions.</p>
+        <div class="feature-footer">
+          <span class="feature-tag">MARINE LIFE</span>
+          <span class="feature-tag">GENERATIVE ART</span>
+          <span class="feature-tag">SVG</span>
+        </div>
+        <a class="feature-read" href="stories/puffer-lab/index.html">Open Puffer Lab <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="feature-art" style="background:radial-gradient(circle at 75% 20%,#167dbd,#0b4479 75%);" aria-label="Puffer Lab: one porcupinefish becomes many SVG drawings.">
+        <div class="feature-art-top">PUFFER LAB &nbsp;·&nbsp; ONE FISH, MANY FACES</div>
+        <div style="display:grid;place-items:center;min-height:190px;padding:18px 0;" aria-hidden="true">
+          <svg viewBox="0 0 350 220" style="width:100%;max-width:350px;display:block;" xmlns="http://www.w3.org/2000/svg">
+            <path d="M85 112L25 72L35 160Z" fill="#f9d66e" stroke="#162e46" stroke-width="4"/>
+            <path d="M80 112Q75 42 180 52Q270 35 306 91L322 106L306 120Q274 173 184 174Q89 181 80 112Z" fill="#f6ead4" stroke="#152b42" stroke-width="5"/>
+            <path d="M207 70Q243 50 271 82L271 137L231 142Q210 115 207 70Z" fill="#423033"/>
+            <path d="M140 121Q158 99 182 121L167 146Z" fill="#423033"/>
+            <path d="M119 115Q82 134 124 180Q163 168 150 138Z" fill="#f9d66e" stroke="#152b42" stroke-width="3"/>
+            <circle cx="255" cy="88" r="27" fill="#fff9e8" stroke="#152b42" stroke-width="5"/>
+            <circle cx="260" cy="90" r="18" fill="#14233a"/>
+            <circle cx="252" cy="83" r="8" fill="white"/>
+            <path d="M312 104L333 111L312 115" fill="#29292f"/>
+            <g fill="#473c3b"><circle cx="118" cy="157" r="4"/><circle cx="138" cy="160" r="3"/><circle cx="158" cy="153" r="3"/><circle cx="183" cy="155" r="4"/><circle cx="111" cy="139" r="3"/></g>
+            <g fill="none" stroke="#d3f3ff" stroke-width="3"><circle cx="310" cy="38" r="7"/><circle cx="328" cy="22" r="11"/></g>
+          </svg>
+        </div>
+        <div class="feature-art-bottom"><span class="art-line"></span> PHOTO → SHAPE RULES → FISH GENERATOR</div>
+      </div>
+    </article>
+
   </section>
 
   <section class="home-about" id="about" aria-labelledby="about-title">
