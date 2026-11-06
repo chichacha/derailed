@@ -1,0 +1,26 @@
+[
+  {
+    "id": "garden",
+    "label": "🌱 The vanishing seedlings",
+    "context": "A raised bed, too many seeds, and sprouts that mysteriously disappeared. The cause is unknown.",
+    "assumption": "I can keep a small group of seedlings alive long enough to learn what is threatening them.",
+    "test": "Start with six similar seedlings. Observe them daily, record care and visible damage, and cautiously compare protected and unprotected plants.",
+    "evidence": "If protection helps, investigate pests and environmental differences. If both groups fail, inspect water, light, soil, and consistency of care before buying more seeds."
+  },
+  {
+    "id": "pop-up",
+    "label": "☕ A tiny weekend café",
+    "context": "The sign, menu, and decor are fun to design. But will anyone pay for what you want to make?",
+    "assumption": "Enough people who see my offer will actually buy one of my products at a sustainable price.",
+    "test": "Before leasing a space, try a small legal pop-up or preorder test with a limited menu and a clearly tracked price.",
+    "evidence": "Count real purchases, not compliments. If demand is too weak at the required price, revisit the product, audience, or business model."
+  },
+  {
+    "id": "game",
+    "label": "🧩 A playful puzzle game",
+    "context": "Characters and stories are delightful, but they can't substitute for a satisfying core interaction.",
+    "assumption": "A first-time player can understand the puzzle and wants to try one more round without prompting.",
+    "test": "Give a rough playable prototype to three unfamiliar players. Watch silently and note where they hesitate, quit, or ask for help.",
+    "evidence": "If players repeatedly struggle or leave, change the interaction before investing in a full cast of characters and polished artwork."
+  }
+]

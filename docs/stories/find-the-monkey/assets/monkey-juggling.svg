@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc">
+<title id="title">The juggling monkey</title><desc id="desc">Warm editorial illustration of a surprised monkey on a classical pedestal with colorful juggling balls.</desc>
+<defs>
+<linearGradient id="sky" x2="1" y2="1"><stop stop-color="#fbe3bc"/><stop offset="1" stop-color="#eaa675"/></linearGradient>
+<linearGradient id="stone" x2="1"><stop stop-color="#e6bd8d"/><stop offset=".6" stop-color="#f6d6a1"/><stop offset="1" stop-color="#a96f51"/></linearGradient>
+<filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#70442f" flood-opacity=".2"/></filter>
+</defs>
+<rect width="1440" height="900" fill="url(#sky)"/>
+<g fill="none" stroke="#b86f50" stroke-width="3" opacity=".14"><path d="M30 160 Q250 80 450 170 M50 240 Q170 220 350 290 M1100 140 Q1240 60 1400 160"/><path d="M95 600 Q210 530 430 570 M1170 510 Q1320 390 1460 490"/></g>
+<g fill="#fce0a2" opacity=".65"><circle cx="1158" cy="160" r="118"/><circle cx="1110" cy="120" r="18"/></g>
+<!-- Juggling balls and motion -->
+<g fill="none" stroke="#fff4de" stroke-width="7" stroke-dasharray="10 17" opacity=".75"><path d="M760 295 Q940 16 1164 266"/></g>
+<g filter="url(#shadow)">
+<circle cx="785" cy="265" r="58" fill="#216b75"/><path d="M762 215 Q802 255 792 310" stroke="#85c7bc" stroke-width="6" fill="none"/>
+<circle cx="962" cy="95" r="65" fill="#da694b"/><path d="M929 44 Q969 100 935 151" stroke="#f4bc91" stroke-width="6" fill="none"/>
+<circle cx="1178" cy="258" r="56" fill="#e7b55e"/><path d="M1150 216 Q1185 261 1161 301" stroke="#fff0c0" stroke-width="6" fill="none"/>
+</g>
+<!-- pedestal -->
+<g filter="url(#shadow)">
+<path d="M785 608 L1205 608 L1205 884 L785 884Z" fill="url(#stone)" stroke="#855d48" stroke-width="7"/>
+<path d="M764 581 H1224 V631 H764 Z" fill="#f7d6a6" stroke="#815943" stroke-width="7"/>
+<path d="M785 661 H1205 M785 702 H1205 M785 843 H1205" stroke="#c38c62" stroke-width="7"/>
+<path d="M814 650 V860 M1172 650 V860" stroke="#d4a376" stroke-width="12"/>
+<circle cx="820" cy="614" r="25" fill="#c78e67" stroke="#855d48" stroke-width="6"/>
+<circle cx="1171" cy="614" r="25" fill="#c78e67" stroke="#855d48" stroke-width="6"/>
+</g>
+<!-- monkey tail behind body -->
+<path d="M1091 508 C1194 559 1249 494 1202 429 C1177 393 1132 414 1151 446" stroke="#8a4c37" stroke-width="31" stroke-linecap="round" fill="none"/>
+<path d="M1091 508 C1194 559 1249 494 1202 429" stroke="#b87955" stroke-width="14" stroke-linecap="round" fill="none"/>
+<!-- legs and body -->
+<ellipse cx="993" cy="512" rx="113" ry="123" fill="#92563d"/>
+<ellipse cx="993" cy="528" rx="74" ry="90" fill="#e2a979"/>
+<ellipse cx="916" cy="594" rx="62" ry="29" fill="#915039"/>
+<ellipse cx="1080" cy="594" rx="62" ry="29" fill="#915039"/>
+<!-- arms -->
+<path d="M906 484 Q842 490 821 417" stroke="#96563f" stroke-width="41" stroke-linecap="round" fill="none"/>
+<path d="M1086 476 Q1144 474 1170 407" stroke="#96563f" stroke-width="41" stroke-linecap="round" fill="none"/>
+<circle cx="819" cy="410" r="24" fill="#dda074"/><circle cx="1171" cy="398" r="24" fill="#dda074"/>
+<!-- head ears -->
+<circle cx="877" cy="340" r="54" fill="#a66b4d"/><circle cx="1103" cy="340" r="54" fill="#a66b4d"/>
+<circle cx="877" cy="340" r="30" fill="#e5aa83"/><circle cx="1103" cy="340" r="30" fill="#e5aa83"/>
+<ellipse cx="990" cy="338" rx="128" ry="113" fill="#98593e"/>
+<path d="M946 240 Q925 212 950 213 L977 234 Q997 210 1012 222 L1013 237 Q1050 210 1050 246" fill="#824735"/>
+<ellipse cx="989" cy="369" rx="108" ry="81" fill="#e9b38c"/>
+<ellipse cx="950" cy="343" rx="23" ry="29" fill="#fff9ed"/><ellipse cx="1036" cy="343" rx="23" ry="29" fill="#fff9ed"/>
+<circle cx="958" cy="346" r="12" fill="#26352f"/><circle cx="1028" cy="346" r="12" fill="#26352f"/>
+<circle cx="962" cy="341" r="4" fill="white"/><circle cx="1032" cy="341" r="4" fill="white"/>
+<ellipse cx="993" cy="379" rx="24" ry="19" fill="#c58163"/>
+<ellipse cx="993" cy="412" rx="12" ry="20" fill="#4b2d26"/>
+<path d="M927 309 Q942 297 960 305 M1021 303 Q1037 295 1053 310" stroke="#633e2e" stroke-width="7" fill="none" stroke-linecap="round"/>
+<g stroke="#8b5039" opacity=".28" stroke-width="4"><path d="M937 463 L922 499 M960 452 L947 498 M1032 460 L1046 496 M1061 475 L1072 508"/></g>
+<text x="112" y="823" font-family="Arial,sans-serif" font-size="17" letter-spacing="5" fill="#814f3e" opacity=".6">A LITTLE LESSON IN THINKING BIG</text>
+</svg>
