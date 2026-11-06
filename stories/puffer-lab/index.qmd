@@ -1,0 +1,153 @@
+---
+title: "Puffer Lab — One fish, a thousand faces"
+description: "From a wonderfully boxy porcupinefish to a tiny laboratory for SVG, creative coding, and controlled randomness."
+format:
+  html:
+    page-layout: full
+    title-block-banner: false
+    toc: false
+    anchor-sections: false
+    css: puffer.css
+    include-after-body:
+      text: |
+        <script type="module" src="puffer.js"></script>
+resources:
+  - puffer.js
+  - fish-presets.json
+  - assets/*
+execute:
+  echo: false
+---
+
+```{=html}
+<div class="puffer-page" id="top">
+  <div class="puffer-progress" aria-hidden="true"><span id="puffer-progress-fill"></span></div>
+  <header class="puffer-mini-nav">
+    <a href="../../index.html" class="puffer-back">← DERAILED</a>
+    <span>A DETOUR IN CREATIVE CODING / 004</span>
+    <a href="#puffer-lab">OPEN THE LAB ↗</a>
+  </header>
+  <main id="puffer-main">
+    <section class="puffer-hero" aria-labelledby="puffer-title">
+      <div class="puffer-hero-copy">
+        <span class="puffer-kicker">🐡 AQUARIUM FIELD NOTES / CREATIVE CODING</span>
+        <h1 id="puffer-title">Puffer <em>Lab.</em></h1>
+        <p class="puffer-lede">Part fish. Part porcupine. <strong>Entirely surprised.</strong></p>
+        <p>It started with a photograph of a wonderfully boxy, big-eyed fish at Aquamarine Fukushima. Now I want to see how much of its personality can fit inside a few SVG shapes.</p>
+        <a class="puffer-cta" href="#observe">LET'S DRAW A FISH <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="puffer-hero-art">
+        <svg id="puffer-hero-svg" role="img" aria-label="A cream and chocolate porcupinefish with golden fins, a huge round eye, and a slightly open mouth" viewBox="0 0 820 600"></svg>
+        <span class="hero-scribble hero-scribble-one" aria-hidden="true">SO BOXY!</span>
+        <span class="hero-scribble hero-scribble-two" aria-hidden="true">✳</span>
+      </div>
+      <div class="puffer-hero-bottom"><span>ONE ORIGINAL PHOTOGRAPH</span><span>THREE PARAMETERS TO START</span><span>SCROLL TO EXPERIMENT ↓</span></div>
+    </section>
+
+    <section class="puffer-intro" id="observe" aria-labelledby="observe-title">
+      <p class="puffer-section-tag">01 / THE ORIGINAL DETOUR</p>
+      <h2 id="observe-title">Who put a box<br>in the <em>ocean?</em></h2>
+      <div class="intro-grid">
+        <div>
+          <p>My aquarium photo has an enormous eye, an open little mouth, pale yellow fins and spectacularly irregular dark patches. Its outline isn't quite a sphere or a rectangle. It's a <strong>fish with character.</strong></p>
+          <p>In English, <em>ハリセンボン</em> is a <strong>porcupinefish</strong>. Porcupinefish and true pufferfish are close relatives, but belong to different families. Their spines and ability to inflate are defensive adaptations—not a party trick we should try on real animals.</p>
+        </div>
+        <div class="puffer-note">
+          <span>THE DESIGN BRIEF ✳</span>
+          <strong>Keep the eye. Keep the boxiness. Keep the attitude.</strong>
+          <p>Abstraction is not the same as copying: we'll turn an observation into a set of drawing rules.</p>
+          <p class="puffer-tiny">The original aquarium photo is the reference for the illustration. See the <a href="https://github.com/chichacha/derailed/issues/25">project notebook</a> for the source-asset handoff.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="puffer-scroll-section" aria-label="How a fish becomes an illustration">
+      <div class="puffer-scroll-art">
+        <div class="puffer-art-inner">
+          <span class="puffer-art-top">ANATOMY OF A CARTOON FISH <span aria-hidden="true">✳</span></span>
+          <svg id="puffer-story-svg" viewBox="0 0 820 600" role="img" aria-label="An illustrated porcupinefish changing as each drawing rule is explained"></svg>
+          <div class="puffer-art-caption"><span id="puffer-scene-count">02 / SILHOUETTE</span><span id="puffer-scene-title">START WITH A SHAPE.</span></div>
+        </div>
+      </div>
+      <div class="puffer-scroll-steps">
+        <article class="puffer-step" data-scene="silhouette">
+          <span class="puffer-section-tag">02 / SILHOUETTE</span>
+          <h2>First, draw<br>the <em>box.</em></h2>
+          <p>A fish doesn't have to be perfectly realistic to be recognizable. A broad middle, tapering face and gently squared-off rear give us the starting silhouette.</p>
+          <p><strong>The trick:</strong> the body is one SVG path. Adjust its control points, and the silhouette changes without redrawing the entire animal.</p>
+          <div class="puffer-rule"><span>DRAWING RULE 01</span>Shape before detail.</div>
+        </article>
+        <article class="puffer-step" data-scene="eye">
+          <span class="puffer-section-tag">03 / EXPRESSION</span>
+          <h2>Make it<br><em>look.</em></h2>
+          <p>One oversized, glossy eye gives the fish most of its expression. A second circle for the iris, another for the pupil and one tiny highlight are enough to make it look alert.</p>
+          <p>What's the difference between a faithful observation and a caricature? Sometimes just a few pixels of eye radius.</p>
+          <div class="puffer-rule"><span>DRAWING RULE 02</span>Proportions carry personality.</div>
+        </article>
+        <article class="puffer-step" data-scene="pattern">
+          <span class="puffer-section-tag">04 / VARIATION</span>
+          <h2>Same fish.<br>Different <em>spots.</em></h2>
+          <p>Its patches and dots are not evenly spaced. That's an invitation to experiment with <strong>bounded randomness</strong>: new patterns, but only in places that make sense for the drawing.</p>
+          <p>If we give the randomizer a seed, we can recreate the same markings later. Random doesn't have to mean unrepeatable.</p>
+          <div class="puffer-rule"><span>DRAWING RULE 03</span>Variation needs constraints.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="puffer-lab-section" id="puffer-lab" aria-labelledby="lab-title">
+      <div class="puffer-lab-heading">
+        <span class="puffer-section-tag">05 / YOUR TURN</span>
+        <h2 id="lab-title">A tiny <em>fish factory.</em></h2>
+        <p>The rendering rules stay the same. You get to change the inputs.</p>
+      </div>
+      <div class="puffer-lab-layout">
+        <div class="puffer-lab-canvas">
+          <div class="puffer-canvas-label">LIVE SVG / YOUR EXPERIMENT <span aria-hidden="true">✳</span></div>
+          <svg id="puffer-lab-svg" viewBox="0 0 820 600" role="img" aria-label="Your customized porcupinefish illustration"></svg>
+          <div class="puffer-canvas-footer"><span>ONE RENDERER · MANY FISH</span><span id="puffer-seed-label">SEED 7390</span></div>
+        </div>
+        <div class="puffer-controls">
+          <div class="puffer-control-header"><span>THE DRAWING RULES</span><span>✎</span></div>
+          <label for="fish-boxiness">Body boxiness <output id="boxiness-value">64%</output></label>
+          <input type="range" id="fish-boxiness" min="0" max="100" step="1" value="64">
+          <label for="fish-eye">Eye size <output id="eye-value">72%</output></label>
+          <input type="range" id="fish-eye" min="0" max="100" step="1" value="72">
+          <label for="fish-spots">Spot density <output id="spots-value">56%</output></label>
+          <input type="range" id="fish-spots" min="0" max="100" step="1" value="56">
+          <label for="puffer-preset">Colour mood</label>
+          <select id="puffer-preset" aria-label="Select a colour mood">
+            <option value="classic">Original-inspired</option>
+            <option value="golden">Golden hour</option>
+            <option value="dreamy">Dreamy sea</option>
+            <option value="night">Midnight swim</option>
+          </select>
+          <div class="puffer-actions">
+            <button id="puffer-randomize" type="button" class="puffer-primary">✳ Make another</button>
+            <button id="puffer-reset" type="button" class="puffer-secondary">↻ Reset</button>
+          </div>
+          <p id="puffer-status" role="status" aria-live="polite">A perfectly respectable underwater rectangle.</p>
+          <p class="puffer-controls-note">No AI image API here. The fish is rebuilt from SVG paths, parameters and a reproducible random seed.</p>
+        </div>
+      </div>
+      <div class="puffer-gallery">
+        <div class="puffer-gallery-heading"><h3>The family portrait</h3><p>Different inputs. The very same drawing code.</p></div>
+        <div class="puffer-gallery-grid" id="puffer-gallery">
+          <div class="puffer-mini-fish"><svg viewBox="0 0 820 600" aria-label="Classic fish"></svg><strong>Classic</strong></div>
+          <div class="puffer-mini-fish"><svg viewBox="0 0 820 600" aria-label="Extra boxy fish"></svg><strong>Boxy</strong></div>
+          <div class="puffer-mini-fish"><svg viewBox="0 0 820 600" aria-label="Spotty fish"></svg><strong>Spotty</strong></div>
+          <div class="puffer-mini-fish"><svg viewBox="0 0 820 600" aria-label="Dreamy fish"></svg><strong>Dreamy</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="puffer-outro" aria-labelledby="outro-title">
+      <span class="puffer-section-tag">06 / WHAT DID WE LEARN?</span>
+      <h2 id="outro-title">A surprising amount<br>of fish from <em>very little.</em></h2>
+      <p>The hardest part wasn't drawing a hundred spots. It was finding a small enough set of rules that could draw <strong>one convincing fish</strong> in the first place.</p>
+      <p>That's the little experiment: observe something real, decide what matters, encode the decisions—and see what happens when you turn the knobs.</p>
+      <div class="puffer-source"><strong>Field note:</strong> inspired by my own aquarium photograph at Aquamarine Fukushima. The SVG is playful illustration, not a species-identification guide. <strong>Further reading:</strong> <a href="https://australian.museum/learn/animals/fishes/diodontidae-porcupinefishes/" target="_blank" rel="noopener">Australian Museum — Porcupinefishes</a> · <a href="https://github.com/chichacha/derailed/issues/25">DERAILED #25</a>.</div>
+      <div class="puffer-outro-nav"><a href="../../index.html">← BACK TO DERAILED</a><a href="#top">BACK TO TOP ↑</a></div>
+    </section>
+  </main>
+</div>
+```
