@@ -1,0 +1,200 @@
+---
+title: "Find the Monkey — A little lesson in thinking big"
+description: "A playful interactive lesson about testing the hard part before polishing the easy part."
+format:
+  html:
+    theme: none
+    css: styles.css
+    toc: false
+    anchor-sections: false
+    smooth-scroll: true
+    page-layout: full
+    title-block-banner: false
+    include-after-body:
+      text: |
+        <script src="monkey.js" defer></script>
+resources:
+  - monkey.js
+  - experiment-examples.json
+  - assets/monkey-juggling.svg
+execute:
+  echo: false
+---
+
+```{=html}
+<a class="skip-link" href="#story">Skip to the story</a>
+<div class="monkey-page" id="top">
+  <div class="page-progress" aria-hidden="true"><span id="page-progress-fill"></span></div>
+  <header class="site-header">
+    <a class="brand" href="../../index.html"><span class="brand-mark">D<span>.</span></span> DERAILED <span class="brand-divider">/</span> SMALL LESSONS</a>
+    <nav aria-label="On this page">
+      <a href="#the-choice">THE CHOICE</a>
+      <a href="#garden-choice">IN REAL LIFE</a>
+      <a class="nav-pill" href="#the-lab">YOUR TURN ↗</a>
+    </nav>
+  </header>
+
+  <main id="story">
+    <section class="hero-section" aria-labelledby="hero-title">
+      <img class="hero-image" src="assets/monkey-juggling.svg" alt="A curious monkey with three colorful juggling balls, perched on a small pedestal." />
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow"><span aria-hidden="true">✳</span> A LITTLE LESSON IN THINKING BIG / 001</p>
+        <h1 id="hero-title">Find the<br><em>monkey<span class="period">.</span></em></h1>
+        <p class="hero-subline">Stop building<br>the pedestal first.</p>
+        <p class="hero-intro">When a big idea has lots of moving parts, how do you know <strong>what to try first?</strong></p>
+        <a class="hero-start" href="#the-brief"><span class="start-circle" aria-hidden="true">↓</span> FOLLOW THE STORY</a>
+      </div>
+      <div class="hero-footer"><span>ONE BIG QUESTION / ONE SMALL EXPERIMENT</span><span>SCROLL TO BEGIN ↓</span></div>
+    </section>
+
+    <div class="story-frame" id="the-brief">
+      <aside class="story-visual" aria-hidden="true">
+        <div class="visual-inner">
+          <div class="visual-topline">FIELD NOTES <span>✳</span> MAKE THE HARD PART VISIBLE</div>
+          <div class="visual-stage" id="visual-stage" data-mode="brief">
+            <div class="art-sun"></div>
+            <img src="assets/monkey-juggling.svg" alt="" class="stage-monkey" />
+            <span class="stage-bubble" id="scene-bubble">???</span>
+            <span class="stage-caption">THE MONKEY &amp; THE PEDESTAL</span>
+          </div>
+          <div class="visual-caption"><span id="scene-counter">01 / THE BRIEF</span><span id="scene-label">A VERY AMBITIOUS IDEA.</span></div>
+        </div>
+      </aside>
+
+      <div class="story-steps">
+        <section class="story-step" data-scene="brief">
+          <div class="step-inner">
+            <span class="section-number">01 / THE BRIEF</span>
+            <h2>A monkey.<br>Three balls.<br><i>One pedestal.</i></h2>
+            <p>Imagine someone gives you a wonderfully strange assignment: teach a monkey to juggle while standing on a tall pedestal.</p>
+            <div class="brief-card"><span>THE AMBITION ✳</span><strong>A juggling monkey, high above the ground.</strong></div>
+            <p>There are two big jobs: build the pedestal and find out whether the monkey can learn to juggle.</p>
+            <p>Which one would you begin with?</p>
+            <a href="#the-choice" class="scroll-cue">KEEP GOING <span aria-hidden="true">↓</span></a>
+          </div>
+        </section>
+
+        <section class="story-step" id="the-choice" data-scene="choice">
+          <div class="step-inner">
+            <span class="section-number">02 / THE CHOICE</span>
+            <h2>Where do<br>you <i>begin?</i></h2>
+            <p>You have one week. Pick your first move.</p>
+            <div class="choice-stack" id="choice-experiment" role="group" aria-label="Choose the first activity">
+              <button class="story-choice" data-choice="pedestal" type="button"><b>A</b><span><strong>Build the pedestal</strong><small>Clear plans. Quick progress. Something to show.</small></span><span aria-hidden="true">↗</span></button>
+              <button class="story-choice" data-choice="monkey" type="button"><b>B</b><span><strong>Try a tiny juggling lesson</strong><small>Will the monkey learn even one small step?</small></span><span aria-hidden="true">↗</span></button>
+              <button class="story-choice" data-choice="poster" type="button"><b>C</b><span><strong>Design the launch poster</strong><small>Make the big idea look irresistible.</small></span><span aria-hidden="true">↗</span></button>
+            </div>
+            <div class="choice-feedback" id="choice-feedback" role="status" aria-live="polite"><span class="feedback-tag">YOUR MOVE</span><p>Choose an option to see what you would actually learn.</p></div>
+            <button class="text-button" id="reset-choice" type="button">↻ Try another choice</button>
+          </div>
+        </section>
+
+        <section class="story-step" data-scene="trap">
+          <div class="step-inner">
+            <span class="section-number">03 / THE TRAP</span>
+            <h2>A beautiful<br>pedestal.<br><i>Now what?</i></h2>
+            <p>Building the pedestal feels productive because you already know how. But a finished pedestal doesn't tell you whether the monkey can juggle.</p>
+            <div class="contrast">
+              <div><span class="mini-label amber">PEDESTAL WORK</span><h3>What you made</h3><p>Plans, paint, a polished platform.</p></div>
+              <div><span class="mini-label mint">MONKEY WORK</span><h3>What you learned</h3><p>Whether the risky part is even possible.</p></div>
+            </div>
+            <p class="big-line">Visible progress is not always <strong>meaningful progress.</strong></p>
+          </div>
+        </section>
+
+        <section class="story-step" data-scene="reveal">
+          <div class="step-inner">
+            <span class="section-number">04 / THE IDEA</span>
+            <h2>Find the<br><i>monkey.</i></h2>
+            <p>The monkey is not simply the hardest task. It's the <strong>important uncertainty</strong> that could make the rest of your work irrelevant.</p>
+            <div class="rule-card"><span>THE RULE ✳</span><strong>Find the assumption that matters most. Test it before polishing the easy parts.</strong></div>
+            <p>You may discover that the idea is possible. You may discover it needs to change. Either way, you've learned something useful.</p>
+          </div>
+        </section>
+
+        <section class="story-step" data-scene="garden">
+          <div class="step-inner">
+            <span class="section-number">05 / A SMALLER AMBITION</span>
+            <h2>What about<br><i>a garden?</i></h2>
+            <p>Imagine planting a whole raised bed of vegetables. You're already picturing the harvest. Then the tiny sprouts start disappearing.</p>
+            <p>Maybe slugs ate them. Maybe the conditions weren't right. Maybe the garden didn't get enough attention. <strong>You don't know yet.</strong></p>
+            <div class="risk-grid">
+              <div class="risk-card"><span>THE PEDESTAL?</span><p>Buy more seeds. Add more boxes. Plan a bigger harvest.</p></div>
+              <div class="risk-card sage"><span>THE MONKEY?</span><p>Can a small number of seedlings survive—and what is stopping them?</p></div>
+            </div>
+            <p class="footnote">A true story can start with a guess. A good experiment keeps the guess separate from the evidence.</p>
+          </div>
+        </section>
+
+        <section class="story-step" id="garden-choice" data-scene="garden-choice">
+          <div class="step-inner">
+            <span class="section-number">06 / YOUR NEXT MOVE</span>
+            <h2>The seedlings<br><i>vanished.</i></h2>
+            <p>What would teach you the most before planting the whole box again?</p>
+            <div class="choice-stack" id="garden-experiment" role="group" aria-label="Choose how to investigate disappearing seedlings">
+              <button class="story-choice" data-garden-choice="more" type="button"><b>A</b><span><strong>Plant many more seeds</strong><small>Surely some will make it.</small></span><span aria-hidden="true">↗</span></button>
+              <button class="story-choice" data-garden-choice="slugs" type="button"><b>B</b><span><strong>Buy every slug defence</strong><small>Assume you've already found the culprit.</small></span><span aria-hidden="true">↗</span></button>
+              <button class="story-choice" data-garden-choice="observe" type="button"><b>C</b><span><strong>Watch six seedlings closely</strong><small>Compare a few protected and unprotected plants; record what happens.</small></span><span aria-hidden="true">↗</span></button>
+            </div>
+            <div class="choice-feedback" id="garden-feedback" role="status" aria-live="polite"><span class="feedback-tag">YOUR MOVE</span><p>Choose an approach. None guarantees a harvest.</p></div>
+            <button class="text-button" id="reset-garden" type="button">↻ Try another approach</button>
+            <p class="footnote">A cover can also change temperature and moisture. Six plants won't give a definitive verdict—but observation beats an untested story.</p>
+          </div>
+        </section>
+
+        <section class="story-step" data-scene="practice">
+          <div class="step-inner">
+            <span class="section-number">07 / THE PRACTICE</span>
+            <h2>Big ambition.<br><i>Small experiment.</i></h2>
+            <p>This isn't an argument against building pedestals. Eventually, you'll need one. The trick is to avoid spending all your time there <strong>before the risky idea has been tested.</strong></p>
+            <a class="primary-cta" href="#the-lab">FIND YOUR OWN MONKEY <span aria-hidden="true">↗</span></a>
+            <div class="learning-rule"><span>TAKE THIS WITH YOU</span><strong>What would I need to learn first to know whether this idea is worth pursuing?</strong></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <section class="lab-section" id="the-lab">
+      <div class="lab-wrap">
+        <div class="lab-heading"><span class="section-number">08 / THE TINY EXPERIMENT LAB</span><h2>Now it's<br><i>your turn.</i></h2><p>Pick a relatable example or bring your own ambition. No project plan required.</p></div>
+        <div class="lab-grid">
+          <div class="lab-sidebar">
+            <span class="sidebar-top">START WITH A STORY</span>
+            <label for="example-select">A SMALL LIBRARY OF BIG IDEAS</label>
+            <select id="example-select"><option value="">Choose an example…</option></select>
+            <button class="secondary-cta" id="load-example" type="button">LOAD EXAMPLE ↗</button>
+            <p id="example-context" role="status" aria-live="polite">Or skip the examples and make this personal.</p>
+            <hr>
+            <p class="sidebar-note">The point is not to predict success. It's to learn enough to decide what to do next.</p>
+          </div>
+          <div class="lab-form">
+            <label for="assumption"><span>01</span> WHAT MUST BE TRUE?</label>
+            <textarea id="assumption" rows="3" placeholder="For my idea to work, I need to believe that…"></textarea>
+            <label for="test"><span>02</span> WHAT IS ONE SMALL TEST?</label>
+            <textarea id="test" rows="3" placeholder="Before I build everything, I could try…"></textarea>
+            <label for="evidence"><span>03</span> WHAT WOULD CHANGE MY MIND?</label>
+            <textarea id="evidence" rows="3" placeholder="If I observe ____, I'll rethink the plan…"></textarea>
+            <div class="lab-actions">
+              <button class="primary-cta" id="copy-experiment" type="button">COPY MY EXPERIMENT ↗</button>
+              <button class="text-button" id="clear-experiment" type="button">CLEAR</button>
+              <span id="copy-status" role="status" aria-live="polite"></span>
+            </div>
+            <p class="footnote">Nothing you type here is sent to a server. Copy your notes to keep them.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="closing-section">
+      <div class="closing-wrap">
+        <span class="section-number">A FINAL THOUGHT</span>
+        <h2>Find the monkey.<br><i>Then build the pedestal.</i></h2>
+        <p>Inspired by the monkey-and-pedestal idea associated with Astro Teller and X, the Moonshot Factory. This juggling story and its interactive examples are a playful adaptation.</p>
+        <p>Being curious doesn't guarantee success. But a tiny test can save you from being confidently wrong for a very long time.</p>
+        <div class="closing-colophon"><a href="../../index.html">← BACK TO DERAILED</a><span>A CURIOUS DETOUR / NO FIXED DESTINATION</span><a href="#top">BACK TO TOP ↑</a></div>
+      </div>
+    </footer>
+  </main>
+</div>
+```
