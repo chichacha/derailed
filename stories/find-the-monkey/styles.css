@@ -303,3 +303,10 @@ body.lang-ja .story-choice small { line-height: 1.65; }
   body.lang-ja .lab-heading h2 { font-size: clamp(2.45rem, 9vw, 4rem); }
   body.lang-ja .closing-section h2 { font-size: clamp(2.5rem, 9vw, 4.2rem); }
 }
+
+.closing-section .production-note {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  font-style: italic;
+  margin-top: 1rem;
+}
