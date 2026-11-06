@@ -353,3 +353,54 @@ body {
   .about-layout { grid-template-columns: 1fr; }
   .home-about { margin-top: 76px; }
 }
+
+/* Find the Monkey: a visual homepage story card using the existing still artwork. */
+.home-feature + .home-feature { margin-top: 26px; }
+
+.feature-art-monkey {
+  position: relative;
+  isolation: isolate;
+  min-height: 340px;
+  overflow: hidden;
+  background: #233c30;
+  color: #fff7e8;
+}
+.feature-art-monkey::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg,
+    rgba(16, 38, 29, .86) 0%,
+    rgba(16, 38, 29, .50) 46%,
+    rgba(16, 38, 29, .12) 100%);
+}
+.feature-monkey-image {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 65% center;
+}
+.feature-monkey-quote {
+  font: 700 clamp(1.6rem, 3vw, 3.2rem)/1.12 'Space Grotesk', sans-serif;
+  letter-spacing: -.04em;
+  max-width: 80%;
+  text-shadow: 0 2px 14px rgba(7, 20, 13, .3);
+}
+.feature-monkey-quote em {
+  color: #f2b77e;
+  font-family: Georgia, serif;
+  font-weight: 400;
+}
+.feature-art-monkey .feature-art-top,
+.feature-art-monkey .feature-art-bottom {
+  position: relative;
+  opacity: .95;
+}
+@media (max-width: 600px) {
+  .feature-art-monkey { min-height: 270px; }
+  .feature-monkey-quote { font-size: clamp(2rem, 7.5vw, 3rem); }
+}
