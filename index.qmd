@@ -100,6 +100,26 @@ format:
         <div class="feature-art-bottom"><span class="art-line"></span> SIMPLE RULES · SURPRISING PATTERNS</div>
       </div>
     </article>
+
+    <article class="home-feature">
+      <div class="feature-copy">
+        <p class="home-eyebrow">03 &nbsp;/&nbsp; CURIOSITY &amp; LEARNING &nbsp;/&nbsp; INTERACTIVE STORY</p>
+        <h3><a href="stories/find-the-monkey/index.html">Find the Monkey</a></h3>
+        <p class="feature-deck">A juggling monkey. A beautiful pedestal. Which should you tackle first? A playful lesson in testing the hard part before polishing the easy one.</p>
+        <div class="feature-footer">
+          <span class="feature-tag">CURIOSITY</span>
+          <span class="feature-tag">EXPERIMENTS</span>
+          <span class="feature-tag">EN / 日本語</span>
+        </div>
+        <a class="feature-read" href="stories/find-the-monkey/index.html">Find the monkey <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="feature-art feature-art-monkey" role="img" aria-label="A monkey juggling colorful balls on a pedestal against a woodland background.">
+        <img class="feature-monkey-image" src="stories/find-the-monkey/assets/monkey-juggling.png" alt="" loading="lazy">
+        <div class="feature-art-top">BIG AMBITION &nbsp;·&nbsp; SMALL EXPERIMENT</div>
+        <div class="feature-monkey-quote">FIRST FIND<br><em>THE MONKEY.</em></div>
+        <div class="feature-art-bottom"><span class="art-line"></span> THEN BUILD THE PEDESTAL</div>
+      </div>
+    </article>
   </section>
 
   <section class="home-about" id="about" aria-labelledby="about-title">
