@@ -220,3 +220,86 @@ body { background: var(--paper); color: var(--ink); }
   .hero-video { display: none; }
   .hero-static { display: block; }
 }
+
+
+/* --------------------------------------------------------------
+   BILINGUAL STORY / ENGLISH DEFAULT, JAPANESE WHEN CHOSEN
+   The language control belongs to the existing header, not a new page.
+   -------------------------------------------------------------- */
+.language-switch {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 3px;
+  padding: 4px 5px;
+  border: 1px solid rgba(255, 239, 216, .65);
+  border-radius: 999px;
+  background: rgba(16, 39, 30, .55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  letter-spacing: 0;
+}
+.language-switch button {
+  background: transparent;
+  border: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #f9ead2;
+  font: 700 .73rem/1.2 'DM Sans', Arial, sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.language-switch button[aria-pressed="true"] {
+  background: #f4eddb;
+  color: #1d4337;
+}
+.language-switch button:hover:not([aria-pressed="true"]) {
+  background: rgba(255, 255, 255, .16);
+}
+.language-divider { color: #dbcbb4; font-size: .65rem; padding: 0 2px; }
+
+/* Platform Japanese fonts first: no additional downloaded font required. */
+body.lang-ja .monkey-page {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", "Meiryo", sans-serif;
+  line-height: 1.75;
+}
+body.lang-ja .monkey-page h1,
+body.lang-ja .monkey-page h2,
+body.lang-ja .monkey-page h3,
+body.lang-ja .monkey-page h1 em,
+body.lang-ja .monkey-page h2 i {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", "Meiryo", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: -.035em;
+  line-height: 1.24;
+  overflow-wrap: anywhere;
+}
+body.lang-ja .hero-content h1 { font-size: clamp(3.3rem, 7.3vw, 7.5rem); }
+body.lang-ja .hero-subline { font-size: clamp(1.45rem, 2.7vw, 2.6rem); }
+body.lang-ja .story-step h2,
+body.lang-ja .lab-heading h2 { font-size: clamp(2.65rem, 4.6vw, 5.3rem); }
+body.lang-ja .closing-section h2 { font-size: clamp(2.9rem, 5.3vw, 6.6rem); }
+body.lang-ja .story-step p { line-height: 1.9; }
+body.lang-ja .hero-intro { line-height: 1.75; }
+body.lang-ja .hero-eyebrow,
+body.lang-ja .section-number,
+body.lang-ja .hero-footer { letter-spacing: .09em; }
+body.lang-ja .story-choice strong { line-height: 1.55; }
+body.lang-ja .story-choice small { line-height: 1.65; }
+
+@media (max-width: 900px) {
+  .site-header { flex-wrap: wrap; }
+  .site-header nav { margin-left: auto; }
+}
+@media (max-width: 600px) {
+  /* Keep the language toggle visible even when normal story nav is hidden. */
+  .site-header .nav-pill { display: none; }
+  .site-header nav { gap: 8px; }
+  .language-switch { padding: 3px; }
+  .language-switch button { padding: 6px 8px; font-size: .7rem; }
+  body.lang-ja .hero-content h1 { font-size: clamp(2.95rem, 10vw, 4.8rem); }
+  body.lang-ja .story-step h2,
+  body.lang-ja .lab-heading h2 { font-size: clamp(2.45rem, 9vw, 4rem); }
+  body.lang-ja .closing-section h2 { font-size: clamp(2.5rem, 9vw, 4.2rem); }
+}
