@@ -14,8 +14,8 @@
     "monkey": "見つけよう",
     "Stop building": "立派な台を作るのは",
     "the pedestal first.": "そのあと。",
-    "When a big idea has lots of moving parts, how do you know": "やりたいことはたくさん。でも、一番最初に何を試せばいい？",
-    "what to try first?": "何を試すべき？",
+    "When a big idea has lots of moving parts, how do you know": "やりたいことはたくさん。でも、最初に",
+    "what to try first?": "何を試せばいい？",
     "FOLLOW THE STORY": "物語を読んでみる",
     "ONE BIG QUESTION / ONE SMALL EXPERIMENT": "大きな疑問を、小さな実験で",
     "SCROLL TO BEGIN ↓": "スクロールして始めよう ↓",
@@ -98,7 +98,7 @@
     "Big ambition.": "大きな夢。",
     "Small experiment.": "小さな実験。",
     "This isn't an argument against building pedestals. Eventually, you'll need one. The trick is to avoid spending all your time there": "台を作るのが悪いわけではありません。いつかは必要です。ただし、",
-    "before the risky idea has been tested.": "一番不確かなことを試す前に",
+    "before the risky idea has been tested.": "一番不確かなことを試す前に、台ばかり磨かないように。",
     "FIND YOUR OWN MONKEY": "自分のサルを探そう",
     "TAKE THIS WITH YOU": "持ち帰りたい問い",
     "What would I need to learn first to know whether this idea is worth pursuing?": "このアイデアを進める価値があるか判断するために、まず何を確かめたい？",
@@ -173,6 +173,7 @@
     "Characters and stories are delightful, but they can't substitute for a satisfying core interaction.": "キャラクターや物語を作るのは楽しい。でも、遊ぶことそのものが面白いだろうか？",
     "A first-time player can understand the puzzle and wants to try one more round without prompting.": "初めて遊ぶ人がルールを理解し、誰にも促されずもう一度遊びたいと思う。",
     "Give a rough playable prototype to three unfamiliar players. Watch silently and note where they hesitate, quit, or ask for help.": "簡単な試作品を初見の３人に渡して、口を挟まず観察する。迷った場面や助けを求めた場面を記録する。",
-    "If players repeatedly struggle or leave, change the interaction before investing in a full cast of characters and polished artwork.": "何度も迷ったり、すぐやめたりするなら、キャラクターを増やす前に遊び方を変えてみよう。"
+    "If players repeatedly struggle or leave, change the interaction before investing in a full cast of characters and polished artwork.": "何度も迷ったり、すぐやめたりするなら、キャラクターを増やす前に遊び方を変えてみよう。",
+    "Skip to the story": "物語までスキップ"
   }
 }
