@@ -1,0 +1,71 @@
+{
+  "_note": "Puffer Lab colours and gallery are data, separate from the SVG drawing code. Values 0–100.",
+  "palettes": {
+    "classic": {
+      "body": "#fff1d2",
+      "shade": "#dbe7dd",
+      "patch": "#3c292a",
+      "fin": "#f9d66e",
+      "water": "#9bdcf8",
+      "ink": "#1e283c"
+    },
+    "golden": {
+      "body": "#ffe5a0",
+      "shade": "#f5bb70",
+      "patch": "#815035",
+      "fin": "#ffad54",
+      "water": "#fee7af",
+      "ink": "#52342c"
+    },
+    "dreamy": {
+      "body": "#fae4fa",
+      "shade": "#c6e4fb",
+      "patch": "#6b6295",
+      "fin": "#e7a7d7",
+      "water": "#b7c4ff",
+      "ink": "#3f4974"
+    },
+    "night": {
+      "body": "#bde9ed",
+      "shade": "#7cb3c9",
+      "patch": "#234d6e",
+      "fin": "#8ae0b8",
+      "water": "#8fbbd6",
+      "ink": "#14304c"
+    }
+  },
+  "gallery": [
+    {
+      "label": "Classic",
+      "boxiness": 64,
+      "eye": 72,
+      "spots": 56,
+      "seed": 7390,
+      "palette": "classic"
+    },
+    {
+      "label": "Boxy",
+      "boxiness": 99,
+      "eye": 90,
+      "spots": 22,
+      "seed": 45,
+      "palette": "golden"
+    },
+    {
+      "label": "Spotty",
+      "boxiness": 42,
+      "eye": 60,
+      "spots": 94,
+      "seed": 301,
+      "palette": "classic"
+    },
+    {
+      "label": "Dreamy",
+      "boxiness": 74,
+      "eye": 89,
+      "spots": 50,
+      "seed": 1717,
+      "palette": "dreamy"
+    }
+  ]
+}
