@@ -17,6 +17,7 @@ resources:
   - monkey.js
   - experiment-examples.json
   - assets/monkey-juggling.svg
+  - assets/curious-monkey.png
 execute:
   echo: false
 ---
@@ -36,7 +37,7 @@ execute:
 
   <main id="story">
     <section class="hero-section" aria-labelledby="hero-title">
-      <img class="hero-image" src="assets/monkey-juggling.svg" alt="A curious monkey with three colorful juggling balls, perched on a small pedestal." />
+      <img class="hero-image" src="assets/curious-monkey.png" alt="A curious monkey with three colorful juggling balls, perched on a small pedestal." onerror="this.onerror=null;this.src='assets/monkey-juggling.svg'" />
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-content">
         <p class="hero-eyebrow"><span aria-hidden="true">✳</span> A LITTLE LESSON IN THINKING BIG / 001</p>
@@ -54,7 +55,7 @@ execute:
           <div class="visual-topline">FIELD NOTES <span>✳</span> MAKE THE HARD PART VISIBLE</div>
           <div class="visual-stage" id="visual-stage" data-mode="brief">
             <div class="art-sun"></div>
-            <img src="assets/monkey-juggling.svg" alt="" class="stage-monkey" />
+            <img src="assets/curious-monkey.png" alt="" class="stage-monkey" onerror="this.onerror=null;this.src='assets/monkey-juggling.svg'" />
             <span class="stage-bubble" id="scene-bubble">???</span>
             <span class="stage-caption">THE MONKEY &amp; THE PEDESTAL</span>
           </div>
