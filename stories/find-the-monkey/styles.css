@@ -108,3 +108,102 @@ body>header,body>footer,nav.navbar,footer.footer,.quarto-title-block,.quarto-pag
 @media(max-width:900px){.hero-content{margin-left:6vw;width:94vw}.hero-content h1{font-size:clamp(4.8rem,11vw,9rem)}.hero-shade{background:linear-gradient(90deg,rgba(255,226,198,.95),rgba(255,222,192,.75) 60%,rgba(255,222,192,.2))}.story-frame{grid-template-columns:1fr}.story-visual{position:relative;height:390px}.visual-inner{position:relative;height:390px;padding:22px 25px}.stage-monkey{object-position:65% 40%}.stage-bubble{font-size:3.6rem}.visual-stage{min-height:0}.story-step{min-height:auto;padding:75px 7vw}.lab-grid{grid-template-columns:1fr}}
 @media(max-width:600px){.site-header{padding:18px 20px;align-items:flex-start}.site-header nav{gap:9px}.site-header nav a:not(.nav-pill){display:none}.brand{font-size:.65rem;gap:7px}.hero-section{min-height:750px}.hero-image{object-position:58% center;opacity:.67}.hero-shade{background:linear-gradient(90deg,rgba(255,226,197,.91),rgba(255,223,197,.58))}.hero-content{margin:80px 23px 80px;width:calc(100% - 46px);padding:75px 0}.hero-content h1{font-size:clamp(4.1rem,16vw,6.2rem)}.hero-subline{font-size:1.8rem}.hero-footer{font-size:.52rem;bottom:16px}.story-visual{height:300px}.visual-inner{height:300px}.visual-topline,.visual-caption{font-size:.51rem}.story-step{padding:65px 24px}.story-step h2,.lab-heading h2{font-size:clamp(3.1rem,13vw,5rem)}.contrast,.risk-grid{grid-template-columns:1fr}.lab-section{padding:75px 20px}.lab-sidebar,.lab-form{padding:24px 20px}.lab-grid{gap:12px}.closing-section{padding:82px 25px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.stage-monkey,.story-choice{transition:none!important}}
+
+/* -------------------------------------------------------------
+   WOODLAND PHOTO PALETTE / THE USER'S JUGGLING MONKEY PNG
+   This layer keeps the underlying typography and interactions.
+   Forest green + moss + warm champagne + copper.
+   ------------------------------------------------------------- */
+:root {
+  --ink: #28362e;
+  --muted: #697264;
+  --paper: #f7f7f1;
+  --cream: #fffdf6;
+  --orange: #d5a273;
+  --rust: #ac7351;
+  --sage: #bfd0b5;
+  --teal: #315d4e;
+  --line: #d7ddcf;
+  --shadow: 0 22px 70px rgba(24, 47, 35, .18);
+}
+body { background: var(--paper); color: var(--ink); }
+
+/* The source photo has natural dark negative space on the left. */
+.hero-section { background: #1d382e; }
+.hero-image { object-position: center center; }
+.hero-shade {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 34, 29, .92) 0%,
+    rgba(20, 42, 34, .8) 28%,
+    rgba(22, 45, 35, .44) 49%,
+    rgba(22, 40, 34, .04) 76%
+  );
+}
+.site-header .brand,
+.site-header nav a { color: #fdf0da !important; }
+.site-header .brand-mark span { color: #e9ae78; }
+.site-header .brand-divider { opacity: .65; }
+.site-header .nav-pill { border-color: rgba(249, 231, 205, .72); }
+.hero-eyebrow { color: #e9c6a0; }
+.hero-eyebrow span { color: #d6e7b1; }
+.hero-content h1 { color: #fff5e5; text-shadow: 0 3px 16px rgba(10, 31, 21, .16); }
+.hero-content h1 em { color: #efb47b; }
+.hero-content h1 .period { color: #cce4ae; }
+.hero-subline { color: #fff4e0; }
+.hero-intro { color: #f4e8d5; }
+.hero-start { color: #f9ebd3 !important; }
+.hero-footer { color: #f6e5c9; }
+.start-circle { border-color: #d9dcb6; }
+
+/* Reading sections: soft paper and botanical highlights. */
+.story-frame { background: #f9f9f3; }
+.story-visual { background: #263e33; }
+.visual-topline, .visual-caption { color: #e8dfc9; }
+.visual-topline span { color: #e4bd83; }
+.visual-stage { background: #334b3d; }
+.stage-monkey { object-position: 65% center; }
+.stage-bubble { color: #fff0d7; text-shadow: 0 3px 15px rgba(15, 27, 18, .55); }
+.stage-caption { color: #fff0d7; text-shadow: 0 2px 8px rgba(15, 27, 18, .75); }
+.story-step { border-bottom-color: #d4dcd0; }
+.section-number { color: #a96843; }
+.story-step p { color: #4c594d; }
+.brief-card, .rule-card, .learning-rule {
+  background: #f4ebda; border-color: #e0ceb4;
+}
+.brief-card span, .rule-card span, .learning-rule span { color: #945b39; }
+.story-choice { background: #fffefa; border-color: #cdd8ca; color: #293b2c; }
+.story-choice:hover { border-color: #5f8972; }
+.story-choice[aria-pressed=true] { background: #e4eee3; border-color: #456d58; box-shadow: inset 4px 0 #456d58; }
+.story-choice>b { background: #e8e4cc; }
+.choice-feedback { background: #e9eee5; border-left-color: #73916b; }
+.feedback-tag { color: #4d7660; }
+.contrast>div, .risk-card { background: #fbf5e9; border-color: #e0dbcb; }
+.contrast>div:nth-child(2), .risk-card.sage { background: #e2ede2; }
+.mini-label, .risk-card>span { color: #895e40; }
+.mint { color: #2e6750; }
+.primary-cta { background: #315d4e; border-color: #315d4e; }
+.secondary-cta { color: #315d4e !important; border-color: #315d4e; }
+.lab-section { background: #e2e8db; }
+.lab-sidebar, .lab-form { background: #fffef8; }
+.lab-heading p { color: #4b5f4d; }
+.closing-section { background: #1c332b; }
+.closing-section h2 i { color: #e6b17b; }
+.closing-section .section-number { color: #ccd5aa; }
+
+/* On small screens let the image read as atmosphere behind legible copy. */
+@media (max-width: 900px) {
+  .hero-shade {
+    background: linear-gradient(90deg, rgba(18, 36, 28, .95), rgba(20, 42, 32, .72) 61%, rgba(20, 42, 32, .25));
+  }
+  .stage-monkey { object-position: 66% center; }
+}
+@media (max-width: 600px) {
+  .hero-image { object-position: 68% center; opacity: .9; }
+  .hero-shade {
+    background: linear-gradient(180deg, rgba(15, 34, 28, .87) 0%, rgba(20, 42, 32, .74) 53%, rgba(20, 42, 32, .18) 100%);
+  }
+  .hero-content { padding: 65px 0 125px; }
+  .hero-footer { color: #f6e5c9; }
+  .stage-monkey { object-position: 65% center; }
+}
