@@ -16,8 +16,7 @@ format:
 resources:
   - monkey.js
   - experiment-examples.json
-  - assets/monkey-juggling.svg
-  - assets/curious-monkey.png
+  - assets/*
 execute:
   echo: false
 ---
