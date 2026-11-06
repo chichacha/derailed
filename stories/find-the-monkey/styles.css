@@ -207,3 +207,6 @@ body { background: var(--paper); color: var(--ink); }
   .hero-footer { color: #f6e5c9; }
   .stage-monkey { object-position: 65% center; }
 }
+
+/* Keep small navigation links readable over the bright upper-right of the photograph. */
+.site-header { background: linear-gradient(180deg, rgba(13, 33, 27, .65), rgba(13, 33, 27, 0)); }
