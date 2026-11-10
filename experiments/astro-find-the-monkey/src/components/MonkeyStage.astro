@@ -1,0 +1,53 @@
+---
+/**
+ * Astro component: primarily HTML + SVG, not a React component.
+ * The browser script in the page updates the caption during scrolling.
+ */
+---
+<aside class="stage-panel" aria-label="Illustration of a monkey and its pedestal">
+  <div class="stage-card">
+    <div class="stage-topline">
+      <span>FIELD NOTES / 001</span>
+      <span class="stage-asterisk" aria-hidden="true">✳</span>
+    </div>
+    <div class="stage-art">
+      <svg class="monkey-art" viewBox="0 0 360 360" role="img" aria-labelledby="monkey-title monkey-desc">
+        <title id="monkey-title">A monkey practicing on a pedestal</title>
+        <desc id="monkey-desc">A cartoon monkey balances above a platform with three juggling balls overhead.</desc>
+        <circle cx="180" cy="161" r="141" fill="#f1dfb8" />
+        <path d="M31 216c49-19 95-17 143 0 55-24 111-22 155 2" fill="none" stroke="#d0bf99" stroke-width="2" stroke-dasharray="4 10"/>
+        <g class="juggling-balls">
+          <circle class="ball ball-one" cx="115" cy="69" r="15" fill="#dc7858"/>
+          <circle class="ball ball-two" cx="182" cy="42" r="15" fill="#69aaa3"/>
+          <circle class="ball ball-three" cx="249" cy="69" r="15" fill="#f4b953"/>
+        </g>
+        <path d="M151 248h58l19 53h-96z" fill="#d1a77c"/>
+        <rect x="117" y="294" width="126" height="13" rx="6.5" fill="#203c45"/>
+        <path d="M161 258c-31 2-44-17-37-36 5-15 20-19 32-12" fill="none" stroke="#79503c" stroke-width="19" stroke-linecap="round"/>
+        <path d="M207 258c23 5 34-7 40-21 6-15-3-24-13-28" fill="none" stroke="#79503c" stroke-width="19" stroke-linecap="round"/>
+        <ellipse cx="180" cy="235" rx="48" ry="52" fill="#79503c"/>
+        <path d="M156 240c8 13 40 13 49-1" stroke="#e4b48e" stroke-width="17" stroke-linecap="round" fill="none"/>
+        <circle cx="122" cy="158" r="26" fill="#79503c"/>
+        <circle cx="238" cy="158" r="26" fill="#79503c"/>
+        <circle cx="122" cy="158" r="14" fill="#e4b48e"/>
+        <circle cx="238" cy="158" r="14" fill="#e4b48e"/>
+        <ellipse cx="180" cy="163" rx="69" ry="76" fill="#79503c"/>
+        <ellipse cx="180" cy="181" rx="51" ry="54" fill="#e4b48e"/>
+        <ellipse cx="159" cy="156" rx="13" ry="18" fill="#fffaf0"/>
+        <ellipse cx="203" cy="156" rx="13" ry="18" fill="#fffaf0"/>
+        <circle cx="162" cy="158" r="6" fill="#203c45"/>
+        <circle cx="200" cy="158" r="6" fill="#203c45"/>
+        <ellipse cx="182" cy="181" rx="10" ry="7" fill="#79503c"/>
+        <path d="M166 196q16 15 31-1" stroke="#79503c" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M137 226q-22 2-31-20m117 21q20 2 30-20" fill="none" stroke="#79503c" stroke-width="16" stroke-linecap="round"/>
+        <circle cx="105" cy="204" r="10" fill="#e4b48e"/>
+        <circle cx="253" cy="204" r="10" fill="#e4b48e"/>
+      </svg>
+    </div>
+    <div class="stage-meta" aria-live="polite" aria-atomic="true">
+      <span id="scene-number">01 / THE BRIEF</span>
+      <span id="scene-caption">A VERY AMBITIOUS IDEA.</span>
+    </div>
+    <div class="stage-bottom">NO GUARANTEE THE MONKEY AGREES.</div>
+  </div>
+</aside>
