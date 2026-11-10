@@ -1,0 +1,81 @@
+---
+import StoryLayout from "../layouts/StoryLayout.astro";
+import MonkeyStage from "../components/MonkeyStage.astro";
+import ChoiceLab from "../components/ChoiceLab.astro";
+import TinyExperiment from "../components/TinyExperiment.astro";
+---
+<StoryLayout
+  title="Find the Monkey — Astro Lab | DERAILED"
+  description="A small Astro experiment about finding the critical uncertainty before building a beautiful pedestal."
+>
+  <div class="read-progress" aria-hidden="true"><span id="progress-fill"></span></div>
+  <header class="site-header">
+    <a class="brand" href="https://github.com/chichacha/derailed">D<span>.</span> DERAILED</a>
+    <span class="header-label">ASTRO EXPERIMENT / 001</span>
+    <a class="header-link" href="https://chichacha.github.io/derailed/stories/find-the-monkey/index.html">ORIGINAL QUARTO STORY ↗</a>
+  </header>
+  <main id="story">
+    <section class="hero">
+      <div class="hero-flag">A SMALL LESSON IN THINKING BIG <span aria-hidden="true">✳</span></div>
+      <h1>Find the <em>monkey.</em></h1>
+      <p class="hero-lede">Before you build a magnificent pedestal, you might want to check whether the monkey can actually juggle.</p>
+      <a class="jump-link" href="#brief">FOLLOW THE EXPERIMENT <span aria-hidden="true">↓</span></a>
+      <div class="hero-footnote">ONE BIG AMBITION / ONE IMPORTANT UNKNOWN</div>
+    </section>
+
+    <div class="story-grid" id="brief">
+      <MonkeyStage />
+      <div class="chapters">
+        <section class="chapter" data-scene="brief" aria-labelledby="chapter-brief">
+          <p class="chapter-index">01 / THE BRIEF</p>
+          <h2 id="chapter-brief">A monkey. Three balls. <em>One pedestal.</em></h2>
+          <p>Imagine being assigned a wonderfully strange project: a monkey must learn to juggle while standing on a tall pedestal.</p>
+          <p>The pedestal? We know how to build that. The juggling monkey? A slightly more complicated conversation.</p>
+          <div class="story-pull">Two things to build. Only one might be impossible.</div>
+          <p>Which part should you tackle first?</p>
+        </section>
+
+        <section class="chapter" data-scene="choice" aria-labelledby="chapter-choice">
+          <p class="chapter-index">02 / YOUR FIRST MOVE</p>
+          <h2 id="chapter-choice">Where would <em>you</em> begin?</h2>
+          <p>You have one week. Pick your first activity, and see what it teaches you.</p>
+          <ChoiceLab />
+        </section>
+
+        <section class="chapter" data-scene="idea" aria-labelledby="chapter-idea">
+          <p class="chapter-index">03 / THE REVEAL</p>
+          <h2 id="chapter-idea">Visible progress isn't always <em>learning.</em></h2>
+          <p>A gorgeous pedestal is easy to demonstrate. You can show its drawings, its height, maybe even the invoice for its very expensive paint.</p>
+          <p>But none of that tells you whether the monkey can juggle. The real monkey is the <strong>important uncertainty</strong> that could make the rest of the project irrelevant.</p>
+          <blockquote>Find the assumption that matters most. Test it before polishing the easy parts.</blockquote>
+        </section>
+
+        <section class="chapter" data-scene="garden" aria-labelledby="chapter-garden">
+          <p class="chapter-index">04 / A DETOUR INTO THE GARDEN</p>
+          <h2 id="chapter-garden">The seedlings <em>vanished.</em></h2>
+          <p>You plant a whole box of seeds and imagine a glorious harvest. Then the sprouts start disappearing. Suspicious slugs? Wrong conditions? Inconsistent care?</p>
+          <p>Buying another hundred seeds may feel like progress. Observing six seedlings closely could tell you what to do next.</p>
+          <p class="aside-note">The slugs are persons of interest, not convicted criminals. 🐌</p>
+        </section>
+
+        <section class="chapter" data-scene="lab" aria-labelledby="chapter-lab">
+          <p class="chapter-index">05 / YOUR TURN</p>
+          <h2 id="chapter-lab">Find your <em>own monkey.</em></h2>
+          <p>You don't need a full project plan. Just a hypothesis, one small experiment, and a way to recognize useful evidence.</p>
+          <TinyExperiment />
+        </section>
+      </div>
+    </div>
+    <section class="closing">
+      <p class="chapter-index">THE TAKEAWAY</p>
+      <h2>Big ambition.<br/><em>Small experiment.</em></h2>
+      <p>Eventually, you may need a pedestal. Just don't spend all your time decorating one before testing the thing that matters.</p>
+      <a href="#story" class="jump-link">BACK TO THE TOP ↑</a>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <span>DERAILED. / ONE THING LED TO ANOTHER.</span>
+    <span>BUILT WITH ASTRO + A LITTLE JAVASCRIPT.</span>
+  </footer>
+  <script src="../scripts/story.js"></script>
+</StoryLayout>
