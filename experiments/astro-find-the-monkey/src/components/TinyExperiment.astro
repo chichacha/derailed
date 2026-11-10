@@ -1,0 +1,57 @@
+---
+import { examples } from "../data/examples.js";
+---
+<div class="experiment-lab" aria-labelledby="experiment-lab-title">
+  <h3 class="mini-heading" id="experiment-lab-title">Design a tiny experiment</h3>
+  <p>Choose a starting example or write your own. Nothing gets uploaded or saved.</p>
+  <label class="form-label" for="example">Start with an example</label>
+  <div class="example-row">
+    <select id="example">
+      <option value="">Choose an example…</option>
+      {examples.map((item) => <option value={item.id}>{item.label}</option>)}
+    </select>
+    <button type="button" class="fill-button" id="fill-example">Load ↗</button>
+  </div>
+  <div class="form-fields">
+    <label>What's the critical assumption?
+      <textarea id="assumption" rows="3" placeholder="What must be true for this idea to work?"></textarea>
+    </label>
+    <label>What's the smallest useful test?
+      <textarea id="test" rows="3" placeholder="What can I try before building everything?"></textarea>
+    </label>
+    <label>What would change my mind?
+      <textarea id="evidence" rows="3" placeholder="What evidence would make me continue or rethink?"></textarea>
+    </label>
+  </div>
+  <div class="form-footer">
+    <p id="lab-status" aria-live="polite">Your draft stays in this browser tab.</p>
+    <button type="button" class="reset-button" id="clear-lab">Clear fields</button>
+  </div>
+</div>
+
+<script>
+  import { examples } from "../data/examples.js";
+  const fields = ["assumption", "test", "evidence"];
+  const select = document.querySelector("#example");
+  const status = document.querySelector("#lab-status");
+  document.querySelector("#fill-example")?.addEventListener("click", () => {
+    const example = examples.find((item) => item.id === select?.value);
+    if (!example) {
+      if (status) status.textContent = "Select an example first, or write your own.";
+      return;
+    }
+    for (const field of fields) {
+      const input = document.getElementById(field);
+      if (input instanceof HTMLTextAreaElement) input.value = example[field];
+    }
+    if (status) status.textContent = "Example loaded. Now make it your own.";
+  });
+  document.querySelector("#clear-lab")?.addEventListener("click", () => {
+    for (const field of fields) {
+      const input = document.getElementById(field);
+      if (input instanceof HTMLTextAreaElement) input.value = "";
+    }
+    if (select instanceof HTMLSelectElement) select.value = "";
+    if (status) status.textContent = "Fields cleared. New idea, new monkey.";
+  });
+</script>
