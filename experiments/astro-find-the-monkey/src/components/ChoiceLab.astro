@@ -1,0 +1,45 @@
+---
+import { choices } from "../data/choices.js";
+---
+<div class="choice-lab" aria-labelledby="choice-title">
+  <h3 id="choice-title" class="mini-heading">What would you tackle first?</h3>
+  <div class="choice-options">
+    {choices.map((choice) => (
+      <button type="button" class="choice-button" data-choice={choice.id} aria-pressed="false">
+        <span class="choice-letter">{choice.letter}</span>
+        <span class="choice-copy">
+          <strong>{choice.title}</strong>
+          <small>{choice.description}</small>
+        </span>
+        <span aria-hidden="true">↗</span>
+      </button>
+    ))}
+  </div>
+  <div class="feedback-box" role="status" aria-live="polite" aria-atomic="true">
+    <span class="feedback-label">YOUR EXPERIMENT</span>
+    <strong id="choice-verdict">Choose a first move.</strong>
+    <p id="choice-explanation">It's easy to confuse activity with learning. See what each option tells you.</p>
+  </div>
+  <button type="button" class="reset-button" id="reset-choice">↻ Try another choice</button>
+</div>
+
+<script>
+  import { choices } from "../data/choices.js";
+  const buttons = [...document.querySelectorAll("[data-choice]")];
+  const verdict = document.querySelector("#choice-verdict");
+  const explanation = document.querySelector("#choice-explanation");
+  const reset = document.querySelector("#reset-choice");
+
+  function choose(id) {
+    const selected = choices.find((item) => item.id === id);
+    for (const button of buttons) {
+      button.setAttribute("aria-pressed", String(button.dataset.choice === id));
+    }
+    if (verdict && explanation) {
+      verdict.textContent = selected?.verdict ?? "Choose a first move.";
+      explanation.textContent = selected?.feedback ?? "It's easy to confuse activity with learning. See what each option tells you.";
+    }
+  }
+  buttons.forEach((button) => button.addEventListener("click", () => choose(button.dataset.choice)));
+  reset?.addEventListener("click", () => choose(null));
+</script>
