@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff2dc">
+  <meta name="description" content="Over Easy Ain't Easy! A tiny Matter.js breakfast egg-flipping game. Learn sunny-side up vs over easy, and try not to splat the yolk.">
+  <title>Over Easy Ain't Easy! — DERAILED.</title>
+  <style>
+    :root{--cream:#fff2dc;--paper:#fff9ef;--ink:#2c2825;--accent:#db633e;--muted:#796d63;--line:#ead4b8;--dark:#263b38;--yellow:#ffbd3d}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--cream);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.5}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    button:focus-visible,input:focus-visible{outline:3px solid #2e7b81;outline-offset:2px}
+    header{border-bottom:1px solid var(--line)}header .wrap{display:flex;align-items:center;justify-content:space-between;padding:17px 0}
+    .wrap{width:min(1050px,calc(100% - 28px));margin:auto}
+    .brand{text-decoration:none;letter-spacing:-.07em;font-weight:900;font-size:1.15rem;color:var(--ink)}
+    .tiny{font-size:.66rem;text-transform:uppercase;font-weight:800;letter-spacing:.16em;color:var(--muted)}
+    .intro{padding:47px 0 24px}
+    .eyebrow{font-size:.68rem;text-transform:uppercase;letter-spacing:.18em;font-weight:850;color:var(--accent);margin:0 0 14px}
+    h1{font-size:clamp(3.1rem,8vw,6.6rem);letter-spacing:-.09em;line-height:.96;margin:0 0 19px}
+    h1 em{font-style:normal;color:var(--accent)}
+    .intro p:last-child{font-size:1.04rem;color:var(--muted);max-width:700px;line-height:1.6}
+    .instruction{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 12px}
+    .instruction strong{font-size:1rem}.instruction small{font-size:.76rem;color:var(--muted);text-align:right}
+    .modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:14px}
+    .mode{padding:14px 12px;text-align:left;background:var(--paper);border:1.5px solid var(--line);border-radius:12px;min-height:85px}
+    .mode b,.mode small{display:block}.mode b{font-size:.96rem;letter-spacing:-.02em}.mode small{font-size:.72rem;color:var(--muted);margin-top:6px}
+    .mode[aria-pressed=true]{background:var(--dark);border-color:var(--dark);color:#fff}.mode[aria-pressed=true] small{color:#dfdccc}
+    .game{border-radius:19px;overflow:hidden;border:1px solid #d0bda5;background:#f8d9a9;position:relative}
+    .game canvas{display:block;width:100%;height:auto;aspect-ratio:800/440;touch-action:manipulation}
+    .status{padding:16px 20px;border-top:1px solid #e4c79a;display:flex;gap:14px;justify-content:space-between;align-items:center;background:#fffbf5;min-height:82px}
+    .status strong{display:block;font-size:1rem}.status span{display:block;font-size:.85rem;color:var(--muted);margin-top:2px}
+    .count{flex:none;text-align:right;font-size:.74rem;color:var(--muted)}.count b{color:var(--ink);font-size:1.4rem;display:block}
+    .controls{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;gap:16px;align-items:center;border-radius:0 0 18px 18px;background:#fff9ee;padding:22px 20px;border:1px solid var(--line);border-top:0}
+    .control-name{display:flex;align-items:center;justify-content:space-between;font-size:.81rem;font-weight:800;gap:8px}.control-name output{color:var(--accent)}
+    input[type=range]{width:100%;margin:11px 0 0;accent-color:var(--accent)}
+    .actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:end}
+    .btn{border:0;border-radius:10px;padding:12px 17px;background:var(--dark);color:white;font-size:.82rem;font-weight:850;min-width:92px}
+    .btn:hover:not(:disabled){filter:brightness(1.13)}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .btn.flip{background:var(--accent)}.btn.reset{background:#eadbca;color:var(--ink)}
+    .help{margin:13px 0 34px;font-size:.8rem;color:var(--muted)}
+    .facts{margin-top:28px;margin-bottom:75px;border-top:1px solid var(--line);padding-top:25px}
+    .facts h2{font-size:clamp(1.8rem,4vw,3rem);letter-spacing:-.06em;margin:0 0 17px}
+    .fact-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+    .fact{border:1px solid var(--line);background:var(--paper);border-radius:13px;padding:17px}
+    .fact b{display:block;margin-bottom:9px}.fact p{font-size:.83rem;color:var(--muted);margin:0}
+    .foot{padding:16px 0;background:#f5e1c7;font-size:.75rem;color:var(--muted)}
+    .foot a{color:var(--dark)}
+    @media(max-width:760px){.controls{grid-template-columns:1fr 1fr}.actions{grid-column:span 2;justify-content:stretch}.actions .btn{flex:1}.fact-grid{grid-template-columns:1fr 1fr}.instruction{align-items:start}.instruction small{max-width:180px}}
+    @media(max-width:480px){.modes{grid-template-columns:1fr 1fr}.mode{min-height:75px}.instruction{display:block}.instruction small{display:block;text-align:left;margin-top:4px}.controls{gap:18px 10px;padding:16px 13px}.status{padding:13px}.status strong{font-size:.91rem}.status span{font-size:.75rem}.count b{font-size:1rem}.fact-grid{grid-template-columns:1fr}h1{font-size:3.8rem}}
+  </style>
+</head>
+<body>
+  <header><div class="wrap"><a class="brand" href="../../index.html">DERAILED.</a><span class="tiny">Kitchen lab / physics 001</span></div></header>
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">The egg flip experiment · Powered by Matter.js</p>
+      <h1>Over easy.<br><em>Ain't easy!</em></h1>
+      <p>Four ways to order a fried egg. Only three require a flip. Choose an order, let the whites set, and test your wrist. An entirely unserious physics lesson with very real cartoon consequences.</p>
+    </section>
+    <section aria-labelledby="choose-heading">
+      <div class="instruction"><strong id="choose-heading">01 / What's the order?</strong><small>Sunny-side up is the trick question ☀️</small></div>
+      <div class="modes" id="modes" role="group" aria-label="Choose fried egg style">
+        <button class="mode" data-style="sunny" aria-pressed="false"><b>☀️ Sunny-side up</b><small>Never flip</small></button>
+        <button class="mode" data-style="easy" aria-pressed="true"><b>🍳 Over easy</b><small>Flip, runny yolk</small></button>
+        <button class="mode" data-style="medium" aria-pressed="false"><b>🥚 Over medium</b><small>Flip, partly set yolk</small></button>
+        <button class="mode" data-style="hard" aria-pressed="false"><b>💪 Over hard</b><small>Flip, firm yolk</small></button>
+      </div>
+    </section>
+    <section aria-label="Egg flipping arcade">
+      <div class="game">
+        <canvas id="scene" width="800" height="440" role="img" aria-label="Cartoon frying pan and fried egg; the egg responds to Matter.js gravity and collisions"></canvas>
+        <div class="status" aria-live="polite" aria-atomic="true">
+          <div><strong id="message">Let the whites set…</strong><span id="submessage">Then choose when to flip. Over easy needs a gentle landing.</span></div>
+          <div class="count"><b id="cooktime">0.0s</b>cooking timer</div>
+        </div>
+      </div>
+      <div class="controls">
+        <label for="power"><span class="control-name">Toss strength <output id="powerOut">52%</output></span><input type="range" id="power" min="10" max="100" value="52"></label>
+        <label for="spin"><span class="control-name">Wrist twist <output id="spinOut">40%</output></span><input type="range" id="spin" min="0" max="100" value="40"></label>
+        <div class="actions"><button class="btn flip" id="flip" type="button">↗ FLIP!</button><button class="btn" id="serve" type="button">Serve 🍽️</button><button class="btn reset" id="reset" type="button">↺</button></div>
+      </div>
+      <p class="help">Tip: wait about <strong>3 seconds</strong> before flipping. Over-easy likes a quick serve after landing. Slider settings are game controls, not real cooking instructions. Press <strong>R</strong> to retry.</p>
+    </section>
+    <section class="facts" aria-labelledby="eggs-heading">
+      <p class="eyebrow">02 / Breakfast taxonomy</p><h2 id="eggs-heading">What's the difference?</h2>
+      <div class="fact-grid">
+        <article class="fact"><b>☀️ Sunny-side up</b><p>Fried on one side only. Whites set, yolk visible and runny. <strong>No flip.</strong></p></article>
+        <article class="fact"><b>🍳 Over easy</b><p>Flipped briefly to set the second side. Yolk stays runny.</p></article>
+        <article class="fact"><b>🥚 Over medium</b><p>Flipped and cooked a bit longer. Yolk becomes partially set.</p></article>
+        <article class="fact"><b>💪 Over hard</b><p>Flipped and cooked until the yolk is fully set.</p></article>
+      </div>
+      <p class="help">Other breakfast egg orders: scrambled, poached, soft-/hard-boiled, omelette, basted, and more. Matter.js models rigid bodies and collisions; the flipping motion and splattered yolk here are intentionally exaggerated cartoon approximations, not a fluid/food science model.</p>
+    </section>
+  </main>
+  <footer class="foot"><div class="wrap">DERAILED. · One thing led to another. · <a href="https://brm.io/matter-js/" target="_blank" rel="noopener">Matter.js 2D physics</a> · © Original experiment</div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
+  <script>
+  (function(){
+    'use strict';
+    const $=id=>document.getElementById(id);
+    const canvas=$('scene'),ctx=canvas.getContext('2d');
+    const modeButtons=[...document.querySelectorAll('.mode')];
+    const power=$('power'),spin=$('spin');
+    const msg=$('message'), sub=$('submessage');
+    let style='easy',timerStart=performance.now(),flipAt=0,landAt=0,egg=null,engine=null,pan=null,edgeLeft=null,edgeRight=null,ground=null,particles=[];
+    let state='cooking',attempts=0,successful=0,frame=0,landed=false,landingTime=0,lastOutcome='';
+    let lastFrame=performance.now();
+    const hasMatter=typeof window.Matter!=='undefined';
+    const names={sunny:'Sunny-side up',easy:'Over easy',medium:'Over medium',hard:'Over hard'};
+    function setStatus(title,detail){msg.textContent=title;sub.textContent=detail;}
+    function cookSeconds(now=performance.now()){return (now-timerStart)/1000;}
+    function stop(status,title,detail){state=status;lastOutcome=title;setStatus(title,detail);$('flip').disabled=true;}
+    function newWorld(){
+      if(!hasMatter) { setStatus('Could not load Matter.js','This demo needs an internet connection to load its physics engine.');$('flip').disabled=true;$('serve').disabled=true;return; }
+      const M=Matter;engine=M.Engine.create({enableSleeping:false});engine.gravity.y=1;engine.gravity.scale=.001;
+      const cfg={isStatic:true,friction:.95,restitution:0,render:{visible:false}};
+      pan=M.Bodies.rectangle(396,350,442,24,cfg);
+      edgeLeft=M.Bodies.rectangle(178,322,16,52,{...cfg,angle:-.22});
+      edgeRight=M.Bodies.rectangle(615,322,16,52,{...cfg,angle:.22});
+      ground=M.Bodies.rectangle(398,455,900,25,cfg);
+      egg=M.Bodies.circle(384,302,31,{isStatic:true,restitution:.08,friction:.72,frictionStatic:.95,frictionAir:.0006,label:'egg',density:.003});
+      M.Composite.add(engine.world,[pan,edgeLeft,edgeRight,ground,egg]);
+      M.Events.on(engine,'collisionStart',ev=>{
+        if(state!=='airborne'||landed) return;
+        for(const p of ev.pairs){
+          const another=p.bodyA===egg?p.bodyB:p.bodyB===egg?p.bodyA:null;
+          if(!another)continue;
+          if(another===pan || another===edgeLeft || another===edgeRight || another===ground){
+            landed=true;
+            const x=egg.position.x, speed=Math.hypot(egg.velocity.x,egg.velocity.y);
+            if(another!==pan || x<220 || x>590){splatter('💥 EGG OVERBOARD!','Great launch. Unfortunately, breakfast is on the floor.');return;}
+            const normalized=((egg.angle%(2*Math.PI))+2*Math.PI)%(2*Math.PI);
+            const flipDifference=Math.abs(normalized-Math.PI);
+            if(speed>20.5){splatter('💥 YOLK CATASTROPHE!','Too much impact. Adjust your toss strength.');return;}
+            if(flipDifference>1.02){splatter('💥 CRACKED UNDER PRESSURE','The egg did not complete a clean half-flip. Adjust wrist twist.');return;}
+            state='landed';landAt=performance.now();landingTime=cookSeconds(landAt);M.Body.setStatic(egg,true);
+            M.Body.setPosition(egg,{x:Math.min(590,Math.max(225,x)),y:302});
+            M.Body.setAngle(egg,Math.PI);
+            setStatus('✨ CLEAN LANDING!','Now serve at the right moment for '+names[style]+'.');
+            return;
+          }
+        }
+      });
+    }
+    function reset(){
+      timerStart=performance.now();flipAt=0;landAt=0;landed=false;state='cooking';particles=[];frame=0;
+      $('flip').disabled=false;$('serve').disabled=false;
+      setStatus(style==='sunny'?'☀️ No flip needed!':'Let the whites set…',style==='sunny'?'Wait about 3 seconds, then serve. A flip would ruin the order.':'Wait about 3 seconds, then flip gently.');
+      $('cooktime').textContent='0.0s';newWorld();
+    }
+    function splatter(title,detail){
+      if(state==='failed'||state==='won')return;
+      const M=Matter,x=egg?egg.position.x:385,y=egg?egg.position.y:310;
+      if(hasMatter && egg)M.Composite.remove(engine.world,egg);
+      egg=null;
+      for(let i=0;i<19;i++){
+        const angle=Math.PI*2*i/19,r=4+Math.random()*7;
+        const b=M.Bodies.circle(x+(Math.random()-.5)*25,y+(Math.random()-.5)*12,r,{restitution:.24,friction:.7,frictionAir:.002});
+        M.Body.setVelocity(b,{x:Math.cos(angle)*(2+Math.random()*7),y:-Math.abs(Math.sin(angle))*(3+Math.random()*7)});
+        particles.push({body:b,r});M.Composite.add(engine.world,b);
+      }
+      stop('failed',title,detail+' Tap ↺ to try again.');
+    }
+    function launch(){
+      if(state!=='cooking')return;
+      if(style==='sunny'){splatter('☀️ THAT WAS SUNNY-SIDE UP!','The order said no flipping. You had one job.');return;}
+      const elapsed=cookSeconds();
+      if(elapsed<2.55){splatter('💥 TOO SOON!','The whites have not set. They are now abstract art.');return;}
+      if(elapsed>8.5){splatter('🔥 CRISPY TROUBLE','The egg waited far too long to flip.');return;}
+      const p=Number(power.value),s=Number(spin.value);
+      Matter.Body.setStatic(egg,false);
+      Matter.Body.setVelocity(egg,{x:(p-50)*.055+.3,y:-13-p*.075});
+      Matter.Body.setAngularVelocity(egg,.014+s*.00036);
+      flipAt=performance.now();state='airborne';setStatus('🌀 IN FLIGHT!','Gravity, spin, and your choices are deciding breakfast.');
+    }
+    function serve(){
+      if(state==='won'||state==='failed')return;
+      if(state==='airborne'){splatter('💥 PLATE MISHAP','You tried to plate the egg mid-flight.');return;}
+      const seconds=cookSeconds();
+      if(style==='sunny'){
+        if(seconds<2.7){stop('failed','😬 RAW WHITES','Sunny-side up needs a little patience.');return;}
+        if(seconds>8.5){stop('failed','🔥 OVERCOOKED','The yolk never got its close-up.');return;}
+        successful++;stop('won','☀️ SUNNY SIDE SUCCESS!','Absolutely no flipping required. You understood the assignment.');return;
+      }
+      if(state!=='landed'){stop('failed','🍳 THAT IS NOT OVER EASY','Over-easy, medium and hard eggs have to be flipped.');return;}
+      const after=(performance.now()-landAt)/1000;
+      if(style==='easy' && after>=.3 && after<=2.3){successful++;stop('won','✨ OVER EASY!','Intact yolk. A very brief second side. Breakfast is served.');return;}
+      if(style==='medium' && after>=2.3 && after<=5.1){successful++;stop('won','🥚 OVER MEDIUM!','The yolk is starting to set. Nice work.');return;}
+      if(style==='hard' && after>=5.1){successful++;stop('won','💪 OVER HARD!','Firm yolk. Maximum commitment.');return;}
+      stop('failed',after<(style==='easy'?.3:style==='medium'?2.3:5.1)?'⏳ TOO EARLY!':'🔥 TOO LATE!','The flip was fine, but the second-side cooking time missed the chosen style.');
+    }
+    function circle(x,y,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+    function draw(now){
+      ctx.clearRect(0,0,800,440);
+      const grad=ctx.createLinearGradient(0,0,0,440);grad.addColorStop(0,'#f8dbad');grad.addColorStop(1,'#e9b97e');ctx.fillStyle=grad;ctx.fillRect(0,0,800,440);
+      ctx.fillStyle='rgba(124,75,37,.12)';for(let y=57;y<390;y+=45){ctx.fillRect(0,y,800,1)}
+      ctx.save();ctx.fillStyle='#9b6a4e';ctx.fillRect(0,396,800,44);ctx.fillStyle='#644940';ctx.fillRect(0,418,800,7);ctx.restore();
+      circle(390,374,193,'#655b50');circle(390,363,177,'#414a48');circle(390,359,163,'#27332f');
+      ctx.strokeStyle='#d1b78b';ctx.lineWidth=12;ctx.beginPath();ctx.ellipse(390,354,208,45,0,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='#685a49';ctx.save();ctx.translate(593,338);ctx.rotate(-.16);ctx.fillRect(0,-15,210,30);ctx.fillStyle='#423c36';ctx.fillRect(55,-18,140,36);ctx.restore();
+      ctx.fillStyle='#8d4630';ctx.fillRect(20,17,170,33);ctx.fillStyle='#fff0d6';ctx.font='800 13px system-ui';ctx.fillText('DERAILED BREAKFAST',34,39);
+      const seconds=cookSeconds(now);
+      const progress=Math.min(1,seconds/3);
+      ctx.fillStyle='rgba(40,33,26,.14)';ctx.fillRect(20,68,171,8);ctx.fillStyle=seconds>8.5?'#a7442e':'#3b786d';ctx.fillRect(20,68,171*progress,8);
+      ctx.font='700 13px system-ui';ctx.fillStyle='#69452e';ctx.fillText(seconds>=3?'WHITES SET ✓':'WHITES SETTING…',20,96);
+      if(egg){
+        const x=egg.position.x,y=egg.position.y;
+        ctx.save();ctx.translate(x,y);
+        const flip=state==='airborne'?egg.angle:(state==='landed'||state==='won'&&style!=='sunny')?Math.PI:0;
+        const scale=Math.max(.14,Math.abs(Math.cos(flip)));
+        ctx.scale(1,scale);
+        ctx.shadowColor='rgba(77,51,32,.25)';ctx.shadowBlur=13;ctx.shadowOffsetY=7;
+        ctx.fillStyle='#fffcf1';ctx.beginPath();ctx.moveTo(-48,-7);ctx.bezierCurveTo(-45,-33,-24,-36,3,-29);ctx.bezierCurveTo(26,-39,52,-21,50,4);ctx.bezierCurveTo(46,24,20,34,-5,29);ctx.bezierCurveTo(-34,32,-55,18,-48,-7);ctx.fill();
+        ctx.shadowColor='transparent';ctx.strokeStyle='#eadab7';ctx.lineWidth=2.5;ctx.stroke();
+        if(Math.cos(flip)>0 || (state==='failed'&&style==='sunny')){
+          circle(0,0,21,'#f2a32d');circle(-3,-4,17,'#fbc34c');circle(-8,-9,5,'rgba(255,246,201,.68)');
+        }else{circle(-4,-5,4,'#e7d4a9');circle(19,12,3,'#d3bd8f');}
+        ctx.restore();
+      }
+      particles.forEach(({body,r},i)=>{circle(body.position.x,body.position.y,r,i%3===0?'#ffdb65':'#f2a52c')});
+      ctx.font='850 13px system-ui';ctx.fillStyle='#534133';ctx.fillText('MISSION: '+names[style].toUpperCase(),538,46);
+      if(state==='airborne'){ctx.font='900 40px system-ui';ctx.fillStyle='#b25436';ctx.fillText('WHEEE!',490,143)}
+      if(state==='failed'){ctx.font='900 46px system-ui';ctx.fillStyle='#c35435';ctx.fillText('SPLAT!',490,143)}
+      if(state==='won'){ctx.font='900 40px system-ui';ctx.fillStyle='#327b69';ctx.fillText('NAILED IT!',477,143)}
+    }
+    function tick(now){
+      if(hasMatter && engine){const dt=Math.min(35,now-lastFrame);Matter.Engine.update(engine,dt||16.67)}
+      lastFrame=now;frame++;
+      if(state==='cooking'||state==='airborne'||state==='landed')$('cooktime').textContent=cookSeconds(now).toFixed(1)+'s';
+      if(state==='airborne' && egg && (egg.position.x<-60||egg.position.x>870||egg.position.y>475||now-flipAt>7000))splatter('💥 OFF THE MENU','The egg escaped the pan entirely.');
+      if(state==='landed' && style==='easy' && now-landAt>2700)setStatus('⏳ THAT SECOND SIDE IS COOKING…','Serve quickly for over easy, or change the order next time.');
+      draw(now);requestAnimationFrame(tick);
+    }
+    modeButtons.forEach(b=>b.addEventListener('click',()=>{style=b.dataset.style;modeButtons.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));reset()}));
+    [['power','powerOut'],['spin','spinOut']].forEach(([a,b])=>$(a).addEventListener('input',()=>$(b).textContent=$(a).value+'%'));
+    $('flip').addEventListener('click',launch);$('serve').addEventListener('click',serve);$('reset').addEventListener('click',reset);
+    document.addEventListener('keydown',e=>{if((e.key==='r'||e.key==='R')&&!['INPUT','TEXTAREA'].includes(document.activeElement.tagName))reset()});
+    reset();requestAnimationFrame(tick);
+  })();
+  </script>
+</body>
+</html>
