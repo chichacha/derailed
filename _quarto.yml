@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: docs
+  resources:
+    # Copy standalone interactive HTML pages alongside rendered Quarto stories.
+    - stories/over-easy-aint-easy/index.html
 
 website:
   title: "DERAILED."
