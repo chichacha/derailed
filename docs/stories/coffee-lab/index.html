@@ -64,6 +64,23 @@
     .layer.milk{background:linear-gradient(90deg,#cda16e,#e9c99e 45%,#cc9d67)}
     .layer.water{background:linear-gradient(90deg,#a9dff0,#d7f4fa 48%,#98d3e9)}
     .layer.espresso{background:linear-gradient(90deg,#48271d,#7b442c 60%,#4b281d)}
+    /* Decorative toppings float at the liquid surface; they never change volume. */
+    .cup-toppings{position:absolute;left:13px;right:23px;bottom:var(--fill-pct,0%);height:40px;z-index:5;pointer-events:none;transform:translateY(9px)}
+    .cup-toppings[hidden],.topping[hidden]{display:none}
+    .topping{position:absolute;left:0;right:0}
+    .topping.cream{bottom:0;height:46px;filter:drop-shadow(0 3px 2px rgba(0,0,0,.15))}
+    .topping.cream:before{content:"";position:absolute;inset:8px 11px 0;border-radius:50% 50% 40% 40%;background:radial-gradient(ellipse at 45% 16%,#fff 0 20%,#f2e9dd 65%,#d4c8b9 100%);clip-path:polygon(0 100%,5% 57%,22% 40%,33% 42%,47% 10%,59% 33%,75% 26%,87% 56%,100% 100%)}
+    .topping.cream:after{content:"";position:absolute;bottom:1px;left:12%;right:12%;height:13px;border-radius:50%;background:#fff9ef}
+    .topping.dust{bottom:3px;height:15px;border-radius:50%;opacity:.95;mix-blend-mode:multiply;background-size:24px 16px}
+    .topping.dust.cinnamon{background-image:radial-gradient(circle,#a95f2e 1.7px,transparent 2.2px),radial-gradient(circle,#8b4c28 1px,transparent 1.7px);background-position:0 0,10px 7px}
+    .topping.dust.nutmeg{background-image:radial-gradient(circle,#bd9359 1.3px,transparent 2px);background-size:13px 11px}
+    .topping.dust.clove{background-image:radial-gradient(circle,#583625 1px,transparent 1.7px);background-size:22px 15px}
+    .topping.dust.cocoa{background-image:radial-gradient(circle,#5a3428 2px,transparent 2.5px);background-size:12px 12px}
+    .topping.caramel{bottom:0;height:25px;border-top:4px solid #bd7629;border-radius:48% 45% 0 0;transform:rotate(-5deg)}
+    .topping.caramel:after{content:"";position:absolute;left:12%;right:12%;top:6px;border-top:4px solid #db9851;border-radius:50%;transform:rotate(12deg)}
+    .visual-additions{display:flex;gap:5px;flex-wrap:wrap;min-height:0;margin:0 0 4px}
+    .visual-additions:empty{display:none}
+    .visual-additions span{font-size:.64rem;font-weight:750;letter-spacing:.02em;color:#f8e9d9;border:1px solid rgba(255,255,255,.29);border-radius:99px;padding:3px 8px;background:rgba(255,255,255,.09)}
     .cup-guide{position:absolute;border-top:1px dashed rgba(255,255,255,.3);width:255px;left:50%;transform:translateX(-50%);bottom:20%;pointer-events:none}
     .cup-guide:after{content:"300 ml GUIDE";position:absolute;right:0;top:-17px;font-size:.55rem;color:#d1ded7;letter-spacing:.06em}
     .total{display:flex;justify-content:space-between;align-items:end;gap:14px;border-top:1px solid rgba(255,255,255,.22);padding-top:18px;position:relative;z-index:1}
@@ -172,6 +189,7 @@
           <div class="visual-kicker">THE CUP / VISUAL EXPLAINER</div>
           <h2 id="drink-name">Flat white</h2>
           <p id="drink-sub">A small, coffee-forward milk drink with a silky surface.</p>
+          <div class="visual-additions" id="visual-additions" aria-label="Chosen toppings and milk substitutions"></div>
           <div class="cup-zone">
             <div class="cup-guide" aria-hidden="true"></div>
             <div class="cup" role="img" aria-label="Cup with espresso, steamed milk, and foam" id="cup">
@@ -182,6 +200,14 @@
                   <div class="layer milk" id="layer-milk"></div>
                   <div class="layer water" id="layer-water"></div>
                   <div class="layer espresso" id="layer-espresso"></div>
+                </div>
+                <div class="cup-toppings" id="cup-toppings" hidden aria-hidden="true">
+                  <div class="topping cream" data-decoration="whipped-cream" hidden></div>
+                  <div class="topping caramel" data-decoration="caramel" hidden></div>
+                  <div class="topping dust cinnamon" data-decoration="cinnamon" hidden></div>
+                  <div class="topping dust nutmeg" data-decoration="nutmeg" hidden></div>
+                  <div class="topping dust clove" data-decoration="clove" hidden></div>
+                  <div class="topping dust cocoa" data-decoration="cocoa" hidden></div>
                 </div>
               </div>
             </div>
@@ -366,10 +392,22 @@
         button.disabled=!hasMilk;
         button.setAttribute("aria-pressed",String(state.milkType===button.dataset.milkType));
       });
-      const accents=[...state.flavors].map(x=>flavorNames[x]);
+      const selectedFlavors=[...state.flavors];
+      const accents=selectedFlavors.map(x=>flavorNames[x]);
+      const decorations=byId("cup-toppings");
+      decorations.hidden=selectedFlavors.length===0 || total===0;
+      decorations.style.setProperty("--fill-pct",Math.min(total/300,1)*100+"%");
+      decorations.querySelectorAll("[data-decoration]").forEach(el=>{el.hidden=!state.flavors.has(el.dataset.decoration);});
       const swap=state.milkType==="dairy"?"":(state.milkType==="oat"?"barista oat milk":"soy milk");
+      const visualAdditions=byId("visual-additions");
+      visualAdditions.replaceChildren();
+      [...accents,...(swap?["Swap: "+swap]:[])].forEach(name=>{
+        const chip=document.createElement("span");
+        chip.textContent=name;
+        visualAdditions.appendChild(chip);
+      });
       byId("custom-note").textContent=(accents.length?"Dress-up: "+accents.join(", ")+". ":"No flavor additions selected. ")+(swap?"Milk swap: "+swap+". ":"")+(state.flavors.has("clove")?"Use just a tiny pinch of clove. ":"")+"The cup shows base liquid ratios; chocolate and toppings are not included in ml.";
-      byId("cup").setAttribute("aria-label", "Base liquid illustration of "+total+" ml coffee: "+v.espresso+" ml espresso, "+v.milk+" ml steamed milk, "+v.foam+" ml foam and "+v.water+" ml hot water.");
+      byId("cup").setAttribute("aria-label", "Base liquid illustration of "+total+" ml coffee: "+v.espresso+" ml espresso, "+v.milk+" ml steamed milk, "+v.foam+" ml foam and "+v.water+" ml hot water."+(accents.length?" Illustrated toppings: "+accents.join(", ")+".":""));
       recipeContainer.querySelectorAll("button").forEach(button=>{
         button.setAttribute("aria-pressed",String(button.dataset.recipe===state.selected && !state.remixed));
       });
