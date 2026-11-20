@@ -65,12 +65,17 @@
     .layer.water{background:linear-gradient(90deg,#a9dff0,#d7f4fa 48%,#98d3e9)}
     .layer.espresso{background:linear-gradient(90deg,#48271d,#7b442c 60%,#4b281d)}
     /* Decorative toppings float at the liquid surface; they never change volume. */
-    .cup-toppings{position:absolute;left:13px;right:23px;bottom:var(--fill-pct,0%);height:40px;z-index:5;pointer-events:none;transform:translateY(9px)}
+    .cup-toppings{position:absolute;left:12px;right:24px;bottom:var(--surface-px,0px);height:34px;z-index:5;pointer-events:none;transform:translateY(7px)}
+    /* The topping overlay lives outside .glass so a tall swirl can rise past its rim. */
     .cup-toppings[hidden],.topping[hidden]{display:none}
     .topping{position:absolute;left:0;right:0}
-    .topping.cream{bottom:0;height:46px;filter:drop-shadow(0 3px 2px rgba(0,0,0,.15))}
-    .topping.cream:before{content:"";position:absolute;inset:8px 11px 0;border-radius:50% 50% 40% 40%;background:radial-gradient(ellipse at 45% 16%,#fff 0 20%,#f2e9dd 65%,#d4c8b9 100%);clip-path:polygon(0 100%,5% 57%,22% 40%,33% 42%,47% 10%,59% 33%,75% 26%,87% 56%,100% 100%)}
-    .topping.cream:after{content:"";position:absolute;bottom:1px;left:12%;right:12%;height:13px;border-radius:50%;background:#fff9ef}
+    .topping.cream{bottom:-3px;height:96px;left:-7px;right:-7px;filter:drop-shadow(0 5px 4px rgba(0,0,0,.22))}
+    .topping.cream svg{width:100%;height:100%;display:block;overflow:visible}
+    .cup[data-drink="con-panna"] .topping.cream{height:120px;bottom:-4px}
+    .cup[data-assembly="milk-first"] .layer.espresso{position:relative;z-index:1;background:linear-gradient(90deg,#8a5036,#b57b55 52%,#81462d)}
+    .cup[data-assembly="milk-first"] .layer.espresso:after{content:"";position:absolute;left:18%;right:15%;top:65%;height:30px;background:linear-gradient(90deg,transparent,#9c6444 20%,transparent 29%,transparent 58%,#996042 69%,transparent 78%);clip-path:polygon(5% 0,100% 0,90% 70%,64% 100%,46% 65%,25% 85%,0 40%);opacity:.55;pointer-events:none}
+    .assembly-cue{display:inline-block;font-size:.68rem;color:#f9d9ae;margin:0 0 5px}
+    .assembly-cue[hidden]{display:none}
     .topping.dust{bottom:3px;height:15px;border-radius:50%;opacity:.95;mix-blend-mode:multiply;background-size:24px 16px}
     .topping.dust.cinnamon{background-image:radial-gradient(circle,#a95f2e 1.7px,transparent 2.2px),radial-gradient(circle,#8b4c28 1px,transparent 1.7px);background-position:0 0,10px 7px}
     .topping.dust.nutmeg{background-image:radial-gradient(circle,#bd9359 1.3px,transparent 2px);background-size:13px 11px}
@@ -190,6 +195,7 @@
           <h2 id="drink-name">Flat white</h2>
           <p id="drink-sub">A small, coffee-forward milk drink with a silky surface.</p>
           <div class="visual-additions" id="visual-additions" aria-label="Chosen toppings and milk substitutions"></div>
+          <span class="assembly-cue" id="assembly-cue" hidden>Milk first → espresso poured through the foam</span>
           <div class="cup-zone">
             <div class="cup-guide" aria-hidden="true"></div>
             <div class="cup" role="img" aria-label="Cup with espresso, steamed milk, and foam" id="cup">
@@ -201,14 +207,26 @@
                   <div class="layer water" id="layer-water"></div>
                   <div class="layer espresso" id="layer-espresso"></div>
                 </div>
-                <div class="cup-toppings" id="cup-toppings" hidden aria-hidden="true">
-                  <div class="topping cream" data-decoration="whipped-cream" hidden></div>
+              </div>
+              <div class="cup-toppings" id="cup-toppings" hidden aria-hidden="true">
+                  <div class="topping cream" data-decoration="whipped-cream" hidden>
+                    <svg viewBox="0 0 180 110" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="cream-swirl" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0" stop-color="#fffefa"/><stop offset=".55" stop-color="#f7f0e4"/><stop offset="1" stop-color="#d9c9b6"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M15 97 C3 88 11 67 37 66 C32 50 48 41 65 44 C62 31 77 23 92 25 C95 13 93 8 87 2 C111 13 112 30 106 35 C121 34 130 46 125 54 C145 50 158 62 153 72 C178 72 176 95 155 98 Z" fill="url(#cream-swirl)" stroke="#eadbca" stroke-width="2"/>
+                      <path d="M43 75 C57 57 118 54 138 76 M62 51 C74 42 113 40 123 52 M77 31 C86 28 103 28 110 36" fill="none" stroke="#dfcfbb" stroke-width="6" stroke-linecap="round" opacity=".75"/>
+                      <path d="M40 71 C61 57 113 58 132 69 M66 47 C83 38 105 40 116 47 M81 25 Q94 21 103 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".95"/>
+                      <ellipse cx="89" cy="96" rx="72" ry="8" fill="#fff8ee" opacity=".94"/>
+                    </svg>
+                  </div>
                   <div class="topping caramel" data-decoration="caramel" hidden></div>
                   <div class="topping dust cinnamon" data-decoration="cinnamon" hidden></div>
                   <div class="topping dust nutmeg" data-decoration="nutmeg" hidden></div>
                   <div class="topping dust clove" data-decoration="clove" hidden></div>
                   <div class="topping dust cocoa" data-decoration="cocoa" hidden></div>
-                </div>
               </div>
             </div>
             <div class="cup-label">ILLUSTRATIVE<br>NOT TO SCALE PHYSICALLY</div>
@@ -379,7 +397,15 @@
       byId("strength").textContent=label;
       byId("profile").textContent=detail;
       byId("cup-hint").textContent=total>300 ? "Bigger than our 300 ml demo cup!" : total<90 ? "A tiny cup with a big opinion." : total<185 ? "A small cup, plenty of character." : "A larger, leisurely cup.";
+      const milkFirst=state.selected==="latte-macchiato" && !state.remixed;
+      byId("cup").dataset.drink=state.selected;
+      byId("cup").dataset.assembly=milkFirst?"milk-first":"standard";
+      byId("assembly-cue").hidden=!milkFirst;
       byId("liquid").style.height=Math.min(total/300,1)*100+"%";
+      // In a milk-first latte macchiato the espresso mark belongs just below the foam.
+      // Reset layer order for every other recipe and whenever sliders are remixed.
+      const layerOrder=milkFirst?{foam:0,espresso:1,milk:2,water:3}:{foam:0,milk:1,water:2,espresso:3};
+      keys.forEach(key=>{byId("layer-"+key).style.order=layerOrder[key];});
       keys.forEach(key=>{
         byId(key+"-value").textContent=v[key]+" ml";
         byId("layer-"+key).style.height=(total ? (v[key]/total)*100 : 0)+"%";
@@ -396,7 +422,7 @@
       const accents=selectedFlavors.map(x=>flavorNames[x]);
       const decorations=byId("cup-toppings");
       decorations.hidden=selectedFlavors.length===0 || total===0;
-      decorations.style.setProperty("--fill-pct",Math.min(total/300,1)*100+"%");
+      decorations.style.setProperty("--surface-px",(Math.min(total/300,1)*255+5)+"px");
       decorations.querySelectorAll("[data-decoration]").forEach(el=>{el.hidden=!state.flavors.has(el.dataset.decoration);});
       const swap=state.milkType==="dairy"?"":(state.milkType==="oat"?"barista oat milk":"soy milk");
       const visualAdditions=byId("visual-additions");
