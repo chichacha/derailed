@@ -46,6 +46,13 @@
     .recipe span{display:block;font-weight:850;letter-spacing:-.03em;font-size:.91rem;line-height:1.2}
     .recipe small{display:block;font-size:.69rem;margin-top:3px;color:var(--muted)}
     .recipe[aria-pressed="true"] small{color:#d8e6db}
+    .recipe-inner{display:flex;align-items:center;gap:9px;min-width:0}
+    .recipe-icon{display:block;width:34px;height:42px;flex:0 0 34px}
+    .recipe-icon svg{width:100%;height:100%;display:block;overflow:visible}
+    .recipe-copy{min-width:0}
+    .recipe .recipe-copy span{display:block}
+    .recipe[aria-pressed="true"] .recipe-icon{filter:brightness(1.13)}
+    @media(max-width:620px){.recipe-inner{gap:7px}.recipe-icon{width:29px;height:38px;flex-basis:29px}}
     .workbench{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:18px;align-items:stretch}
     .visual,.controls{border-radius:20px;overflow:hidden;min-width:0}
     .visual{background:var(--deep);color:#fff;position:relative;display:flex;flex-direction:column;padding:clamp(18px,2.4vw,27px);min-height:0}
@@ -359,17 +366,56 @@
     const state = {selected: "flat-white",remixed:false,flavors:new Set(),mixins:new Set(),milkType:"dairy"};
     const byId = id => document.getElementById(id);
     const recipeContainer = byId("recipes");
+    // Miniature ingredient diagrams: the same proportions as the main cup,
+    // with special visual cues for milk-first pouring, chocolate and whipped cream.
+    function miniCupSvg(drink) {
+      const total=drink.espresso+drink.milk+drink.foam+drink.water;
+      const drawVolume=Math.max(85,total);
+      const fillHeight=Math.min(total/drawVolume,1)*30;
+      const colors={espresso:"#633a2b",milk:drink.id==="mocha"?"#b47c59":"#d5a978",foam:drink.id==="mocha"?"#e9cbb0":"#fff1d8",water:"#b9e8f5"};
+      const order=drink.id==="latte-macchiato"?["milk","espresso","foam"]:["espresso","water","milk","foam"];
+      let y=39;
+      const segments=order.map(key=>{
+        const h=(drink[key]/drawVolume)*30;
+        if(h<=0)return "";
+        y-=h;
+        return '<rect x="8" y="'+y.toFixed(2)+'" width="25" height="'+h.toFixed(2)+'" fill="'+colors[key]+'"/>';
+      }).join("");
+      const surface=39-fillHeight;
+      const cream=drink.id==="con-panna"
+        ? '<path d="M10 '+(surface+1).toFixed(1)+' Q5 '+(surface-3).toFixed(1)+' 12 '+(surface-5).toFixed(1)+' Q10 '+(surface-11).toFixed(1)+' 19 '+(surface-10).toFixed(1)+' Q18 '+(surface-16).toFixed(1)+' 23 '+(surface-18).toFixed(1)+' Q28 '+(surface-14).toFixed(1)+' 26 '+(surface-9).toFixed(1)+' Q37 '+(surface-8).toFixed(1)+' 31 '+(surface+1).toFixed(1)+' Z" fill="#fff9ed" stroke="#d8c9b6" stroke-width="1"/>'
+        : "";
+      const latteMark=drink.id==="latte-macchiato"?'<path d="M14 19 Q19 23 17 27 M25 18 Q22 24 25 27" stroke="#9e6245" stroke-opacity=".6" stroke-width="1.5" fill="none"/>':"";
+      const mocha=drink.id==="mocha"?'<path d="M11 19 Q15 23 11 27 M27 20 Q23 24 28 28" stroke="#79503c" stroke-opacity=".6" stroke-width="1.2" fill="none"/>':"";
+      return '<svg viewBox="0 0 46 48" role="presentation" aria-hidden="true" focusable="false">'+
+        '<path d="M32 15 H35 Q43 15 43 23 Q43 31 33 31" fill="none" stroke="#d6c4aa" stroke-width="3.4"/>'+
+        '<path d="M7 9 H34 V34 Q34 40 28 41 H13 Q7 41 7 34 Z" fill="#faf6ed" stroke="#bda68b" stroke-width="1.7"/>'+
+        '<svg x="0" y="0" width="46" height="48" viewBox="0 0 46 48"><defs><clipPath id="mini-'+drink.id+'"><path d="M8 10 H33 V34 Q33 39 28 39 H13 Q8 39 8 34 Z"/></clipPath></defs>'+
+        '<g clip-path="url(#mini-'+drink.id+')">'+segments+latteMark+mocha+'</g></svg>'+
+        cream+'<path d="M7 9 H34" stroke="#e8d8c1" stroke-width="2" stroke-linecap="round"/>'+
+        '</svg>';
+    }
     drinks.forEach(drink=>{
       const button = document.createElement("button");
       button.type = "button";
       button.className = "recipe";
       button.dataset.recipe = drink.id;
       button.setAttribute("aria-pressed","false");
-      const name = document.createElement("span");
-      const hint = document.createElement("small");
-      name.textContent = drink.name;
-      hint.textContent = drink.hint;
-      button.append(name,hint);
+      const inner=document.createElement("div");
+      inner.className="recipe-inner";
+      const icon=document.createElement("div");
+      icon.className="recipe-icon";
+      icon.setAttribute("aria-hidden","true");
+      icon.innerHTML=miniCupSvg(drink);
+      const copy=document.createElement("div");
+      copy.className="recipe-copy";
+      const name=document.createElement("span");
+      const hint=document.createElement("small");
+      name.textContent=drink.name;
+      hint.textContent=drink.hint;
+      copy.append(name,hint);
+      inner.append(icon,copy);
+      button.appendChild(inner);
       button.addEventListener("click",()=>selectDrink(drink.id));
       recipeContainer.appendChild(button);
     });
