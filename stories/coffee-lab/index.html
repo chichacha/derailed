@@ -500,7 +500,7 @@
         g.append(make("title",{},drink.name+" · milk "+drink.milk+" ml · foam "+drink.foam+" ml"));
         g.append(make("rect",{x:px-21,y:py-24,width:42,height:47,rx:10,class:"map-back"}));
         const icon=make("g",{transform:"translate("+(px-18)+","+(py-22)+") scale(.8)","aria-hidden":"true"});
-        icon.innerHTML=miniCupSvg(drink);
+        icon.innerHTML=miniCupSvg(drink).replace('<svg viewBox="0 0 46 48"','<svg width="46" height="48" viewBox="0 0 46 48"');
         g.append(icon);
         // Names are labels; the icon is the exact ratio preview from the recipe buttons.
         g.append(make("text",{x:px,y:py+36,"text-anchor":"middle",class:"map-label"},drink.name));
