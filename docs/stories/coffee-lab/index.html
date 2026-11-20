@@ -46,23 +46,23 @@
     .recipe span{display:block;font-weight:850;letter-spacing:-.03em;font-size:1.02rem;line-height:1.25}
     .recipe small{display:block;font-size:.73rem;margin-top:8px;color:var(--muted)}
     .recipe[aria-pressed="true"] small{color:#d8e6db}
-    .workbench{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:18px;align-items:stretch}
+    .workbench{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:18px;align-items:start}
     .visual,.controls{border-radius:20px;overflow:hidden;min-width:0}
-    .visual{background:var(--deep);color:#fff;position:relative;display:flex;flex-direction:column;padding:clamp(23px,3.7vw,43px);min-height:550px}
+    .visual{background:var(--deep);color:#fff;position:relative;display:flex;flex-direction:column;padding:clamp(20px,2.6vw,30px);min-height:0}
     .visual:after{content:"";position:absolute;inset:auto -120px -180px auto;width:420px;height:420px;border:1px solid rgba(255,255,255,.15);border-radius:50%;pointer-events:none}
     .visual-kicker{font-size:.69rem;font-weight:850;letter-spacing:.17em;color:#f4b69b}
     #drink-name{font-size:clamp(2.05rem,4vw,3.25rem);letter-spacing:-.07em;line-height:1.04;margin:14px 0 8px}
     #drink-sub{color:#c5d9d1;max-width:440px;font-size:.91rem;min-height:2.8em}
-    .cup-zone{flex:1;display:flex;justify-content:center;align-items:center;position:relative;min-height:300px}
+    .cup-zone{flex:1;display:flex;justify-content:center;align-items:center;position:relative;min-height:225px}
     .cup-label{position:absolute;left:0;bottom:18px;font-size:.7rem;color:#d6ded6;letter-spacing:.09em}
-    .cup{height:270px;width:218px;position:relative;margin:0 15px 0 0}
+    .cup{height:270px;width:218px;position:relative;margin:0 15px 0 0;transform:scale(.78)}
     .glass{position:absolute;inset:5px 14px 0 0;border:5px solid rgba(242,240,225,.72);border-top:3px solid #f8f2de;border-radius:10px 10px 38px 38px;box-shadow:inset 0 0 22px rgba(255,255,255,.1), 0 12px 38px rgba(0,0,0,.19);overflow:hidden;background:rgba(255,255,255,.055)}
     .handle{position:absolute;width:60px;height:104px;border:12px solid rgba(242,240,225,.72);border-left:0;border-radius:0 40px 43px 0;top:74px;right:-31px}
     .liquid{position:absolute;bottom:0;left:0;right:0;height:0;display:flex;flex-direction:column;overflow:hidden;transition:height .4s ease}
     .layer{flex:none;width:100%;transition:height .4s ease}
     .layer.foam{background:repeating-linear-gradient(130deg,#fff6e3 0,#fff6e3 10px,#eedcc0 10px,#eedcc0 11px)}
     .layer.milk{background:linear-gradient(90deg,#cda16e,#e9c99e 45%,#cc9d67)}
-    .layer.water{background:linear-gradient(90deg,#87624d,#ad8060,#8d644f)}
+    .layer.water{background:linear-gradient(90deg,#a9dff0,#d7f4fa 48%,#98d3e9)}
     .layer.espresso{background:linear-gradient(90deg,#48271d,#7b442c 60%,#4b281d)}
     .cup-guide{position:absolute;border-top:1px dashed rgba(255,255,255,.3);width:255px;left:50%;transform:translateX(-50%);bottom:20%;pointer-events:none}
     .cup-guide:after{content:"300 ml GUIDE";position:absolute;right:0;top:-17px;font-size:.55rem;color:#d1ded7;letter-spacing:.06em}
@@ -91,7 +91,7 @@
     .legend{display:flex;gap:15px;flex-wrap:wrap;align-items:center;margin:17px 4px 0;font-size:.78rem;color:var(--muted)}
     .legend span{display:inline-flex;align-items:center;gap:6px}
     .dot{width:10px;height:10px;display:inline-block;border-radius:50%;border:1px solid #b5a594}
-    .dot.espresso{background:#633a2b}.dot.milk{background:#d9ae7d}.dot.foam{background:#fff2d6}.dot.water{background:#98725b}
+    .dot.espresso{background:#633a2b}.dot.milk{background:#d9ae7d}.dot.foam{background:#fff2d6}.dot.water{background:#b9e8f5}
     .fine-print{font-size:.78rem;color:var(--muted);margin:12px 4px 0;line-height:1.65;max-width:950px}
     .learn{border-top:1px solid var(--line);padding:38px 0 80px}
     .learn h2{font-size:clamp(2rem,4.2vw,3.4rem);letter-spacing:-.065em;line-height:1.1;max-width:650px}
@@ -107,7 +107,7 @@
     @media(max-width:900px){
       .hero{grid-template-columns:1fr 180px}.hero-stamp{width:165px;box-shadow:8px 10px 0 #e5d4bf}
       .recipe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .workbench{grid-template-columns:1fr}.visual{min-height:540px}.controls{min-height:0}
+      .workbench{grid-template-columns:1fr}.visual{min-height:0}.controls{min-height:0}
     }
     @media(max-width:620px){
       .shell{width:min(100% - 28px,1200px)}
@@ -116,7 +116,7 @@
       h1{font-size:clamp(3.3rem,13vw,5rem)}
       .lab-heading{display:block}.lab-heading p:last-child{margin-top:12px}
       .recipe{min-height:86px;padding:12px}
-      .visual{padding:23px;min-height:520px}.cup{transform:scale(.89)}
+      .visual{padding:23px;min-height:0}.cup{transform:scale(.72)}
       .cup-label{font-size:.61rem}
       .controls{padding:22px}.controls-head{flex-wrap:wrap}
       .learning-grid{grid-template-columns:1fr}
