@@ -64,6 +64,10 @@
     .layer.milk{background:linear-gradient(90deg,#cda16e,#e9c99e 45%,#cc9d67)}
     .layer.water{background:linear-gradient(90deg,#a9dff0,#d7f4fa 48%,#98d3e9)}
     .layer.espresso{background:linear-gradient(90deg,#48271d,#7b442c 60%,#4b281d)}
+    /* Chocolate syrup is mixed into the liquid, rather than dusted on top. */
+    .cup[data-chocolate="true"] .layer.milk{background:linear-gradient(90deg,#8a5740,#bb8a67 44%,#86513b);position:relative}
+    .cup[data-chocolate="true"] .layer.milk:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(102deg,transparent 0 32px,rgba(72,35,24,.16) 36px 40px,transparent 45px 80px);pointer-events:none}
+    .cup[data-chocolate="true"] .layer.foam{background:repeating-linear-gradient(130deg,#f3dcc2 0,#f3dcc2 10px,#cba27e 10px,#cba27e 11px)}
     /* Decorative toppings float at the liquid surface; they never change volume. */
     .cup-toppings{position:absolute;left:12px;right:24px;bottom:var(--surface-px,0px);height:34px;z-index:5;pointer-events:none;transform:translateY(7px)}
     /* The topping overlay lives outside .glass so a tall swirl can rise past its rim. */
@@ -279,12 +283,13 @@
         <section class="custom-card" aria-labelledby="dress-title">
           <span class="custom-kicker">03 / Dress it up</span>
           <h3 id="dress-title">A little something extra.</h3>
-          <p>Choose flavor accents and toppings. Optional stocks marked ✳.</p>
+          <p>Mix chocolate syrup into the coffee or add finishing touches. ✳ = stock-up option.</p>
           <div class="chips" id="flavor-options" role="group" aria-label="Optional flavor additions">
             <button type="button" class="chip" data-flavor="cinnamon" aria-pressed="false">Cinnamon</button>
             <button type="button" class="chip" data-flavor="nutmeg" aria-pressed="false">Nutmeg</button>
             <button type="button" class="chip" data-flavor="clove" aria-pressed="false">Clove</button>
-            <button type="button" class="chip" data-flavor="cocoa" aria-pressed="false">Cocoa ✳</button>
+            <button type="button" class="chip" data-flavor="cocoa" aria-pressed="false">Cocoa dust ✳</button>
+            <button type="button" class="chip" data-mixin="chocolate-syrup" aria-pressed="false">Chocolate syrup ✳</button>
             <button type="button" class="chip" data-flavor="caramel" aria-pressed="false">Caramel ✳</button>
             <button type="button" class="chip" data-flavor="whipped-cream" aria-pressed="false">Whipped cream</button>
           </div>
@@ -346,11 +351,11 @@
       {id:"latte",name:"Caffè latte",hint:"Soft & milky",espresso:40,milk:170,foam:15,water:0,tagline:"A larger, milk-forward coffee with a gentle espresso note.",note:"A latte is mostly steamed milk with a relatively thin silky surface. An easy canvas for latte art."},
       {id:"latte-macchiato",name:"Latte macchiato",hint:"Milk first",espresso:40,milk:170,foam:25,water:0,tagline:"A big glass of milk, marked with espresso.",note:"Here the milk is poured first and espresso is added afterward. The pour order helps create the signature layered look."},
       {id:"americano",name:"Americano",hint:"Coffee + water",espresso:40,milk:0,foam:0,water:140,tagline:"Espresso lengthened with hot water, without milk.",note:"A different branch of the family tree: hot water changes the strength in the cup without adding milk texture."},
-      {id:"mocha",name:"Caffè mocha",hint:"Chocolate + milk",espresso:40,milk:160,foam:20,water:0,flavors:["cocoa"],tagline:"Espresso, chocolate and steamed milk in one cozy cup.",note:"Mix unsweetened cocoa powder with a little hot espresso and sugar to taste before adding steamed milk. Chocolate is a flavor addition, not part of the liquid-ratio illustration."},
+      {id:"mocha",name:"Caffè mocha",hint:"Chocolate + milk",espresso:40,milk:160,foam:20,water:0,mixins:["chocolate-syrup"],tagline:"Espresso, chocolate syrup and steamed milk in one cozy cup.",note:"Stir 1–2 tablespoons of chocolate syrup into hot espresso, then add steamed milk. The syrup is mixed into the drink—not cocoa dusted on top. Adjust sweetness to taste."},
       {id:"con-panna",name:"Espresso con panna",hint:"Whipped cream",espresso:40,milk:0,foam:0,water:0,flavors:["whipped-cream"],tagline:"A little espresso crowned with whipped cream.",note:"Con panna means 'with cream': whipped cream sits on top of espresso. It is different from the steamed milk foam in an espresso macchiato."}
     ];
     const keys = ["espresso","milk","foam","water"];
-    const state = {selected: "flat-white",remixed:false,flavors:new Set(),milkType:"dairy"};
+    const state = {selected: "flat-white",remixed:false,flavors:new Set(),mixins:new Set(),milkType:"dairy"};
     const byId = id => document.getElementById(id);
     const recipeContainer = byId("recipes");
     drinks.forEach(drink=>{
@@ -374,6 +379,7 @@
       state.remixed = false;
       const recipe = recipeFor(id);
       state.flavors = new Set(recipe.flavors || []);
+      state.mixins = new Set(recipe.mixins || []);
       state.milkType = "dairy";
       keys.forEach(key=>{byId(key).value=String(recipe[key]);});
       update();
@@ -418,6 +424,9 @@
         button.disabled=!hasMilk;
         button.setAttribute("aria-pressed",String(state.milkType===button.dataset.milkType));
       });
+      const hasChocolate=state.mixins.has("chocolate-syrup");
+      byId("cup").dataset.chocolate=String(hasChocolate);
+      document.querySelectorAll("[data-mixin]").forEach(button=>button.setAttribute("aria-pressed",String(state.mixins.has(button.dataset.mixin))));
       const selectedFlavors=[...state.flavors];
       const accents=selectedFlavors.map(x=>flavorNames[x]);
       const decorations=byId("cup-toppings");
@@ -427,18 +436,23 @@
       const swap=state.milkType==="dairy"?"":(state.milkType==="oat"?"barista oat milk":"soy milk");
       const visualAdditions=byId("visual-additions");
       visualAdditions.replaceChildren();
-      [...accents,...(swap?["Swap: "+swap]:[])].forEach(name=>{
+      [...(hasChocolate?["Mixed in: chocolate syrup"]:[]),...accents,...(swap?["Swap: "+swap]:[])].forEach(name=>{
         const chip=document.createElement("span");
         chip.textContent=name;
         visualAdditions.appendChild(chip);
       });
-      byId("custom-note").textContent=(accents.length?"Dress-up: "+accents.join(", ")+". ":"No flavor additions selected. ")+(swap?"Milk swap: "+swap+". ":"")+(state.flavors.has("clove")?"Use just a tiny pinch of clove. ":"")+"The cup shows base liquid ratios; chocolate and toppings are not included in ml.";
-      byId("cup").setAttribute("aria-label", "Base liquid illustration of "+total+" ml coffee: "+v.espresso+" ml espresso, "+v.milk+" ml steamed milk, "+v.foam+" ml foam and "+v.water+" ml hot water."+(accents.length?" Illustrated toppings: "+accents.join(", ")+".":""));
+      byId("custom-note").textContent=(hasChocolate?"Chocolate syrup is mixed in, tinting the drink. ":"")+(accents.length?"Toppings: "+accents.join(", ")+". ":"")+(swap?"Milk swap: "+swap+". ":"")+(state.flavors.has("clove")?"Use just a tiny pinch of clove. ":"")+"The sliders show approximate base liquid volumes; syrup and toppings are not counted in ml.";
+      byId("cup").setAttribute("aria-label", "Base liquid illustration of "+total+" ml coffee: "+v.espresso+" ml espresso, "+v.milk+" ml steamed milk, "+v.foam+" ml foam and "+v.water+" ml hot water."+(hasChocolate?" Chocolate syrup mixed into the drink.":"")+(accents.length?" Illustrated toppings: "+accents.join(", ")+".":""));
       recipeContainer.querySelectorAll("button").forEach(button=>{
         button.setAttribute("aria-pressed",String(button.dataset.recipe===state.selected && !state.remixed));
       });
       byId("reset").textContent=state.remixed ? "↺ Reset "+recipe.name : "↺ Reset";
     }
+    document.querySelectorAll("[data-mixin]").forEach(button=>button.addEventListener("click",()=>{
+      const name=button.dataset.mixin;
+      if(state.mixins.has(name))state.mixins.delete(name);else state.mixins.add(name);
+      update();
+    }));
     document.querySelectorAll("[data-flavor]").forEach(button=>button.addEventListener("click",()=>{
       const name=button.dataset.flavor;
       if(state.flavors.has(name))state.flavors.delete(name);else state.flavors.add(name);
