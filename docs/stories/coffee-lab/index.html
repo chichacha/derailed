@@ -137,6 +137,23 @@
     .dot{width:10px;height:10px;display:inline-block;border-radius:50%;border:1px solid #b5a594}
     .dot.espresso{background:#633a2b}.dot.milk{background:#d9ae7d}.dot.foam{background:#fff2d6}.dot.water{background:#b9e8f5}
     .fine-print{font-size:.78rem;color:var(--muted);margin:12px 4px 0;line-height:1.65;max-width:950px}
+    .neighborhood{border-top:1px solid var(--line);padding:34px 0 42px}
+    .neighborhood h2{font-size:clamp(2rem,4.2vw,3.4rem);letter-spacing:-.065em;line-height:1.08;margin:0 0 10px}
+    .neighborhood-intro{max-width:680px;font-size:.95rem;color:var(--muted);margin:0 0 20px}
+    .coffee-map{background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:12px 16px 8px;overflow-x:auto}
+    .coffee-map svg{display:block;width:100%;min-width:700px;height:auto}
+    .coffee-map .map-grid{stroke:#e6ddcf;stroke-width:1;stroke-dasharray:4 5}
+    .coffee-map .map-axis{stroke:#887b6e;stroke-width:1.4}
+    .coffee-map .map-tick{fill:#70665e;font-size:12px}
+    .coffee-map .map-label{fill:#4a3f36;font-size:12px;font-weight:750}
+    .coffee-map .map-point{cursor:pointer;outline:none}
+    .coffee-map .map-point .map-back{fill:#f6eee2;stroke:#d6c7b6;stroke-width:1.5}
+    .coffee-map .map-point[aria-pressed="true"] .map-back{fill:#e9eadf;stroke:#bc5739;stroke-width:3}
+    .coffee-map .map-point:hover .map-back,.coffee-map .map-point:focus-visible .map-back{stroke:#bc5739;stroke-width:3}
+    .coffee-map .map-leader{stroke:#a59a8a;stroke-width:1.3;stroke-dasharray:2 4}
+    .coffee-map .map-origin{fill:#7e7163}
+    .map-foot{color:var(--muted);font-size:.75rem;line-height:1.55;margin:10px 2px 0}
+    .map-foot strong{color:var(--ink)}
     .learn{border-top:1px solid var(--line);padding:38px 0 80px}
     .learn h2{font-size:clamp(2rem,4.2vw,3.4rem);letter-spacing:-.065em;line-height:1.1;max-width:650px}
     .learning-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
@@ -324,8 +341,18 @@
       <p class="fine-print">This is an ingredient-ratio illustration, not a claim that coffee stays in separate layers. Volumes are approximate finished-in-cup examples; espresso yield is often weighed in grams, and different cafés use different cup sizes, milk textures, and recipes. The cup illustration fills to a 300 ml reference.</p>
     </section>
 
+    <section class="neighborhood shell" id="neighborhood" aria-labelledby="neighborhood-heading">
+      <p class="eyebrow">03 / Find your coffee neighbors</p>
+      <h2 id="neighborhood-heading">Every cup has neighbors.</h2>
+      <p class="neighborhood-intro">More milk to the right. More foam upward. Explore the ten espresso-based recipes by their proportions, then select a miniature cup to revisit its recipe.</p>
+      <div class="coffee-map" role="region" tabindex="0" aria-label="Scrollable coffee neighborhood chart showing milk and foam volume for ten espresso drinks">
+        <svg id="neighborhood-chart" viewBox="0 0 900 390" role="group" aria-label="Steamed milk volume horizontally, foam volume vertically; each drink is a selectable mini cup"></svg>
+      </div>
+      <p class="map-foot"><strong>Read the map, not the caffeine.</strong> These are the Coffee Lab's illustrative volumes in ml—not measured coffee strength or a universal café standard. Nearby drinks can differ by pouring order, water, chocolate syrup, or whipped cream. Where recipes overlap, icons are nudged apart and connected to their actual coordinates.</p>
+    </section>
+
     <section class="learn shell" aria-labelledby="learn-heading">
-      <p class="eyebrow">03 / Three useful things to know</p>
+      <p class="eyebrow">04 / Three useful things to know</p>
       <h2 id="learn-heading">A little knowledge. A lot more coffee.</h2>
       <div class="learning-grid">
         <article class="learning-card">
@@ -420,6 +447,73 @@
       recipeContainer.appendChild(button);
     });
     const recipeFor = id => drinks.find(x=>x.id===id) || drinks[0];
+    // No chart library needed: reuse the recipe data and inline SVG cup illustrations.
+    function buildNeighborhood() {
+      const svg=byId("neighborhood-chart");
+      const ns="http://www.w3.org/2000/svg";
+      const make=(tag,attrs={},label="")=>{
+        const el=document.createElementNS(ns,tag);
+        Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v)));
+        if(label)el.textContent=label;
+        return el;
+      };
+      const left=95,right=805,top=42,bottom=315;
+      const x=milk=>left+milk/200*(right-left);
+      const y=foam=>bottom-foam/70*(bottom-top);
+      for(const ml of [0,50,100,150,200]){
+        const px=x(ml);
+        svg.append(make("line",{x1:px,x2:px,y1:top,y2:bottom,class:"map-grid"}));
+        svg.append(make("text",{x:px,y:bottom+23,"text-anchor":"middle",class:"map-tick"},String(ml)));
+      }
+      for(const foam of [0,20,40,60]){
+        const py=y(foam);
+        svg.append(make("line",{x1:left,x2:right,y1:py,y2:py,class:"map-grid"}));
+        svg.append(make("text",{x:left-14,y:py+4,"text-anchor":"end",class:"map-tick"},String(foam)));
+      }
+      svg.append(make("line",{x1:left,x2:right,y1:bottom,y2:bottom,class:"map-axis"}));
+      svg.append(make("line",{x1:left,x2:left,y1:top,y2:bottom,class:"map-axis"}));
+      svg.append(make("text",{x:(left+right)/2,y:bottom+52,"text-anchor":"middle",class:"map-label"},"Steamed milk (ml) →"));
+      svg.append(make("text",{x:22,y:(top+bottom)/2,transform:"rotate(-90 22 "+((top+bottom)/2)+")","text-anchor":"middle",class:"map-label"},"Foam / airy texture (ml) →"));
+      // Deliberate visual offsets for overlapping or nearly overlapping drinks.
+      // The leader line always points to the correct data coordinate.
+      const offsets={
+        espresso:[0,-28],
+        americano:[85,-28],
+        "con-panna":[88,-95],
+        macchiato:[35,-77],
+        cortado:[0,-22],
+        "flat-white":[0,-26],
+        cappuccino:[0,10],
+        latte:[58,-14],
+        "latte-macchiato":[22,-70],
+        mocha:[-55,-36]
+      };
+      drinks.forEach(drink=>{
+        const ax=x(drink.milk),ay=y(drink.foam);
+        const [dx,dy]=offsets[drink.id]||[0,0];
+        const px=ax+dx,py=ay+dy;
+        if(dx||dy){
+          svg.append(make("line",{x1:ax,y1:ay,x2:px,y2:py,class:"map-leader"}));
+          svg.append(make("circle",{cx:ax,cy:ay,r:2.4,class:"map-origin"}));
+        }
+        const g=make("g",{class:"map-point",tabindex:0,role:"button","aria-label":drink.name+": "+drink.milk+" ml steamed milk, "+drink.foam+" ml foam. Select recipe.","aria-pressed":"false","data-map-recipe":drink.id});
+        g.append(make("title",{},drink.name+" · milk "+drink.milk+" ml · foam "+drink.foam+" ml"));
+        g.append(make("rect",{x:px-21,y:py-24,width:42,height:47,rx:10,class:"map-back"}));
+        const icon=make("g",{transform:"translate("+(px-18)+","+(py-22)+") scale(.8)","aria-hidden":"true"});
+        icon.innerHTML=miniCupSvg(drink);
+        g.append(icon);
+        // Names are labels; the icon is the exact ratio preview from the recipe buttons.
+        g.append(make("text",{x:px,y:py+36,"text-anchor":"middle",class:"map-label"},drink.name));
+        const open=()=>{
+          selectDrink(drink.id);
+          const bench=document.querySelector(".workbench");
+          if(bench)bench.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+        };
+        g.addEventListener("click",open);
+        g.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();open();}});
+        svg.append(g);
+      });
+    }
     const values = ()=>Object.fromEntries(keys.map(key=>[key,Number(byId(key).value)]));
     function selectDrink(id) {
       state.selected = id;
@@ -494,6 +588,9 @@
         button.setAttribute("aria-pressed",String(button.dataset.recipe===state.selected && !state.remixed));
       });
       byId("reset").textContent=state.remixed ? "↺ Reset "+recipe.name : "↺ Reset";
+      document.querySelectorAll("[data-map-recipe]").forEach(node=>{
+        node.setAttribute("aria-pressed",String(!state.remixed&&node.dataset.mapRecipe===state.selected));
+      });
     }
     document.querySelectorAll("[data-mixin]").forEach(button=>button.addEventListener("click",()=>{
       const name=button.dataset.mixin;
@@ -511,6 +608,7 @@
     }));
     keys.forEach(key=>byId(key).addEventListener("input",()=>{state.remixed=true;update();}));
     byId("reset").addEventListener("click",()=>selectDrink(state.selected));
+    buildNeighborhood();
     selectDrink("flat-white");
   </script>
 </body>
