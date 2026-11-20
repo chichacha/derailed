@@ -39,7 +39,7 @@
     .lab-heading{display:flex;gap:24px;align-items:end;justify-content:space-between;margin-bottom:22px;border-top:1px solid var(--line);padding-top:30px}
     .lab-heading h2{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-.065em;line-height:1.12;margin:0}
     .lab-heading p:last-child{color:var(--muted);font-size:.9rem;max-width:340px;margin:0}
-    .recipe-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:14px}
+    .recipe-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:14px}
     .recipe{cursor:pointer;text-align:left;min-height:65px;border:1.5px solid var(--line);border-radius:10px;background:var(--cream);padding:9px 12px;transition:background .15s,border-color .15s,transform .15s}
     .recipe:hover{transform:translateY(-2px);border-color:#b0a18c}
     .recipe[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
@@ -141,6 +141,7 @@
     .sources a{font-weight:750;text-decoration-thickness:1px;text-underline-offset:3px}
     footer{background:#e9e0d4;border-top:1px solid #d8ccbf;padding:24px 0;color:var(--muted);font-size:.78rem}
     footer .shell{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    @media(max-width:1100px){.recipe-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
     @media(max-width:900px){
       .hero{grid-template-columns:1fr 180px}.hero-stamp{width:165px;box-shadow:8px 10px 0 #e5d4bf}
       .recipe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
