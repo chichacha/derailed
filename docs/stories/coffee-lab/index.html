@@ -344,11 +344,11 @@
     <section class="neighborhood shell" id="neighborhood" aria-labelledby="neighborhood-heading">
       <p class="eyebrow">03 / Find your coffee neighbors</p>
       <h2 id="neighborhood-heading">Every cup has neighbors.</h2>
-      <p class="neighborhood-intro">More milk to the right. More foam upward. Explore the ten espresso-based recipes by their proportions, then select a miniature cup to revisit its recipe.</p>
+      <p class="neighborhood-intro">More milk to the right. More foam upward. A zero-friendly logarithmic scale gives the little drinks room to breathe. Select a miniature cup to revisit its recipe.</p>
       <div class="coffee-map" role="region" tabindex="0" aria-label="Scrollable coffee neighborhood chart showing milk and foam volume for ten espresso drinks">
         <svg id="neighborhood-chart" viewBox="0 0 900 390" role="group" aria-label="Steamed milk volume horizontally, foam volume vertically; each drink is a selectable mini cup"></svg>
       </div>
-      <p class="map-foot"><strong>Read the map, not the caffeine.</strong> These are the Coffee Lab's illustrative volumes in ml—not measured coffee strength or a universal café standard. Nearby drinks can differ by pouring order, water, chocolate syrup, or whipped cream. Where recipes overlap, icons are nudged apart and connected to their actual coordinates.</p>
+      <p class="map-foot"><strong>Read the map, not the caffeine.</strong> These are the Coffee Lab's illustrative volumes in ml—not measured coffee strength or a universal café standard. The log1p axes include zero and expand smaller volumes; tick labels still show ml. Nearby drinks can differ by pouring order, water, chocolate syrup, or whipped cream. Where recipes overlap, icons are nudged apart and connected to their actual coordinates.</p>
     </section>
 
     <section class="learn shell" aria-labelledby="learn-heading">
@@ -458,35 +458,38 @@
         return el;
       };
       const left=95,right=805,top=42,bottom=315;
-      const x=milk=>left+milk/200*(right-left);
-      const y=foam=>bottom-foam/70*(bottom-top);
-      for(const ml of [0,50,100,150,200]){
+      // log1p expands the small-volume neighborhood while preserving zero.
+      // Tick labels remain real millilitres, not logarithm values.
+      const logScale=(value,max)=>Math.log1p(Math.max(0,value))/Math.log1p(max);
+      const x=milk=>left+logScale(milk,200)*(right-left);
+      const y=foam=>bottom-logScale(foam,70)*(bottom-top);
+      for(const ml of [0,5,20,50,100,200]){
         const px=x(ml);
         svg.append(make("line",{x1:px,x2:px,y1:top,y2:bottom,class:"map-grid"}));
         svg.append(make("text",{x:px,y:bottom+23,"text-anchor":"middle",class:"map-tick"},String(ml)));
       }
-      for(const foam of [0,20,40,60]){
+      for(const foam of [0,5,10,20,40,70]){
         const py=y(foam);
         svg.append(make("line",{x1:left,x2:right,y1:py,y2:py,class:"map-grid"}));
         svg.append(make("text",{x:left-14,y:py+4,"text-anchor":"end",class:"map-tick"},String(foam)));
       }
       svg.append(make("line",{x1:left,x2:right,y1:bottom,y2:bottom,class:"map-axis"}));
       svg.append(make("line",{x1:left,x2:left,y1:top,y2:bottom,class:"map-axis"}));
-      svg.append(make("text",{x:(left+right)/2,y:bottom+52,"text-anchor":"middle",class:"map-label"},"Steamed milk (ml) →"));
-      svg.append(make("text",{x:22,y:(top+bottom)/2,transform:"rotate(-90 22 "+((top+bottom)/2)+")","text-anchor":"middle",class:"map-label"},"Foam / airy texture (ml) →"));
+      svg.append(make("text",{x:(left+right)/2,y:bottom+52,"text-anchor":"middle",class:"map-label"},"Steamed milk (ml · log1p scale) →"));
+      svg.append(make("text",{x:22,y:(top+bottom)/2,transform:"rotate(-90 22 "+((top+bottom)/2)+")","text-anchor":"middle",class:"map-label"},"Foam / airy texture (ml · log1p) →"));
       // Deliberate visual offsets for overlapping or nearly overlapping drinks.
       // The leader line always points to the correct data coordinate.
       const offsets={
-        espresso:[0,-28],
-        americano:[85,-28],
-        "con-panna":[88,-95],
-        macchiato:[35,-77],
-        cortado:[0,-22],
-        "flat-white":[0,-26],
-        cappuccino:[0,10],
-        latte:[58,-14],
-        "latte-macchiato":[22,-70],
-        mocha:[-55,-36]
+        espresso:[0,-30],
+        americano:[88,-30],
+        "con-panna":[88,-100],
+        macchiato:[0,-43],
+        cortado:[0,-30],
+        "flat-white":[-20,10],
+        cappuccino:[-25,22],
+        latte:[15,16],
+        "latte-macchiato":[-15,-34],
+        mocha:[-85,-13]
       };
       drinks.forEach(drink=>{
         const ax=x(drink.milk),ay=y(drink.foam);
