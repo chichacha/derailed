@@ -39,12 +39,12 @@
     .lab-heading{display:flex;gap:24px;align-items:end;justify-content:space-between;margin-bottom:22px;border-top:1px solid var(--line);padding-top:30px}
     .lab-heading h2{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-.065em;line-height:1.12;margin:0}
     .lab-heading p:last-child{color:var(--muted);font-size:.9rem;max-width:340px;margin:0}
-    .recipe-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-bottom:22px}
-    .recipe{cursor:pointer;text-align:left;min-height:90px;border:1.5px solid var(--line);border-radius:13px;background:var(--cream);padding:15px 14px;transition:background .15s,border-color .15s,transform .15s}
+    .recipe-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-bottom:14px}
+    .recipe{cursor:pointer;text-align:left;min-height:65px;border:1.5px solid var(--line);border-radius:10px;background:var(--cream);padding:9px 12px;transition:background .15s,border-color .15s,transform .15s}
     .recipe:hover{transform:translateY(-2px);border-color:#b0a18c}
     .recipe[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
-    .recipe span{display:block;font-weight:850;letter-spacing:-.03em;font-size:1.02rem;line-height:1.25}
-    .recipe small{display:block;font-size:.73rem;margin-top:8px;color:var(--muted)}
+    .recipe span{display:block;font-weight:850;letter-spacing:-.03em;font-size:.91rem;line-height:1.2}
+    .recipe small{display:block;font-size:.69rem;margin-top:3px;color:var(--muted)}
     .recipe[aria-pressed="true"] small{color:#d8e6db}
     .workbench{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:18px;align-items:stretch}
     .visual,.controls{border-radius:20px;overflow:hidden;min-width:0}
@@ -88,6 +88,17 @@
     .stat small{font-weight:800;color:var(--muted);font-size:.67rem;text-transform:uppercase;letter-spacing:.11em;display:block}
     .stat strong{font-size:1.25rem;letter-spacing:-.055em;display:block;margin:3px 0}
     .stat span{font-size:.72rem;color:var(--muted);display:block;line-height:1.4}
+    .customize{margin-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .custom-card{background:#ede3d7;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+    .custom-card h3{font-size:1.08rem;letter-spacing:-.035em;margin:3px 0 5px}
+    .custom-card p{font-size:.76rem;color:var(--muted);margin:0 0 10px}
+    .custom-kicker{font-size:.65rem;font-weight:850;letter-spacing:.13em;color:var(--red);text-transform:uppercase}
+    .chips{display:flex;flex-wrap:wrap;gap:6px}
+    .chip{cursor:pointer;border:1px solid #c8b9a7;border-radius:99px;background:var(--cream);padding:7px 11px;font-size:.77rem;font-weight:750;color:var(--ink);min-height:34px}
+    .chip[aria-pressed="true"]{background:var(--deep);color:white;border-color:var(--deep)}
+    .chip:disabled{opacity:.45;cursor:not-allowed}
+    .custom-note{font-size:.76rem;color:var(--brown);margin:12px 0 0;min-height:1.3em}
+    @media(max-width:620px){.customize{grid-template-columns:1fr}.custom-card{padding:14px}}
     .legend{display:flex;gap:15px;flex-wrap:wrap;align-items:center;margin:17px 4px 0;font-size:.78rem;color:var(--muted)}
     .legend span{display:inline-flex;align-items:center;gap:6px}
     .dot{width:10px;height:10px;display:inline-block;border-radius:50%;border:1px solid #b5a594}
@@ -115,7 +126,7 @@
       .hero{display:block;padding:47px 0 35px}.hero-stamp{display:none}
       h1{font-size:clamp(3.3rem,13vw,5rem)}
       .lab-heading{display:block}.lab-heading p:last-child{margin-top:12px}
-      .recipe{min-height:86px;padding:12px}
+      .recipe{min-height:60px;padding:9px 10px}
       .visual{padding:23px;min-height:0}.cup{transform:scale(.72)}
       .cup-label{font-size:.61rem}
       .controls{padding:22px}.controls-head{flex-wrap:wrap}
@@ -220,6 +231,32 @@
         </section>
       </div>
 
+      <div class="customize" aria-label="Customize your drink">
+        <section class="custom-card" aria-labelledby="dress-title">
+          <span class="custom-kicker">03 / Dress it up</span>
+          <h3 id="dress-title">A little something extra.</h3>
+          <p>Pick flavor accents. Pantry staples first; optional stocks marked ✳.</p>
+          <div class="chips" id="flavor-options" role="group" aria-label="Optional flavor additions">
+            <button type="button" class="chip" data-flavor="cinnamon" aria-pressed="false">Cinnamon</button>
+            <button type="button" class="chip" data-flavor="nutmeg" aria-pressed="false">Nutmeg</button>
+            <button type="button" class="chip" data-flavor="clove" aria-pressed="false">Clove</button>
+            <button type="button" class="chip" data-flavor="cocoa" aria-pressed="false">Cocoa ✳</button>
+            <button type="button" class="chip" data-flavor="caramel" aria-pressed="false">Caramel ✳</button>
+          </div>
+        </section>
+        <section class="custom-card" aria-labelledby="swap-title">
+          <span class="custom-kicker">04 / Swap the milk</span>
+          <h3 id="swap-title">Same recipe, different milk.</h3>
+          <p>Swap only when your base drink contains milk. ✳ = stock-up option.</p>
+          <div class="chips" id="milk-options" role="group" aria-label="Milk substitution">
+            <button type="button" class="chip" data-milk-type="dairy" aria-pressed="true">Dairy milk</button>
+            <button type="button" class="chip" data-milk-type="oat" aria-pressed="false">Barista oat ✳</button>
+            <button type="button" class="chip" data-milk-type="soy" aria-pressed="false">Soy milk ✳</button>
+          </div>
+        </section>
+      </div>
+      <p class="custom-note" id="custom-note" aria-live="polite">Choose a finishing touch or milk swap; the cup still illustrates the base volumes.</p>
+
       <div class="legend" aria-label="Illustration color legend">
         <span><i class="dot espresso"></i>Espresso</span>
         <span><i class="dot milk"></i>Steamed milk</span>
@@ -266,7 +303,7 @@
       {id:"americano",name:"Americano",hint:"Coffee + water",espresso:40,milk:0,foam:0,water:140,tagline:"Espresso lengthened with hot water, without milk.",note:"A different branch of the family tree: hot water changes the strength in the cup without adding milk texture."}
     ];
     const keys = ["espresso","milk","foam","water"];
-    const state = {selected: "flat-white",remixed:false};
+    const state = {selected: "flat-white",remixed:false,flavors:new Set(),milkType:"dairy"};
     const byId = id => document.getElementById(id);
     const recipeContainer = byId("recipes");
     drinks.forEach(drink=>{
@@ -288,6 +325,8 @@
     function selectDrink(id) {
       state.selected = id;
       state.remixed = false;
+      state.flavors.clear();
+      state.milkType = "dairy";
       const recipe = recipeFor(id);
       keys.forEach(key=>{byId(key).value=String(recipe[key]);});
       update();
@@ -316,12 +355,32 @@
         byId(key+"-value").textContent=v[key]+" ml";
         byId("layer-"+key).style.height=(total ? (v[key]/total)*100 : 0)+"%";
       });
+      const flavorNames={cinnamon:"cinnamon",nutmeg:"nutmeg",clove:"a pinch of clove",cocoa:"cocoa powder",caramel:"caramel sauce"};
+      document.querySelectorAll("[data-flavor]").forEach(button=>button.setAttribute("aria-pressed",String(state.flavors.has(button.dataset.flavor))));
+      const hasMilk=v.milk+v.foam>0;
+      if(!hasMilk)state.milkType="dairy";
+      document.querySelectorAll("[data-milk-type]").forEach(button=>{
+        button.disabled=!hasMilk;
+        button.setAttribute("aria-pressed",String(state.milkType===button.dataset.milkType));
+      });
+      const accents=[...state.flavors].map(x=>flavorNames[x]);
+      const swap=state.milkType==="dairy"?"":(state.milkType==="oat"?"barista oat milk":"soy milk");
+      byId("custom-note").textContent=(accents.length?"Dress-up: "+accents.join(", ")+". ":"No flavor additions selected. ")+(swap?"Milk swap: "+swap+". ":"")+(state.flavors.has("clove")?"Use just a tiny pinch of clove. ":"")+"The illustration shows base liquid ratios; toppings are not counted in ml.";
       byId("cup").setAttribute("aria-label", "Illustration of "+total+" ml coffee: "+v.espresso+" ml espresso, "+v.milk+" ml steamed milk, "+v.foam+" ml foam and "+v.water+" ml hot water.");
       recipeContainer.querySelectorAll("button").forEach(button=>{
         button.setAttribute("aria-pressed",String(button.dataset.recipe===state.selected && !state.remixed));
       });
       byId("reset").textContent=state.remixed ? "↺ Reset "+recipe.name : "↺ Reset";
     }
+    document.querySelectorAll("[data-flavor]").forEach(button=>button.addEventListener("click",()=>{
+      const name=button.dataset.flavor;
+      if(state.flavors.has(name))state.flavors.delete(name);else state.flavors.add(name);
+      update();
+    }));
+    document.querySelectorAll("[data-milk-type]").forEach(button=>button.addEventListener("click",()=>{
+      state.milkType=button.dataset.milkType;
+      update();
+    }));
     keys.forEach(key=>byId(key).addEventListener("input",()=>{state.remixed=true;update();}));
     byId("reset").addEventListener("click",()=>selectDrink(state.selected));
     selectDrink("flat-white");
