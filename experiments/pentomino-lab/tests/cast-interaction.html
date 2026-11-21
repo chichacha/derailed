@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cast of Twelve — Interaction Regression Test</title>
+<style>
+body{max-width:900px;margin:40px auto;padding:0 20px;font:15px/1.5 system-ui,sans-serif;background:#faf8f2;color:#29252d}
+[hidden]{display:none!important}.card{border:1px solid #ddd;padding:10px;margin:5px 0;display:inline-block;width:195px;vertical-align:top;background:#fff}
+.card-art svg{height:90px;width:160px}.card-copy p,.card-copy h3{display:none}
+.pass{color:#216b44}.fail{color:#b0254f}
+</style></head><body>
+<h1>Cast of Twelve — click regression test</h1>
+<p>This local browser test verifies that each Next posture button advances its own character without replacing the cards, losing button focus, or changing other portraits.</p>
+<div hidden aria-hidden="true">
+<select id="paletteSelect"></select>
+<select id="styleFamily"><option value="curves">Curves</option><option value="linear">Linear</option><option value="splits">Splits</option><option value="blocks">Blocks</option></select>
+<select id="stripeDirection"><option value="diagonal">Diagonal</option></select>
+<select id="splitDirection"><option value="vertical">Vertical</option></select>
+<div id="castStripes"></div><div id="castSplits"></div>
+<div id="xArtwork"></div><div id="heroPalette"></div><div id="xStage"></div>
+<button id="shuffleX">Shuffle X</button><button id="resetX">Reset X</button><button id="downloadX">Download X</button>
+<button id="downloadSheet">Download sheet</button><button id="cycleCast">Next all</button>
+</div>
+<ul id="results"></ul>
+<div id="cast"></div>
+<script src="../../shared/colour-system.js"></script>
+<script src="../data/gomasu.js"></script>
+<script src="../js/character-dna.js"></script>
+<script src="../js/portrait.js"></script>
+<script src="../js/cast.js"></script>
+<script>
+(function(){
+ const root=document.getElementById('cast'),results=document.getElementById('results');
+ let failures=0;
+ for(const letter of 'FILPNTUVWYZ'){
+   const card=root.querySelector('[data-character="'+letter+'"]');
+   const button=card&&card.querySelector('button[data-next]');
+   const label=card&&card.querySelector('.pose-meta');
+   const image=card&&card.querySelector('.card-art');
+   const before=label&&label.textContent,oldSVG=image&&image.innerHTML;
+   const oldChildren=[...root.children];
+   if(button){button.focus();button.click()}
+   const checks=Boolean(button&&label.textContent!==before&&image.innerHTML!==oldSVG&&
+     oldChildren.length===root.children.length&&oldChildren.every((n,i)=>n===root.children[i])&&
+     document.activeElement===button);
+   const item=document.createElement('li');item.className=checks?'pass':'fail';
+   item.textContent=(checks?'✓ ':'✗ ')+letter+': '+before+' → '+(label&&label.textContent);
+   results.append(item);if(!checks)failures++;
+ }
+ const summary=document.createElement('p');summary.textContent=failures?'FAILED: '+failures+' character(s)':'PASS: all 11 posture buttons';
+ summary.className=failures?'fail':'pass';results.before(summary);
+})();
+</script></body></html>
