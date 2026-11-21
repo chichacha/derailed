@@ -4,7 +4,7 @@
 const G=global.GomasuPostures,D=global.CharacterDNA,C=global.DERAILEDColour;
 function escape(s){return String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function portrait(shape,id,palette,family,options={}){
- const size=options.size||220,height=options.height||190,unit=options.unit||40,gap=options.gap??2;
+ const size=options.size||220,height=options.height||190,unit=options.unit||34,gap=options.gap??2;
  const p=C.validate(palette),colors=C.colours(p);
  const source=G.posePoints(id);
  if(id[0]!==shape)throw Error('Posture does not belong to '+shape);
