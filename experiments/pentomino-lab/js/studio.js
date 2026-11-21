@@ -28,8 +28,17 @@ function drawFocus(){
 }
 function render(){
  const matching=filters();
- if(!matching.includes(selected))selected=matching[0]||'X00';
  $('count').textContent=matching.length+' of 63 postures';
+ if(!matching.length){
+   selected=null;$('gallery').replaceChildren();$('focusArt').replaceChildren();
+   $('focusId').textContent='NO MATCH';$('focusName').textContent='No posture found';
+   $('focusJa').textContent='';$('focusStory').textContent='Try a different resident, face or symmetry filter.';
+   $('focusComment').textContent='';$('focusMeta').replaceChildren();
+   $('next').disabled=true;$('download').disabled=true;
+   return;
+ }
+ if(!matching.includes(selected))selected=matching[0];
+ $('next').disabled=false;$('download').disabled=false;
  const fragment=document.createDocumentFragment();
  for(const id of matching){
    const name=id[0],face=G.metadata[id].side,button=document.createElement('button');
