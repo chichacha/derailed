@@ -23,15 +23,26 @@
       const old=styles[name]||{};styles[name]={...old,main:mains[i],accent:accentFor(mains[i]),motif:old.motif||'solid',rotation:old.rotation||0,decorated:old.decorated!==false};
     });
   }
+  // Manual choices are still *whole-piece* treatments, never per-cell stickers.
   const manualGroups={
-    linear:['broad-stripes','fine-stripes','diagonal-stripes'],
-    curves:['half-circle','quarter-circle','dots','rings','arches'],
-    splits:['vertical-split','horizontal-split','diagonal-split'],
-    blocks:['checker']
+    linear:[{id:'horizontal-stripes',label:'Horizontal stripes'},{id:'vertical-stripes',label:'Vertical stripes'},{id:'diagonal-stripes',label:'Diagonal stripes'}],
+    curves:[{id:'circle-cutout',label:'Large circle cutout'}],
+    splits:[{id:'vertical-split',label:'Vertical half'},{id:'horizontal-split',label:'Horizontal half'},{id:'diagonal-split',label:'Diagonal half'}],
+    blocks:[{id:'colour-block',label:'Large colour block'}]
   };
-  function manualPool(){return (manualGroups[$('family').value]||manualGroups.splits).map(id=>M.get(id))}
+  const configFor={
+    'horizontal-stripes':{family:'linear',stripeDirection:'horizontal'},
+    'vertical-stripes':{family:'linear',stripeDirection:'vertical'},
+    'diagonal-stripes':{family:'linear',stripeDirection:'diagonal'},
+    'circle-cutout':{family:'curves'},
+    'vertical-split':{family:'splits',splitDirection:'vertical'},
+    'horizontal-split':{family:'splits',splitDirection:'horizontal'},
+    'diagonal-split':{family:'splits',splitDirection:'diagonal'},
+    'colour-block':{family:'blocks'}
+  };
+  function manualPool(){return manualGroups[$('family').value]||manualGroups.curves}
   function refillMotifChoices(){
-    const picker=$('pieceMotif'),available=[M.get('solid'),...manualPool()];
+    const picker=$('pieceMotif'),available=[{id:'solid',label:'Solid (no accent)'},...manualPool()];
     picker.replaceChildren();
     for(const m of available){
       const opt=document.createElement('option');opt.value=m.id;opt.textContent=m.label;picker.add(opt);
@@ -41,6 +52,8 @@
     const manual=$('designMode').value==='free';
     $('motifInspectorRow').hidden=!manual;
     $('rotateMotif').hidden=!manual;
+    $('stripeControls').hidden=manual||$('family').value!=='linear';
+    $('splitControls').hidden=manual||$('family').value!=='splits';
     refillMotifChoices();
   }
   function remix(){
@@ -79,6 +92,8 @@
     });
     $('designMode').addEventListener('change',()=>{updateModeUI();remix();syncInspector();render()});
     $('family').addEventListener('change',()=>{updateModeUI();remix();render();syncInspector()});
+    $('stripeDirection').addEventListener('change',render);
+    $('splitDirection').addEventListener('change',render);
     $('pairing').addEventListener('change',()=>{
       letters.forEach(name=>{styles[name].accent=accentFor(styles[name].main)});render();syncInspector();
     });
@@ -91,7 +106,13 @@
     $('toggleDecoration').addEventListener('click',()=>{styles[selected].decorated=!styles[selected].decorated;syncInspector();render()});
     $('pieceMain').addEventListener('change',()=>{styles[selected].main=Number($('pieceMain').value);if(styles[selected].main===styles[selected].accent)styles[selected].accent=accentFor(styles[selected].main);syncInspector();render()});
     $('pieceAccent').addEventListener('change',()=>{styles[selected].accent=Number($('pieceAccent').value);render()});
-    $('rotateMotif').addEventListener('click',()=>{styles[selected].rotation=(styles[selected].rotation+1)%4;render()});
+    $('rotateMotif').addEventListener('click',()=>{
+      const s=styles[selected],pool=manualPool(),ids=pool.map(m=>m.id);
+      if(ids.length>1){
+        s.motif=ids[(Math.max(0,ids.indexOf(s.motif))+1)%ids.length];s.decorated=true;
+      }else{s.rotation=(s.rotation+1)%4}
+      syncInspector();render();
+    });
     $('newTiling').addEventListener('click',()=>{
       solution=(solution+1+Math.floor(Math.random()*(T.solutions.length-1)))%T.solutions.length;render();syncInspector();
     });
@@ -153,14 +174,20 @@
       const clipId='clip-'+tile.name;
       defs+='<clipPath id="'+clipId+'">'+cells.map(c=>'<rect x="'+f(c.x+gap/2)+'" y="'+f(c.y+gap/2)+'" width="'+f(unit-gap)+'" height="'+f(unit-gap)+'" rx="'+f(radius)+'"/>').join('')+'</clipPath>';
       const p={x,y,w,h,cells,unit,rotation:piece.rotation,scale,main:colorsNow[piece.main],accent:colorsNow[piece.accent]};
+      const useManual=$('designMode').value==='free';
+      const requested=useManual?(configFor[piece.motif]||{family:$('family').value}):{};
+      const direction=useManual?requested.stripeDirection:$('stripeDirection').value;
+      const split=useManual?requested.splitDirection:$('splitDirection').value;
       const dna=D.paint(tile.name,cells,{
-        unit,features:colorsNow.slice(0,5),accent:p.accent,family:$('family').value,
-        decorated:piece.decorated,scale
+        unit,features:colorsNow.slice(0,5),accent:p.accent,
+        family:useManual?(requested.family||$('family').value):$('family').value,
+        stripeDirection:direction,splitDirection:split,
+        curveEdge:useManual&&requested.family==='curves'?['top','right','bottom','left'][piece.rotation%4]:undefined,
+        decorated:piece.decorated&&(!useManual||piece.motif!=='solid'),scale
       });
       body+='<g data-piece="'+tile.name+'" data-posture="'+dna.posture.id+'" aria-label="Pentomino '+tile.name+', posture '+dna.posture.id+'">';
       body+='<g clip-path="url(#'+clipId+')"><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+p.main+'"/>';
-      if($('designMode').value==='character'||tile.name==='X')body+=dna.svg;
-      else if(piece.decorated)body+=M.get(manualPool().some(m=>m.id===piece.motif)?piece.motif:'solid').render(p);
+      body+=dna.svg;
       body+='</g>';
       if(showSelected&&tile.name===selected){
         body+='<g pointer-events="none">'+cells.map(c=>'<rect x="'+f(c.x+gap/2+1)+'" y="'+f(c.y+gap/2+1)+'" width="'+f(unit-gap-2)+'" height="'+f(unit-gap-2)+'" rx="'+f(radius)+'" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-dasharray="5 5"/>').join('')+'</g>';
@@ -192,6 +219,7 @@
   function snapshot(){
     return {schema:'derailed.pentomino/1',palette:C.validate(palette),solution,settings:{
       background:Number($('background').value),mood:$('mood').value,family:$('family').value,pairing:$('pairing').value,designMode:$('designMode').value,
+      stripeDirection:$('stripeDirection').value,splitDirection:$('splitDirection').value,
       density:Number($('density').value),gap:Number($('gap').value),radius:Number($('radius').value),scale:Number($('scale').value)
     },pieces:styles};
   }
@@ -206,16 +234,20 @@
         const bounds={background:[0,6],density:[0,100],gap:[0,12],radius:[0,24],scale:[55,150]};
         $(id).value=n(s[id],bounds[id][0],bounds[id][1],Number($(id).value));
       }
-      for(const id of ['mood','pairing','designMode'])if([...$(id).options].some(o=>o.value===s[id]))$(id).value=s[id];
+      for(const id of ['mood','pairing','designMode','stripeDirection','splitDirection'])if([...$(id).options].some(o=>o.value===s[id]))$(id).value=s[id];
       // Legacy designs used "all" and "stripes"; map them to a disciplined grammar.
       const familyAliases={all:'splits',stripes:'linear'};
-      $('family').value=familyAliases[s.family]||s.family||'splits';
+      $('family').value=familyAliases[s.family]||s.family||'curves';
       updateModeUI();
       for(const name of letters){
         const p=input.pieces?.[name]||{};
         styles[name]={
           main:n(p.main,0,4,0)|0,accent:n(p.accent,0,6,5)|0,
-          motif:M.get(p.motif).id,rotation:n(p.rotation,0,3,0)|0,
+          motif:configFor[p.motif]?p.motif:
+            ({'broad-stripes':'horizontal-stripes','fine-stripes':'vertical-stripes','half-circle':'circle-cutout',
+              'quarter-circle':'circle-cutout','dots':'circle-cutout','rings':'circle-cutout','arches':'circle-cutout',
+              'checker':'colour-block','sunrise':'circle-cutout'}[p.motif]||'solid'),
+          rotation:n(p.rotation,0,3,0)|0,
           decorated:p.decorated!==undefined?Boolean(p.decorated):p.motif!=='solid'
         };
       }
