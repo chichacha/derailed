@@ -1,11 +1,12 @@
 /* Pentomino Lab application — UI/state/export glue only.
-   Data: data/tilings.js, drawing vocabulary: js/motifs.js,
+   Data: data/tilings.js and data/gomasu.js,
+   shape design grammar: js/character-dna.js,
    shared design tokens: ../shared/colour-system.js.
    Classic scripts intentionally work from file:// without a local server. */
 (function(){
   'use strict';
-  const C=window.DERAILEDColour,T=window.PentominoTilings,M=window.PentominoMotifs,G=window.GomasuPostures,D=window.CharacterDNA;
-  if(!C||!T||!M||!G||!D){document.getElementById('board').textContent='Missing lab modules. Check the relative script paths.';return}
+  const C=window.DERAILEDColour,T=window.PentominoTilings,G=window.GomasuPostures,D=window.CharacterDNA;
+  if(!C||!T||!G||!D){document.getElementById('board').textContent='Missing lab modules. Check the relative script paths.';return}
   const $=id=>document.getElementById(id), pick=arr=>arr[Math.floor(Math.random()*arr.length)];
   const shuffle=arr=>{const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
   const n=(value,min,max,fallback=min)=>{const v=Number(value);return Number.isFinite(v)?Math.min(max,Math.max(min,v)):fallback};
