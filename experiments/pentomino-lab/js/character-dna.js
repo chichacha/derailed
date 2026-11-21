@@ -74,6 +74,27 @@ function paint(shape,cells,opt={}){
   }
   if(!decorated)return {svg:'',posture,profile,transform};
 
+  // Default stripes align with the artwork itself, so "horizontal" really
+  // means horizontal on screen. Opt into stripeFrame:'character' for a costume
+  // that rotates with the character (useful for future Gomasu storytelling).
+  if(family==='linear'&&opt.stripeFrame!=='character'){
+    const minX=left,minY=top,maxX=Math.max(...xs)+unit,maxY=Math.max(...ys)+unit;
+    const step=unit*.48*scale,thickness=unit*.205*scale;
+    const direction=['horizontal','vertical','diagonal'].includes(opt.stripeDirection)?opt.stripeDirection:'diagonal';
+    let bands='';
+    if(direction==='horizontal'){
+      for(let y=Math.floor((minY-unit)/step)*step;y<=maxY+unit;y+=step)
+        bands+=rect(minX-unit,y,maxX-minX+unit*2,thickness,accent);
+    }else if(direction==='vertical'){
+      for(let x=Math.floor((minX-unit)/step)*step;x<=maxX+unit;x+=step)
+        bands+=rect(x,minY-unit,thickness,maxY-minY+unit*2,accent);
+    }else{
+      const minK=Math.floor((minX-maxY-unit)/step)*step,maxK=maxX-minY+unit;
+      for(let k=minK;k<=maxK;k+=step)
+        bands+='<path d="M '+fmt(k+minY)+' '+fmt(minY-unit)+' L '+fmt(k+maxY+unit)+' '+fmt(maxY+unit)+'" stroke="'+accent+'" stroke-width="'+fmt(thickness)+'" fill="none"/>';
+    }
+    return {svg:bands,posture,profile,transform};
+  }
   // Canonical coordinates (base pose), independent of where the piece sits.
   const base=G.posePoints(G.ids(shape)[0]);
   const width=(Math.max(...base.map(p=>p.x))+1)*unit;
