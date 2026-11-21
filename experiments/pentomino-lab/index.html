@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#19191e">
+  <meta name="description" content="Twelve pentominoes. Sixty squares. Five colours and two neutrals. A tiny extensible generative design laboratory.">
+  <title>Pentomino Lab — DERAILED.</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <div><a class="brand" href="../../index.html">← DERAILED.</a><span class="eyebrow">EXPERIMENT 001 / GENERATIVE DESIGN</span>
+      <h1>Pentomino <em>Pattern Lab.</em></h1>
+      <p>12 shapes · 60 squares · one very unreasonable design obsession.</p></div>
+    <div class="stamp">BEAUTIFULLY<br>CONSTRAINED <span>✳</span></div>
+  </header>
+  <main class="layout">
+    <section class="workspace" aria-label="Artwork studio">
+      <div class="toolbar">
+        <button class="primary" id="newTiling">↻ New tiling</button>
+        <button id="remix">✳ Remix patterns</button>
+        <button id="shuffle">◈ Reassign colours</button>
+        <span class="status" id="tilingLabel">Tiling 01 / 16</span>
+      </div>
+      <div class="artwork-frame"><div id="board" aria-label="Interactive 6 by 10 pentomino artwork"></div></div>
+      <p class="underboard"><span>Click a shape to style it. Every motif stays inside its pentomino.</span><span id="pieceStats">12 pieces / 60 cells</span></p>
+      <div class="rules"><span>● Five feature colours</span><span>● Two neutral tokens</span><span>● One dominant colour per shape</span></div>
+      <div class="exportbar">
+        <button id="exportSvg">↓ SVG artwork</button><button id="exportPng">↓ PNG artwork</button>
+        <button id="exportDesign">↓ Design JSON</button><button id="importDesign">↑ Open design JSON</button>
+        <input id="designFile" type="file" accept=".json,application/json" hidden>
+      </div>
+    </section>
+    <aside class="panel" aria-label="Design controls">
+      <section>
+        <div class="sectiontitle"><h2>01 / Colour system</h2><span>5 + 2 neutrals</span></div>
+        <label for="preset">Palette preset</label><select id="preset"></select>
+        <div class="palette-grid" id="paletteSwatches"></div>
+        <label for="background">Canvas background</label>
+        <select id="background"><option value="5">Light neutral</option><option value="6">Dark neutral</option>
+          <option value="0">Feature 1</option><option value="1">Feature 2</option><option value="2">Feature 3</option><option value="3">Feature 4</option><option value="4">Feature 5</option>
+        </select>
+        <div class="btnpair"><button id="exportPalette">↓ Palette JSON</button><button id="exportCss">↓ CSS tokens</button></div>
+        <p class="hint">Edit any swatch. The seven tokens can be reused in a future Colour Lab or in other DERAILED pages.</p>
+      </section>
+      <section>
+        <div class="sectiontitle"><h2>02 / Graphic language</h2><span>Motif registry</span></div>
+        <label for="mood">Composition mood</label><select id="mood">
+          <option value="quiet">Quiet / mostly solid</option><option value="graphic" selected>Graphic / balanced</option>
+          <option value="playful">Playful / decorated</option><option value="maximal">Maximal / all patterned</option>
+        </select>
+        <label for="family">Motif family</label><select id="family"><option value="all">All geometric motifs</option>
+          <option value="curves">Curves, dots and circles</option><option value="stripes">Stripes and blocks</option><option value="splits">Two-tone splits</option></select>
+        <label for="pairing">Accent pairing</label><select id="pairing">
+          <option value="mixed">Feature or neutral</option><option value="neutral">Neutrals only</option><option value="feature">Feature colours only</option></select>
+        <label for="density">Decorated pieces <output id="densityValue">60%</output></label>
+        <input id="density" type="range" min="0" max="100" step="5" value="60">
+        <label for="gap">Spacing <output id="gapValue">2</output></label>
+        <input id="gap" type="range" min="0" max="12" step="1" value="2">
+        <label for="radius">Corner radius <output id="radiusValue">3</output></label>
+        <input id="radius" type="range" min="0" max="24" step="1" value="3">
+        <label for="scale">Motif scale <output id="scaleValue">100%</output></label>
+        <input id="scale" type="range" min="55" max="150" step="5" value="100">
+      </section>
+      <section>
+        <div class="sectiontitle"><h2>03 / Shape inspector</h2><span id="selectedLabel">F</span></div>
+        <div class="piece-chips" id="pieceChips"></div>
+        <label for="pieceMotif">Pattern</label><select id="pieceMotif"></select>
+        <div class="btnpair">
+          <div><label for="pieceMain">Dominant</label><select id="pieceMain"></select></div>
+          <div><label for="pieceAccent">Accent</label><select id="pieceAccent"></select></div>
+        </div>
+        <button class="wide" id="rotateMotif">↻ Rotate motif direction</button>
+        <p class="hint">The grid is a valid pentomino tiling; the decorative elements are clipped to the selected shape.</p>
+      </section>
+      <p class="credit">GOMASU × DERAILED. / One thing led to another.</p>
+    </aside>
+  </main>
+  <footer>Made to be remixed. <a href="README.md">How it works</a> · <a href="https://github.com/chichacha/derailed">Source on GitHub</a></footer>
+  <script defer src="../shared/colour-system.js"></script>
+  <script defer src="data/tilings.js"></script>
+  <script defer src="js/motifs.js"></script>
+  <script defer src="js/app.js"></script>
+</body>
+</html>
