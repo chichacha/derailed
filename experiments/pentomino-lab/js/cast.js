@@ -32,20 +32,40 @@
    $('castStripes').hidden=family!=='linear';
    $('castSplits').hidden=family!=='splits';
  }
+ // Keep each card and its button mounted. Replacing the entire grid on each
+ // click made the browser lose focus/scroll anchoring on rows below the first.
+ const cardSlots=Object.create(null);
+ function makeCard(letter){
+   const person=G.character(letter),poseIds=G.ids(letter);
+   const card=document.createElement('article');card.className='card';card.dataset.character=letter;
+   const art=document.createElement('div');art.className='card-art';
+   const copy=document.createElement('div');copy.className='card-copy';
+   const title=document.createElement('div');title.className='card-title';
+   const strong=document.createElement('strong');strong.textContent=letter;
+   const count=document.createElement('span');count.textContent=poseIds.length+' postures';
+   title.append(strong,count);
+   const ja=document.createElement('h3');ja.lang='ja';ja.textContent=person.name_ja;
+   const story=document.createElement('p');story.textContent=person.story;
+   const motif=document.createElement('div');motif.className='motif';motif.textContent=D.profiles[letter].idea;
+   const poseMeta=document.createElement('p');poseMeta.className='pose-meta';
+   const button=document.createElement('button');button.type='button';button.dataset.next=letter;
+   button.textContent='↻ Next posture';
+   copy.append(title,ja,story,motif,poseMeta,button);
+   card.append(art,copy);
+   $('cast').append(card);
+   return {card,art,poseMeta,button};
+ }
+ function updateCard(letter){
+   const slot=cardSlots[letter]||(cardSlots[letter]=makeCard(letter));
+   const poseIds=G.ids(letter),poseId=poseIds[ids[letter]%poseIds.length];
+   const meta=G.metadata[poseId];
+   slot.art.innerHTML=P.portrait(letter,poseId,palette,family,portraitOptions());
+   slot.poseMeta.textContent=poseId+' · '+meta.side+' · '+D.families[family].label;
+   slot.button.setAttribute('aria-label','Next posture for '+letter+' (current '+poseId+', '+poseIds.length+' orientations)');
+   return poseId;
+ }
  function renderCast(){
-   const root=$('cast');root.replaceChildren();
-   for(const letter of order){
-     const person=G.character(letter),poseIds=G.ids(letter),poseId=poseIds[ids[letter]%poseIds.length],meta=G.metadata[poseId];
-     const item=document.createElement('article');item.className='card';
-     item.innerHTML='<div class="card-art">'+P.portrait(letter,poseId,palette,family,portraitOptions())+'</div>'+
-       '<div class="card-copy"><div class="card-title"><strong>'+letter+'</strong><span>'+poseIds.length+' postures</span></div>'+
-       '<h3 lang="ja">'+esc(person.name_ja)+'</h3>'+
-       '<p>'+esc(person.story)+'</p>'+
-       '<div class="motif">'+esc(D.profiles[letter].idea)+'</div>'+
-       '<p class="pose-meta">'+poseId+' · '+esc(meta.side)+' · '+esc(D.families[family].label)+'</p>'+
-       '<button type="button" data-next="'+letter+'">↻ Next posture</button></div>';
-     root.append(item);
-   }
+   for(const letter of order)updateCard(letter);
  }
  function render(){renderX();renderCast()}
  function sheetFile(){
@@ -70,7 +90,10 @@
  $('splitDirection').addEventListener('change',render);
  $('cycleCast').addEventListener('click',()=>{for(const name of order)ids[name]=(ids[name]+1)%G.ids(name).length;renderCast()});
  $('cast').addEventListener('click',e=>{const button=e.target.closest('button[data-next]');if(!button)return;
-   const name=button.dataset.next;ids[name]=(ids[name]+1)%G.ids(name).length;renderCast()});
+   const name=button.dataset.next;if(!Object.prototype.hasOwnProperty.call(ids,name))return;
+   ids[name]=(ids[name]+1)%G.ids(name).length;
+   updateCard(name); // Only repaint the clicked portrait; preserve the grid and scroll position.
+ });
  $('shuffleX').addEventListener('click',()=>{for(let i=4;i>0;i--){const j=Math.floor(Math.random()*(i+1));[xColors[i],xColors[j]]=[xColors[j],xColors[i]]}renderX()});
  $('resetX').addEventListener('click',()=>{xColors=[0,1,2,3,4];renderX()});
  $('downloadX').addEventListener('click',()=>download('pentomino-X-five-colours.svg',xMarkup(false).replace('viewBox=', 'width="900" height="855" viewBox=')));
