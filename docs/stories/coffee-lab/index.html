@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An interactive coffee lab: explore the difference between espresso, macchiato, cortado, flat white, cappuccino and latte by changing milk, foam and coffee.">
+  <meta name="theme-color" content="#f6f0e6">
+  <title>Coffee Lab — DERAILED.</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper:#f6f0e6; --cream:#fffaf2; --ink:#2b241f; --muted:#6d655d;
+      --red:#bc5739; --red-dark:#91412c; --line:#ded4c5; --deep:#263f3d;
+      --brown:#633a2b; --foam:#fff2d6; --milk:#d9ae7d;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);line-height:1.5}
+    button,input{font:inherit}
+    a{color:inherit}
+    a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:3px}
+    .shell{width:min(1200px,calc(100% - 40px));margin:auto}
+    .site-header{border-bottom:1px solid var(--line)}
+    .site-header .shell{display:flex;justify-content:space-between;gap:14px;align-items:center;min-height:70px}
+    .wordmark{font-weight:900;letter-spacing:-.08em;font-size:1.25rem;text-decoration:none}
+    .header-right{font-size:.75rem;font-weight:750;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+    .hero{padding:64px 0 48px;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(230px,.55fr);gap:32px;align-items:center}
+    .eyebrow{color:var(--red);font-size:.73rem;letter-spacing:.18em;text-transform:uppercase;font-weight:850;margin:0 0 15px}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(3.55rem,8.2vw,7.2rem);line-height:.98;letter-spacing:-0.07em;margin:0 0 25px;font-weight:850}
+    h1 em{font-style:normal;color:var(--red)}
+    .lede{font-size:clamp(1rem,1.6vw,1.23rem);max-width:600px;color:var(--muted);line-height:1.7}
+    .hero-stamp{margin:auto;width:min(100%,235px);aspect-ratio:1;border:2px dashed #b9a791;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;transform:rotate(11deg);text-align:center;background:#efe4d6;box-shadow:14px 17px 0 #e5d4bf}
+    .hero-stamp span:first-child{font-size:3.8rem;line-height:1}
+    .hero-stamp strong{font-size:1.12rem;letter-spacing:-.03em;margin-top:9px}
+    .hero-stamp small{font-weight:800;color:var(--red);font-size:.65rem;letter-spacing:.15em}
+    .lab{padding-bottom:60px}
+    .lab-heading{display:flex;gap:24px;align-items:end;justify-content:space-between;margin-bottom:22px;border-top:1px solid var(--line);padding-top:30px}
+    .lab-heading h2{font-size:clamp(1.9rem,4vw,3rem);letter-spacing:-.065em;line-height:1.12;margin:0}
+    .lab-heading p:last-child{color:var(--muted);font-size:.9rem;max-width:340px;margin:0}
+    .recipe-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:14px}
+    .recipe{cursor:pointer;text-align:left;min-height:65px;border:1.5px solid var(--line);border-radius:10px;background:var(--cream);padding:9px 12px;transition:background .15s,border-color .15s,transform .15s}
+    .recipe:hover{transform:translateY(-2px);border-color:#b0a18c}
+    .recipe[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:#fff}
+    .recipe span{display:block;font-weight:850;letter-spacing:-.03em;font-size:.91rem;line-height:1.2}
+    .recipe small{display:block;font-size:.69rem;margin-top:3px;color:var(--muted)}
+    .recipe[aria-pressed="true"] small{color:#d8e6db}
+    .recipe-inner{display:flex;align-items:center;gap:9px;min-width:0}
+    .recipe-icon{display:block;width:34px;height:42px;flex:0 0 34px}
+    .recipe-icon svg{width:100%;height:100%;display:block;overflow:visible}
+    .recipe-copy{min-width:0}
+    .recipe .recipe-copy span{display:block}
+    .recipe[aria-pressed="true"] .recipe-icon{filter:brightness(1.13)}
+    @media(max-width:620px){.recipe-inner{gap:7px}.recipe-icon{width:29px;height:38px;flex-basis:29px}}
+    .workbench{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:18px;align-items:stretch}
+    .visual,.controls{border-radius:20px;overflow:hidden;min-width:0}
+    .visual{background:var(--deep);color:#fff;position:relative;display:flex;flex-direction:column;padding:clamp(18px,2.4vw,27px);min-height:0}
+    .visual:after{content:"";position:absolute;inset:auto -120px -180px auto;width:420px;height:420px;border:1px solid rgba(255,255,255,.15);border-radius:50%;pointer-events:none}
+    .visual-kicker{font-size:.69rem;font-weight:850;letter-spacing:.17em;color:#f4b69b}
+    #drink-name{font-size:clamp(2.05rem,4vw,3.25rem);letter-spacing:-.07em;line-height:1.04;margin:14px 0 8px}
+    #drink-sub{color:#c5d9d1;max-width:440px;font-size:.91rem;min-height:2.8em}
+    .cup-zone{flex:1;display:flex;justify-content:center;align-items:center;position:relative;min-height:210px}
+    .cup-label{position:absolute;left:0;bottom:18px;font-size:.7rem;color:#d6ded6;letter-spacing:.09em}
+    .cup{height:270px;width:218px;position:relative;margin:0 15px 0 0;transform:scale(.78)}
+    .glass{position:absolute;inset:5px 14px 0 0;border:5px solid rgba(242,240,225,.72);border-top:3px solid #f8f2de;border-radius:10px 10px 38px 38px;box-shadow:inset 0 0 22px rgba(255,255,255,.1), 0 12px 38px rgba(0,0,0,.19);overflow:hidden;background:rgba(255,255,255,.055)}
+    .handle{position:absolute;width:60px;height:104px;border:12px solid rgba(242,240,225,.72);border-left:0;border-radius:0 40px 43px 0;top:74px;right:-31px}
+    .liquid{position:absolute;bottom:0;left:0;right:0;height:0;display:flex;flex-direction:column;overflow:hidden;transition:height .4s ease}
+    .layer{flex:none;width:100%;transition:height .4s ease}
+    .layer.foam{background:repeating-linear-gradient(130deg,#fff6e3 0,#fff6e3 10px,#eedcc0 10px,#eedcc0 11px)}
+    .layer.milk{background:linear-gradient(90deg,#cda16e,#e9c99e 45%,#cc9d67)}
+    .layer.water{background:linear-gradient(90deg,#a9dff0,#d7f4fa 48%,#98d3e9)}
+    .layer.espresso{background:linear-gradient(90deg,#48271d,#7b442c 60%,#4b281d)}
+    /* Chocolate syrup is mixed into the liquid, rather than dusted on top. */
+    .cup[data-chocolate="true"] .layer.milk{background:linear-gradient(90deg,#8a5740,#bb8a67 44%,#86513b);position:relative}
+    .cup[data-chocolate="true"] .layer.milk:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(102deg,transparent 0 32px,rgba(72,35,24,.16) 36px 40px,transparent 45px 80px);pointer-events:none}
+    .cup[data-chocolate="true"] .layer.foam{background:repeating-linear-gradient(130deg,#f3dcc2 0,#f3dcc2 10px,#cba27e 10px,#cba27e 11px)}
+    /* Decorative toppings float at the liquid surface; they never change volume. */
+    .cup-toppings{position:absolute;left:12px;right:24px;bottom:var(--surface-px,0px);height:34px;z-index:5;pointer-events:none;transform:translateY(7px)}
+    /* The topping overlay lives outside .glass so a tall swirl can rise past its rim. */
+    .cup-toppings[hidden],.topping[hidden]{display:none}
+    .topping{position:absolute;left:0;right:0}
+    .topping.cream{bottom:-3px;height:96px;left:-7px;right:-7px;filter:drop-shadow(0 5px 4px rgba(0,0,0,.22))}
+    .topping.cream svg{width:100%;height:100%;display:block;overflow:visible}
+    .cup[data-drink="con-panna"] .topping.cream{height:120px;bottom:-4px}
+    .cup[data-assembly="milk-first"] .layer.espresso{position:relative;z-index:1;background:linear-gradient(90deg,#8a5036,#b57b55 52%,#81462d)}
+    .cup[data-assembly="milk-first"] .layer.espresso:after{content:"";position:absolute;left:18%;right:15%;top:65%;height:30px;background:linear-gradient(90deg,transparent,#9c6444 20%,transparent 29%,transparent 58%,#996042 69%,transparent 78%);clip-path:polygon(5% 0,100% 0,90% 70%,64% 100%,46% 65%,25% 85%,0 40%);opacity:.55;pointer-events:none}
+    .assembly-cue{display:inline-block;font-size:.68rem;color:#f9d9ae;margin:0 0 5px}
+    .assembly-cue[hidden]{display:none}
+    .topping.dust{bottom:3px;height:15px;border-radius:50%;opacity:.95;mix-blend-mode:multiply;background-size:24px 16px}
+    .topping.dust.cinnamon{background-image:radial-gradient(circle,#a95f2e 1.7px,transparent 2.2px),radial-gradient(circle,#8b4c28 1px,transparent 1.7px);background-position:0 0,10px 7px}
+    .topping.dust.nutmeg{background-image:radial-gradient(circle,#bd9359 1.3px,transparent 2px);background-size:13px 11px}
+    .topping.dust.clove{background-image:radial-gradient(circle,#583625 1px,transparent 1.7px);background-size:22px 15px}
+    .topping.dust.cocoa{background-image:radial-gradient(circle,#5a3428 2px,transparent 2.5px);background-size:12px 12px}
+    .topping.caramel{bottom:0;height:25px;border-top:4px solid #bd7629;border-radius:48% 45% 0 0;transform:rotate(-5deg)}
+    .topping.caramel:after{content:"";position:absolute;left:12%;right:12%;top:6px;border-top:4px solid #db9851;border-radius:50%;transform:rotate(12deg)}
+    .visual-additions{display:flex;gap:5px;flex-wrap:wrap;min-height:0;margin:0 0 4px}
+    .visual-additions:empty{display:none}
+    .visual-additions span{font-size:.64rem;font-weight:750;letter-spacing:.02em;color:#f8e9d9;border:1px solid rgba(255,255,255,.29);border-radius:99px;padding:3px 8px;background:rgba(255,255,255,.09)}
+    .cup-guide{position:absolute;border-top:1px dashed rgba(255,255,255,.3);width:255px;left:50%;transform:translateX(-50%);bottom:20%;pointer-events:none}
+    .cup-guide:after{content:"300 ml GUIDE";position:absolute;right:0;top:-17px;font-size:.55rem;color:#d1ded7;letter-spacing:.06em}
+    .total{display:flex;justify-content:space-between;align-items:end;gap:14px;border-top:1px solid rgba(255,255,255,.22);padding-top:18px;position:relative;z-index:1}
+    .total span{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:#bcd0c9}
+    .total strong{display:block;font-size:clamp(2.2rem,4.6vw,3.8rem);letter-spacing:-.075em;line-height:1}
+    .total small{color:#d0e1d9;font-size:.8rem;text-align:right;max-width:175px}
+    .controls{background:var(--cream);border:1px solid var(--line);padding:clamp(18px,2.4vw,27px);display:flex;flex-direction:column}
+    .controls-head{display:flex;gap:14px;align-items:start;justify-content:space-between}
+    .controls h3{font-size:clamp(1.55rem,2.7vw,2rem);letter-spacing:-.065em;line-height:1.15;margin:0 0 6px}
+    #recipe-note{color:var(--muted);font-size:.84rem;line-height:1.45;min-height:0;margin-bottom:8px}
+    .reset{cursor:pointer;background:transparent;border:1px solid #c4b29e;border-radius:8px;padding:8px 11px;white-space:nowrap;color:var(--brown);font-size:.78rem;font-weight:750}
+    .reset:hover{background:#eee5da}
+    .sliders{margin-top:9px}
+    .slider-line{padding:9px 0 10px;border-top:1px solid var(--line)}
+    .slider-title{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:3px}
+    .slider-title label{font-size:.89rem;font-weight:800}
+    .slider-title output{font-size:.95rem;font-weight:800;color:var(--brown);font-variant-numeric:tabular-nums}
+    .slider-line input{width:100%;accent-color:var(--red);cursor:pointer;height:22px;margin:0}
+    .slider-caption{font-size:.71rem;color:var(--muted);margin:0;line-height:1.3}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto;padding-top:12px}
+    .stat{background:#f0e6d9;border-radius:12px;padding:11px 12px}
+    .stat small{font-weight:800;color:var(--muted);font-size:.67rem;text-transform:uppercase;letter-spacing:.11em;display:block}
+    .stat strong{font-size:1.25rem;letter-spacing:-.055em;display:block;margin:3px 0}
+    .stat span{font-size:.72rem;color:var(--muted);display:block;line-height:1.4}
+    .customize{margin-top:15px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .custom-card{background:#ede3d7;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+    .custom-card h3{font-size:1.08rem;letter-spacing:-.035em;margin:3px 0 5px}
+    .custom-card p{font-size:.76rem;color:var(--muted);margin:0 0 10px}
+    .custom-kicker{font-size:.65rem;font-weight:850;letter-spacing:.13em;color:var(--red);text-transform:uppercase}
+    .chips{display:flex;flex-wrap:wrap;gap:6px}
+    .chip{cursor:pointer;border:1px solid #c8b9a7;border-radius:99px;background:var(--cream);padding:7px 11px;font-size:.77rem;font-weight:750;color:var(--ink);min-height:34px}
+    .chip[aria-pressed="true"]{background:var(--deep);color:white;border-color:var(--deep)}
+    .chip:disabled{opacity:.45;cursor:not-allowed}
+    .custom-note{font-size:.76rem;color:var(--brown);margin:12px 0 0;min-height:1.3em}
+    @media(max-width:620px){.customize{grid-template-columns:1fr}.custom-card{padding:14px}}
+    .legend{display:flex;gap:15px;flex-wrap:wrap;align-items:center;margin:17px 4px 0;font-size:.78rem;color:var(--muted)}
+    .legend span{display:inline-flex;align-items:center;gap:6px}
+    .dot{width:10px;height:10px;display:inline-block;border-radius:50%;border:1px solid #b5a594}
+    .dot.espresso{background:#633a2b}.dot.milk{background:#d9ae7d}.dot.foam{background:#fff2d6}.dot.water{background:#b9e8f5}
+    .fine-print{font-size:.78rem;color:var(--muted);margin:12px 4px 0;line-height:1.65;max-width:950px}
+    .neighborhood{border-top:1px solid var(--line);padding:34px 0 42px}
+    .neighborhood h2{font-size:clamp(2rem,4.2vw,3.4rem);letter-spacing:-.065em;line-height:1.08;margin:0 0 10px}
+    .neighborhood-intro{max-width:680px;font-size:.95rem;color:var(--muted);margin:0 0 20px}
+    .coffee-map{background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:12px 16px 8px;overflow-x:auto}
+    .coffee-map svg{display:block;width:100%;min-width:700px;height:auto}
+    .coffee-map .map-grid{stroke:#e6ddcf;stroke-width:1;stroke-dasharray:4 5}
+    .coffee-map .map-axis{stroke:#887b6e;stroke-width:1.4}
+    .coffee-map .map-tick{fill:#70665e;font-size:12px}
+    .coffee-map .map-label{fill:#4a3f36;font-size:12px;font-weight:750}
+    .coffee-map .map-point{cursor:pointer;outline:none}
+    .coffee-map .map-point .map-back{fill:#f6eee2;stroke:#d6c7b6;stroke-width:1.5}
+    .coffee-map .map-point[aria-pressed="true"] .map-back{fill:#e9eadf;stroke:#bc5739;stroke-width:3}
+    .coffee-map .map-point:hover .map-back,.coffee-map .map-point:focus-visible .map-back{stroke:#bc5739;stroke-width:3}
+    .coffee-map .map-leader{stroke:#a59a8a;stroke-width:1.3;stroke-dasharray:2 4}
+    .coffee-map .map-origin{fill:#7e7163}
+    .map-foot{color:var(--muted);font-size:.75rem;line-height:1.55;margin:10px 2px 0}
+    .map-foot strong{color:var(--ink)}
+    .learn{border-top:1px solid var(--line);padding:38px 0 80px}
+    .learn h2{font-size:clamp(2rem,4.2vw,3.4rem);letter-spacing:-.065em;line-height:1.1;max-width:650px}
+    .learning-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+    .learning-card{background:#eae0d3;border:1px solid #d9ccbc;border-radius:15px;padding:25px}
+    .learning-card .number{font-size:.69rem;font-weight:850;letter-spacing:.16em;color:var(--red)}
+    .learning-card h3{font-size:1.3rem;line-height:1.2;letter-spacing:-.04em;margin:18px 0 10px}
+    .learning-card p{font-size:.89rem;line-height:1.7;color:#5e554e;margin:0}
+    .sources{font-size:.81rem;line-height:1.7;color:var(--muted);margin-top:25px}
+    .sources a{font-weight:750;text-decoration-thickness:1px;text-underline-offset:3px}
+    footer{background:#e9e0d4;border-top:1px solid #d8ccbf;padding:24px 0;color:var(--muted);font-size:.78rem}
+    footer .shell{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    @media(max-width:1100px){.recipe-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    @media(max-width:900px){
+      .hero{grid-template-columns:1fr 180px}.hero-stamp{width:165px;box-shadow:8px 10px 0 #e5d4bf}
+      .recipe-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .workbench{grid-template-columns:1fr}.visual{min-height:0}.controls{min-height:0}
+    }
+    @media(max-width:620px){
+      .shell{width:min(100% - 28px,1200px)}
+      .site-header .shell{min-height:62px}.header-right{font-size:.62rem}
+      .hero{display:block;padding:47px 0 35px}.hero-stamp{display:none}
+      h1{font-size:clamp(3.3rem,13vw,5rem)}
+      .lab-heading{display:block}.lab-heading p:last-child{margin-top:12px}
+      .recipe{min-height:60px;padding:9px 10px}
+      .visual{padding:23px;min-height:0}.cup{transform:scale(.72)}
+      .cup-label{font-size:.61rem}
+      .controls{padding:22px}.controls-head{flex-wrap:wrap}
+      .learning-grid{grid-template-columns:1fr}
+      .learn{padding-bottom:55px}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}.liquid,.layer,.recipe{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell">
+      <a class="wordmark" href="../../index.html" aria-label="DERAILED home">DERAILED.</a>
+      <span class="header-right">Kitchen detour / 001 ☕</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <div>
+        <p class="eyebrow">The coffee lab · Crêpe & Coffee edition</p>
+        <h1>Same beans.<br><em>Different drinks.</em></h1>
+        <p class="lede">What makes a flat white different from a latte? Start with espresso. Change the milk. Add a little foam. See what happens. No barista certificate required.</p>
+      </div>
+      <div class="hero-stamp" aria-hidden="true"><span>☕</span><strong>HOME BARISTA<br>EXPERIMENT</strong><small>EST. 2026</small></div>
+    </section>
+
+    <section class="lab shell" id="lab" aria-labelledby="lab-heading">
+      <div class="lab-heading">
+        <div>
+          <p class="eyebrow">01 / Pick a drink</p>
+          <h2 id="lab-heading">Anatomy of a coffee.</h2>
+        </div>
+        <p>Choose a classic, then move the sliders. The cup is your laboratory.</p>
+      </div>
+
+      <div class="recipe-grid" id="recipes" role="group" aria-label="Coffee drink recipes"></div>
+
+      <div class="workbench">
+        <section class="visual" aria-label="Illustrated coffee composition">
+          <div class="visual-kicker">THE CUP / VISUAL EXPLAINER</div>
+          <h2 id="drink-name">Flat white</h2>
+          <p id="drink-sub">A small, coffee-forward milk drink with a silky surface.</p>
+          <div class="visual-additions" id="visual-additions" aria-label="Chosen toppings and milk substitutions"></div>
+          <span class="assembly-cue" id="assembly-cue" hidden>Milk first → espresso poured through the foam</span>
+          <div class="cup-zone">
+            <div class="cup-guide" aria-hidden="true"></div>
+            <div class="cup" role="img" aria-label="Cup with espresso, steamed milk, and foam" id="cup">
+              <div class="handle"></div>
+              <div class="glass">
+                <div class="liquid" id="liquid">
+                  <div class="layer foam" id="layer-foam"></div>
+                  <div class="layer milk" id="layer-milk"></div>
+                  <div class="layer water" id="layer-water"></div>
+                  <div class="layer espresso" id="layer-espresso"></div>
+                </div>
+              </div>
+              <div class="cup-toppings" id="cup-toppings" hidden aria-hidden="true">
+                  <div class="topping cream" data-decoration="whipped-cream" hidden>
+                    <svg viewBox="0 0 180 110" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <linearGradient id="cream-swirl" x1="0" y1="0" x2="1" y2="1">
+                          <stop offset="0" stop-color="#fffefa"/><stop offset=".55" stop-color="#f7f0e4"/><stop offset="1" stop-color="#d9c9b6"/>
+                        </linearGradient>
+                      </defs>
+                      <path d="M15 97 C3 88 11 67 37 66 C32 50 48 41 65 44 C62 31 77 23 92 25 C95 13 93 8 87 2 C111 13 112 30 106 35 C121 34 130 46 125 54 C145 50 158 62 153 72 C178 72 176 95 155 98 Z" fill="url(#cream-swirl)" stroke="#eadbca" stroke-width="2"/>
+                      <path d="M43 75 C57 57 118 54 138 76 M62 51 C74 42 113 40 123 52 M77 31 C86 28 103 28 110 36" fill="none" stroke="#dfcfbb" stroke-width="6" stroke-linecap="round" opacity=".75"/>
+                      <path d="M40 71 C61 57 113 58 132 69 M66 47 C83 38 105 40 116 47 M81 25 Q94 21 103 30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".95"/>
+                      <ellipse cx="89" cy="96" rx="72" ry="8" fill="#fff8ee" opacity=".94"/>
+                    </svg>
+                  </div>
+                  <div class="topping caramel" data-decoration="caramel" hidden></div>
+                  <div class="topping dust cinnamon" data-decoration="cinnamon" hidden></div>
+                  <div class="topping dust nutmeg" data-decoration="nutmeg" hidden></div>
+                  <div class="topping dust clove" data-decoration="clove" hidden></div>
+                  <div class="topping dust cocoa" data-decoration="cocoa" hidden></div>
+              </div>
+            </div>
+            <div class="cup-label">ILLUSTRATIVE<br>NOT TO SCALE PHYSICALLY</div>
+          </div>
+          <div class="total">
+            <div><span>Approx. finished volume</span><strong id="total-ml">150 ml</strong></div>
+            <small id="cup-hint">A small cup with a big opinion.</small>
+          </div>
+        </section>
+
+        <section class="controls" aria-labelledby="controls-heading">
+          <div class="controls-head">
+            <div>
+              <p class="eyebrow">02 / Make it yours</p>
+              <h3 id="controls-heading">Change the recipe.</h3>
+            </div>
+            <button class="reset" id="reset" type="button">↺ Reset</button>
+          </div>
+          <p id="recipe-note" aria-live="polite">Silky microfoam, less air than a cappuccino. The espresso stays noticeable.</p>
+          <div class="sliders">
+            <div class="slider-line">
+              <div class="slider-title"><label for="espresso">Espresso</label><output id="espresso-value" for="espresso">40 ml</output></div>
+              <input id="espresso" type="range" min="20" max="80" step="5" value="40">
+              <p class="slider-caption">Coffee extracted from the machine. Not dry coffee dose.</p>
+            </div>
+            <div class="slider-line">
+              <div class="slider-title"><label for="milk">Steamed milk</label><output id="milk-value" for="milk">100 ml</output></div>
+              <input id="milk" type="range" min="0" max="260" step="5" value="100">
+              <p class="slider-caption">The smooth, liquid part of the milk.</p>
+            </div>
+            <div class="slider-line">
+              <div class="slider-title"><label for="foam">Foam / airy texture</label><output id="foam-value" for="foam">10 ml</output></div>
+              <input id="foam" type="range" min="0" max="120" step="5" value="10">
+              <p class="slider-caption">A teaching shorthand: real microfoam blends into the milk.</p>
+            </div>
+            <div class="slider-line">
+              <div class="slider-title"><label for="water">Hot water</label><output id="water-value" for="water">0 ml</output></div>
+              <input id="water" type="range" min="0" max="260" step="5" value="0">
+              <p class="slider-caption">For an Americano rather than a milk drink.</p>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="stat"><small>Espresso share</small><strong id="coffee-share">27%</strong><span>Of this drink's volume, not its caffeine.</span></div>
+            <div class="stat"><small>Your experiment</small><strong id="strength">Coffee-forward</strong><span id="profile">Less milk lets the espresso speak.</span></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="customize" aria-label="Customize your drink">
+        <section class="custom-card" aria-labelledby="dress-title">
+          <span class="custom-kicker">03 / Dress it up</span>
+          <h3 id="dress-title">A little something extra.</h3>
+          <p>Mix chocolate syrup into the coffee or add finishing touches. ✳ = stock-up option.</p>
+          <div class="chips" id="flavor-options" role="group" aria-label="Optional flavor additions">
+            <button type="button" class="chip" data-flavor="cinnamon" aria-pressed="false">Cinnamon</button>
+            <button type="button" class="chip" data-flavor="nutmeg" aria-pressed="false">Nutmeg</button>
+            <button type="button" class="chip" data-flavor="clove" aria-pressed="false">Clove</button>
+            <button type="button" class="chip" data-flavor="cocoa" aria-pressed="false">Cocoa dust ✳</button>
+            <button type="button" class="chip" data-mixin="chocolate-syrup" aria-pressed="false">Chocolate syrup ✳</button>
+            <button type="button" class="chip" data-flavor="caramel" aria-pressed="false">Caramel ✳</button>
+            <button type="button" class="chip" data-flavor="whipped-cream" aria-pressed="false">Whipped cream</button>
+          </div>
+        </section>
+        <section class="custom-card" aria-labelledby="swap-title">
+          <span class="custom-kicker">04 / Swap the milk</span>
+          <h3 id="swap-title">Same recipe, different milk.</h3>
+          <p>Swap only when your base drink contains milk. ✳ = stock-up option.</p>
+          <div class="chips" id="milk-options" role="group" aria-label="Milk substitution">
+            <button type="button" class="chip" data-milk-type="dairy" aria-pressed="true">Dairy milk</button>
+            <button type="button" class="chip" data-milk-type="oat" aria-pressed="false">Barista oat ✳</button>
+            <button type="button" class="chip" data-milk-type="soy" aria-pressed="false">Soy milk ✳</button>
+          </div>
+        </section>
+      </div>
+      <p class="custom-note" id="custom-note" aria-live="polite">Choose a finishing touch or milk swap; the cup still illustrates the base volumes.</p>
+
+      <div class="legend" aria-label="Illustration color legend">
+        <span><i class="dot espresso"></i>Espresso</span>
+        <span><i class="dot milk"></i>Steamed milk</span>
+        <span><i class="dot foam"></i>Foam</span>
+        <span><i class="dot water"></i>Water</span>
+      </div>
+      <p class="fine-print">This is an ingredient-ratio illustration, not a claim that coffee stays in separate layers. Volumes are approximate finished-in-cup examples; espresso yield is often weighed in grams, and different cafés use different cup sizes, milk textures, and recipes. The cup illustration fills to a 300 ml reference.</p>
+    </section>
+
+    <section class="neighborhood shell" id="neighborhood" aria-labelledby="neighborhood-heading">
+      <p class="eyebrow">03 / Find your coffee neighbors</p>
+      <h2 id="neighborhood-heading">Every cup has neighbors.</h2>
+      <p class="neighborhood-intro">More milk to the right. More foam upward. Similar drinks cluster together, while water, chocolate, whipped cream, and pouring order tell the rest of the story. Select a miniature cup to revisit its recipe.</p>
+      <div class="coffee-map" role="region" tabindex="0" aria-label="Scrollable coffee neighborhood chart showing milk and foam volume for ten espresso drinks">
+        <svg id="neighborhood-chart" viewBox="0 0 900 390" role="group" aria-label="Steamed milk volume horizontally, foam volume vertically; each drink is a selectable mini cup"></svg>
+      </div>
+      <p class="map-foot"><strong>Read the map, not the caffeine.</strong> These are the Coffee Lab's illustrative volumes in ml—not measured coffee strength or a universal café standard. Nearby drinks can differ by pouring order, water, chocolate syrup, or whipped cream. Where recipes overlap, icons are nudged apart and connected to their actual coordinates.</p>
+    </section>
+
+    <section class="learn shell" aria-labelledby="learn-heading">
+      <p class="eyebrow">04 / Three useful things to know</p>
+      <h2 id="learn-heading">A little knowledge. A lot more coffee.</h2>
+      <div class="learning-grid">
+        <article class="learning-card">
+          <span class="number">01 / NOT JUST MILK</span>
+          <h3>Texture changes the drink.</h3>
+          <p>A cappuccino usually has a more aerated, foamy texture. A flat white is known for fine, silky microfoam. A latte is generally larger and milkier. The foam slider is a visual simplification, not a separate ingredient to measure.</p>
+        </article>
+        <article class="learning-card">
+          <span class="number">02 / TWO MACCHIATOS</span>
+          <h3>Which one gets marked?</h3>
+          <p>An <strong>espresso macchiato</strong> is espresso “marked” with a little milk or foam. A <strong>latte macchiato</strong> starts with milk and gets “marked” with espresso. Similar words, very different proportions—and pour order matters.</p>
+        </article>
+        <article class="learning-card">
+          <span class="number">03 / HOME BARISTA RULE</span>
+          <h3>Choose your cup first.</h3>
+          <p>For a small gathering, make one espresso recipe repeatably, then vary cup size and milk texture. The numbers here teach comparison; your machine, beans, pitcher, and taste decide the final recipe.</p>
+        </article>
+      </div>
+      <p class="sources">For more context: <a href="https://www.breville.com/au/en/coffee-journey/inspiration/taste/How-are-flat-whites-cappuccinos-lattes-different.html" target="_blank" rel="noopener noreferrer">Breville's latte / cappuccino / flat white comparison</a> and the <a href="https://static1.squarespace.com/static/587af1d4db29d69a1a226b95/t/60747295e9de9410068522b5/1618244245373/SCA_Barista_Drinks_Standard_Oct19.pdf" target="_blank" rel="noopener noreferrer">SCA barista drinks comparison (PDF)</a>. Recipe conventions vary by café and region.</p>
+    </section>
+  </main>
+  <footer><div class="shell"><strong>DERAILED. · One thing led to another.</strong><span>Made for curious people and coffee-powered gatherings. ☕🥞</span></div></footer>
+  <script>
+    "use strict";
+    const drinks = [
+      {id:"espresso",name:"Espresso",hint:"Just the shot",espresso:40,milk:0,foam:0,water:0,tagline:"The starting point for everything here.",note:"A short, concentrated coffee. Your espresso recipe is the foundation for the rest."},
+      {id:"macchiato",name:"Espresso macchiato",hint:"A little mark",espresso:40,milk:5,foam:10,water:0,tagline:"Espresso with just a touch of milk and foam.",note:"Macchiato means 'marked': espresso is marked by a small spoonful of milk or foam. Not a mini latte."},
+      {id:"cortado",name:"Cortado",hint:"Roughly 1:1",espresso:40,milk:40,foam:0,water:0,tagline:"A balanced, compact espresso-and-milk drink.",note:"Roughly equal parts espresso and warm milk. The milk softens the coffee without turning it into a big drink."},
+      {id:"flat-white",name:"Flat white",hint:"Silky & small",espresso:40,milk:100,foam:10,water:0,tagline:"A small, coffee-forward milk drink with a silky surface.",note:"Silky microfoam, typically less aerated than a cappuccino. The espresso stays noticeable."},
+      {id:"cappuccino",name:"Cappuccino",hint:"Airy & plush",espresso:40,milk:60,foam:60,water:0,tagline:"A comforting little coffee with an airy milk cap.",note:"A classic illustration uses generous foam. Modern cappuccinos vary, but the more aerated texture is a useful contrast."},
+      {id:"latte",name:"Caffè latte",hint:"Soft & milky",espresso:40,milk:170,foam:15,water:0,tagline:"A larger, milk-forward coffee with a gentle espresso note.",note:"A latte is mostly steamed milk with a relatively thin silky surface. An easy canvas for latte art."},
+      {id:"latte-macchiato",name:"Latte macchiato",hint:"Milk first",espresso:40,milk:170,foam:25,water:0,tagline:"A big glass of milk, marked with espresso.",note:"Here the milk is poured first and espresso is added afterward. The pour order helps create the signature layered look."},
+      {id:"americano",name:"Americano",hint:"Coffee + water",espresso:40,milk:0,foam:0,water:140,tagline:"Espresso lengthened with hot water, without milk.",note:"A different branch of the family tree: hot water changes the strength in the cup without adding milk texture."},
+      {id:"mocha",name:"Caffè mocha",hint:"Chocolate + milk",espresso:40,milk:160,foam:20,water:0,mixins:["chocolate-syrup"],tagline:"Espresso, chocolate syrup and steamed milk in one cozy cup.",note:"Stir 1–2 tablespoons of chocolate syrup into hot espresso, then add steamed milk. The syrup is mixed into the drink—not cocoa dusted on top. Adjust sweetness to taste."},
+      {id:"con-panna",name:"Espresso con panna",hint:"Whipped cream",espresso:40,milk:0,foam:0,water:0,flavors:["whipped-cream"],tagline:"A little espresso crowned with whipped cream.",note:"Con panna means 'with cream': whipped cream sits on top of espresso. It is different from the steamed milk foam in an espresso macchiato."}
+    ];
+    const keys = ["espresso","milk","foam","water"];
+    const state = {selected: "flat-white",remixed:false,flavors:new Set(),mixins:new Set(),milkType:"dairy"};
+    const byId = id => document.getElementById(id);
+    const recipeContainer = byId("recipes");
+    // Miniature ingredient diagrams: the same proportions as the main cup,
+    // with special visual cues for milk-first pouring, chocolate and whipped cream.
+    function miniCupSvg(drink) {
+      const total=drink.espresso+drink.milk+drink.foam+drink.water;
+      const drawVolume=Math.max(85,total);
+      const fillHeight=Math.min(total/drawVolume,1)*30;
+      const colors={espresso:"#633a2b",milk:drink.id==="mocha"?"#b47c59":"#d5a978",foam:drink.id==="mocha"?"#e9cbb0":"#fff1d8",water:"#b9e8f5"};
+      const order=drink.id==="latte-macchiato"?["milk","espresso","foam"]:["espresso","water","milk","foam"];
+      let y=39;
+      const segments=order.map(key=>{
+        const h=(drink[key]/drawVolume)*30;
+        if(h<=0)return "";
+        y-=h;
+        return '<rect x="8" y="'+y.toFixed(2)+'" width="25" height="'+h.toFixed(2)+'" fill="'+colors[key]+'"/>';
+      }).join("");
+      const surface=39-fillHeight;
+      const cream=drink.id==="con-panna"
+        ? '<path d="M10 '+(surface+1).toFixed(1)+' Q5 '+(surface-3).toFixed(1)+' 12 '+(surface-5).toFixed(1)+' Q10 '+(surface-11).toFixed(1)+' 19 '+(surface-10).toFixed(1)+' Q18 '+(surface-16).toFixed(1)+' 23 '+(surface-18).toFixed(1)+' Q28 '+(surface-14).toFixed(1)+' 26 '+(surface-9).toFixed(1)+' Q37 '+(surface-8).toFixed(1)+' 31 '+(surface+1).toFixed(1)+' Z" fill="#fff9ed" stroke="#d8c9b6" stroke-width="1"/>'
+        : "";
+      const latteMark=drink.id==="latte-macchiato"?'<path d="M14 19 Q19 23 17 27 M25 18 Q22 24 25 27" stroke="#9e6245" stroke-opacity=".6" stroke-width="1.5" fill="none"/>':"";
+      const mocha=drink.id==="mocha"?'<path d="M11 19 Q15 23 11 27 M27 20 Q23 24 28 28" stroke="#79503c" stroke-opacity=".6" stroke-width="1.2" fill="none"/>':"";
+      return '<svg viewBox="0 0 46 48" role="presentation" aria-hidden="true" focusable="false">'+
+        '<path d="M32 15 H35 Q43 15 43 23 Q43 31 33 31" fill="none" stroke="#d6c4aa" stroke-width="3.4"/>'+
+        '<path d="M7 9 H34 V34 Q34 40 28 41 H13 Q7 41 7 34 Z" fill="#faf6ed" stroke="#bda68b" stroke-width="1.7"/>'+
+        '<svg x="0" y="0" width="46" height="48" viewBox="0 0 46 48"><defs><clipPath id="mini-'+drink.id+'"><path d="M8 10 H33 V34 Q33 39 28 39 H13 Q8 39 8 34 Z"/></clipPath></defs>'+
+        '<g clip-path="url(#mini-'+drink.id+')">'+segments+latteMark+mocha+'</g></svg>'+
+        cream+'<path d="M7 9 H34" stroke="#e8d8c1" stroke-width="2" stroke-linecap="round"/>'+
+        '</svg>';
+    }
+    drinks.forEach(drink=>{
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "recipe";
+      button.dataset.recipe = drink.id;
+      button.setAttribute("aria-pressed","false");
+      const inner=document.createElement("div");
+      inner.className="recipe-inner";
+      const icon=document.createElement("div");
+      icon.className="recipe-icon";
+      icon.setAttribute("aria-hidden","true");
+      icon.innerHTML=miniCupSvg(drink);
+      const copy=document.createElement("div");
+      copy.className="recipe-copy";
+      const name=document.createElement("span");
+      const hint=document.createElement("small");
+      name.textContent=drink.name;
+      hint.textContent=drink.hint;
+      copy.append(name,hint);
+      inner.append(icon,copy);
+      button.appendChild(inner);
+      button.addEventListener("click",()=>selectDrink(drink.id));
+      recipeContainer.appendChild(button);
+    });
+    const recipeFor = id => drinks.find(x=>x.id===id) || drinks[0];
+    // No chart library needed: reuse the recipe data and inline SVG cup illustrations.
+    function buildNeighborhood() {
+      const svg=byId("neighborhood-chart");
+      const ns="http://www.w3.org/2000/svg";
+      const make=(tag,attrs={},label="")=>{
+        const el=document.createElementNS(ns,tag);
+        Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v)));
+        if(label)el.textContent=label;
+        return el;
+      };
+      const left=95,right=805,top=42,bottom=315;
+      // Linear axes preserve proportional differences in recipe volumes.
+      const x=milk=>left+milk/200*(right-left);
+      const y=foam=>bottom-foam/70*(bottom-top);
+      for(const ml of [0,50,100,150,200]){
+        const px=x(ml);
+        svg.append(make("line",{x1:px,x2:px,y1:top,y2:bottom,class:"map-grid"}));
+        svg.append(make("text",{x:px,y:bottom+23,"text-anchor":"middle",class:"map-tick"},String(ml)));
+      }
+      for(const foam of [0,20,40,60]){
+        const py=y(foam);
+        svg.append(make("line",{x1:left,x2:right,y1:py,y2:py,class:"map-grid"}));
+        svg.append(make("text",{x:left-14,y:py+4,"text-anchor":"end",class:"map-tick"},String(foam)));
+      }
+      svg.append(make("line",{x1:left,x2:right,y1:bottom,y2:bottom,class:"map-axis"}));
+      svg.append(make("line",{x1:left,x2:left,y1:top,y2:bottom,class:"map-axis"}));
+      svg.append(make("text",{x:(left+right)/2,y:bottom+52,"text-anchor":"middle",class:"map-label"},"Steamed milk (ml) →"));
+      svg.append(make("text",{x:22,y:(top+bottom)/2,transform:"rotate(-90 22 "+((top+bottom)/2)+")","text-anchor":"middle",class:"map-label"},"Foam / airy texture (ml) →"));
+      // Deliberate visual offsets for overlapping or nearly overlapping drinks.
+      // The leader line always points to the correct data coordinate.
+      const offsets={
+        espresso:[-8,-30],
+        americano:[84,-28],
+        "con-panna":[86,-96],
+        macchiato:[38,-70],
+        cortado:[-18,-18],
+        "flat-white":[12,-24],
+        cappuccino:[-8,16],
+        latte:[58,-8],
+        "latte-macchiato":[14,-62],
+        mocha:[-58,-30]
+      };
+      drinks.forEach(drink=>{
+        const ax=x(drink.milk),ay=y(drink.foam);
+        const [dx,dy]=offsets[drink.id]||[0,0];
+        const px=ax+dx,py=ay+dy;
+        if(dx||dy){
+          svg.append(make("line",{x1:ax,y1:ay,x2:px,y2:py,class:"map-leader"}));
+          svg.append(make("circle",{cx:ax,cy:ay,r:2.4,class:"map-origin"}));
+        }
+        const g=make("g",{class:"map-point",tabindex:0,role:"button","aria-label":drink.name+": "+drink.milk+" ml steamed milk, "+drink.foam+" ml foam. Select recipe.","aria-pressed":"false","data-map-recipe":drink.id});
+        g.append(make("title",{},drink.name+" · milk "+drink.milk+" ml · foam "+drink.foam+" ml"));
+        g.append(make("rect",{x:px-21,y:py-24,width:42,height:47,rx:10,class:"map-back"}));
+        const icon=make("g",{transform:"translate("+(px-18)+","+(py-22)+") scale(.8)","aria-hidden":"true"});
+        icon.innerHTML=miniCupSvg(drink).replace('<svg viewBox="0 0 46 48"','<svg width="46" height="48" viewBox="0 0 46 48"');
+        g.append(icon);
+        // Names are labels; the icon is the exact ratio preview from the recipe buttons.
+        g.append(make("text",{x:px,y:py+36,"text-anchor":"middle",class:"map-label"},drink.name));
+        const open=()=>{
+          selectDrink(drink.id);
+          const bench=document.querySelector(".workbench");
+          if(bench)bench.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+        };
+        g.addEventListener("click",open);
+        g.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();open();}});
+        svg.append(g);
+      });
+    }
+    const values = ()=>Object.fromEntries(keys.map(key=>[key,Number(byId(key).value)]));
+    function selectDrink(id) {
+      state.selected = id;
+      state.remixed = false;
+      const recipe = recipeFor(id);
+      state.flavors = new Set(recipe.flavors || []);
+      state.mixins = new Set(recipe.mixins || []);
+      state.milkType = "dairy";
+      keys.forEach(key=>{byId(key).value=String(recipe[key]);});
+      update();
+    }
+    function update() {
+      const recipe=recipeFor(state.selected);
+      const v=values();
+      const total=keys.reduce((sum,key)=>sum+v[key],0);
+      const share=total ? Math.round(v.espresso/total*100) : 0;
+      byId("drink-name").textContent=state.remixed ? "Your coffee experiment" : recipe.name;
+      byId("drink-sub").textContent=state.remixed ? "Based on "+recipe.name+". Keep changing the recipe until it tastes like yours." : recipe.tagline;
+      byId("recipe-note").textContent=state.remixed ? "There's no fixed name for every combination. Compare the proportions, taste it, and give your own version a name." : recipe.note;
+      byId("total-ml").textContent=total+" ml";
+      byId("coffee-share").textContent=share+"%";
+      let label, detail;
+      if (v.water > 35 && v.milk+v.foam < 25) {label="Water-softened";detail="Espresso plus water: Americano territory.";}
+      else if (v.milk+v.foam < 20 && v.water < 20) {label="Bold & direct";detail="Almost all espresso.";}
+      else if (share >= 44) {label="Coffee-forward";detail="The espresso remains the main event.";}
+      else if (share >= 25) {label="Balanced";detail="Coffee and milk both have a say.";}
+      else {label="Soft & milky";detail="Milk dominates the finished cup.";}
+      byId("strength").textContent=label;
+      byId("profile").textContent=detail;
+      byId("cup-hint").textContent=total>300 ? "Bigger than our 300 ml demo cup!" : total<90 ? "A tiny cup with a big opinion." : total<185 ? "A small cup, plenty of character." : "A larger, leisurely cup.";
+      const milkFirst=state.selected==="latte-macchiato" && !state.remixed;
+      byId("cup").dataset.drink=state.selected;
+      byId("cup").dataset.assembly=milkFirst?"milk-first":"standard";
+      byId("assembly-cue").hidden=!milkFirst;
+      byId("liquid").style.height=Math.min(total/300,1)*100+"%";
+      // In a milk-first latte macchiato the espresso mark belongs just below the foam.
+      // Reset layer order for every other recipe and whenever sliders are remixed.
+      const layerOrder=milkFirst?{foam:0,espresso:1,milk:2,water:3}:{foam:0,milk:1,water:2,espresso:3};
+      keys.forEach(key=>{byId("layer-"+key).style.order=layerOrder[key];});
+      keys.forEach(key=>{
+        byId(key+"-value").textContent=v[key]+" ml";
+        byId("layer-"+key).style.height=(total ? (v[key]/total)*100 : 0)+"%";
+      });
+      const flavorNames={cinnamon:"cinnamon",nutmeg:"nutmeg",clove:"a pinch of clove",cocoa:"cocoa powder",caramel:"caramel sauce","whipped-cream":"whipped cream"};
+      document.querySelectorAll("[data-flavor]").forEach(button=>button.setAttribute("aria-pressed",String(state.flavors.has(button.dataset.flavor))));
+      const hasMilk=v.milk+v.foam>0;
+      if(!hasMilk)state.milkType="dairy";
+      document.querySelectorAll("[data-milk-type]").forEach(button=>{
+        button.disabled=!hasMilk;
+        button.setAttribute("aria-pressed",String(state.milkType===button.dataset.milkType));
+      });
+      const hasChocolate=state.mixins.has("chocolate-syrup");
+      byId("cup").dataset.chocolate=String(hasChocolate);
+      document.querySelectorAll("[data-mixin]").forEach(button=>button.setAttribute("aria-pressed",String(state.mixins.has(button.dataset.mixin))));
+      const selectedFlavors=[...state.flavors];
+      const accents=selectedFlavors.map(x=>flavorNames[x]);
+      const decorations=byId("cup-toppings");
+      decorations.hidden=selectedFlavors.length===0 || total===0;
+      decorations.style.setProperty("--surface-px",(Math.min(total/300,1)*255+5)+"px");
+      decorations.querySelectorAll("[data-decoration]").forEach(el=>{el.hidden=!state.flavors.has(el.dataset.decoration);});
+      const swap=state.milkType==="dairy"?"":(state.milkType==="oat"?"barista oat milk":"soy milk");
+      const visualAdditions=byId("visual-additions");
+      visualAdditions.replaceChildren();
+      [...(hasChocolate?["Mixed in: chocolate syrup"]:[]),...accents,...(swap?["Swap: "+swap]:[])].forEach(name=>{
+        const chip=document.createElement("span");
+        chip.textContent=name;
+        visualAdditions.appendChild(chip);
+      });
+      byId("custom-note").textContent=(hasChocolate?"Chocolate syrup is mixed in, tinting the drink. ":"")+(accents.length?"Toppings: "+accents.join(", ")+". ":"")+(swap?"Milk swap: "+swap+". ":"")+(state.flavors.has("clove")?"Use just a tiny pinch of clove. ":"")+"The sliders show approximate base liquid volumes; syrup and toppings are not counted in ml.";
+      byId("cup").setAttribute("aria-label", "Base liquid illustration of "+total+" ml coffee: "+v.espresso+" ml espresso, "+v.milk+" ml steamed milk, "+v.foam+" ml foam and "+v.water+" ml hot water."+(hasChocolate?" Chocolate syrup mixed into the drink.":"")+(accents.length?" Illustrated toppings: "+accents.join(", ")+".":""));
+      recipeContainer.querySelectorAll("button").forEach(button=>{
+        button.setAttribute("aria-pressed",String(button.dataset.recipe===state.selected && !state.remixed));
+      });
+      byId("reset").textContent=state.remixed ? "↺ Reset "+recipe.name : "↺ Reset";
+      document.querySelectorAll("[data-map-recipe]").forEach(node=>{
+        node.setAttribute("aria-pressed",String(!state.remixed&&node.dataset.mapRecipe===state.selected));
+      });
+    }
+    document.querySelectorAll("[data-mixin]").forEach(button=>button.addEventListener("click",()=>{
+      const name=button.dataset.mixin;
+      if(state.mixins.has(name))state.mixins.delete(name);else state.mixins.add(name);
+      update();
+    }));
+    document.querySelectorAll("[data-flavor]").forEach(button=>button.addEventListener("click",()=>{
+      const name=button.dataset.flavor;
+      if(state.flavors.has(name))state.flavors.delete(name);else state.flavors.add(name);
+      update();
+    }));
+    document.querySelectorAll("[data-milk-type]").forEach(button=>button.addEventListener("click",()=>{
+      state.milkType=button.dataset.milkType;
+      update();
+    }));
+    keys.forEach(key=>byId(key).addEventListener("input",()=>{state.remixed=true;update();}));
+    byId("reset").addEventListener("click",()=>selectDrink(state.selected));
+    buildNeighborhood();
+    selectDrink("flat-white");
+  </script>
+</body>
+</html>
