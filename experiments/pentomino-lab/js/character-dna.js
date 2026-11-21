@@ -92,10 +92,11 @@ function paint(shape,cells,opt={}){
         motif+='<path d="M '+fmt(x)+' '+fmt(-unit)+' L '+fmt(x+height+unit*2)+' '+fmt(height+unit)+'" stroke="'+accent+'" stroke-width="'+fmt(thickness)+'" fill="none"/>';
     }
   }else if(family==='curves'){
-    const [ex,ey]=chooseEdge(base,profile.edge);
+    const side=['top','right','bottom','left'].includes(opt.curveEdge)?opt.curveEdge:profile.edge;
+    const [ex,ey]=chooseEdge(base,side);
     // The centre is set just outside an exposed edge. The large disc cuts into
     // multiple neighbouring cells rather than becoming a dot on one cell.
-    const dir={top:[0,-.32],bottom:[0,.32],left:[-.32,0],right:[.32,0]}[profile.edge];
+    const dir={top:[0,-.32],bottom:[0,.32],left:[-.32,0],right:[.32,0]}[side];
     motif=circle((ex+dir[0])*unit,(ey+dir[1])*unit,unit*1.6*scale,accent);
   }else if(family==='splits'){
     const direction=['horizontal','vertical','diagonal'].includes(opt.splitDirection)?opt.splitDirection:'vertical';
