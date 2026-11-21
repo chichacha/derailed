@@ -16,7 +16,12 @@ function portrait(shape,id,palette,family,options={}){
  const accent=options.accent||colors[6];
  const clip='p-'+shape+'-'+id.replace(/[^A-Za-z0-9]/g,'')+(options.idSuffix||'');
  const cuts=cells.map(c=>'<rect x="'+(c.x+gap/2)+'" y="'+(c.y+gap/2)+'" width="'+(unit-gap)+'" height="'+(unit-gap)+'" rx="'+Math.min(3,unit*.08)+'"/>').join('');
- const marks=D.paint(shape,cells,{unit,features:colors.slice(0,5),accent,family,decorated:options.decorated!==false,scale:options.scale||1}).svg;
+ const marks=D.paint(shape,cells,{
+   unit,features:colors.slice(0,5),accent,family,
+   stripeDirection:options.stripeDirection||'diagonal',
+   splitDirection:options.splitDirection||'vertical',
+   decorated:options.decorated!==false,scale:options.scale||1
+ }).svg;
  let drawing='<defs><clipPath id="'+clip+'">'+cuts+'</clipPath></defs>';
  drawing+='<g clip-path="url(#'+clip+')"><rect width="'+size+'" height="'+height+'" fill="'+main+'"/>'+marks+'</g>';
  const label=escape(shape+' '+id+', '+side+', '+D.families[family].label+' graphic style');
