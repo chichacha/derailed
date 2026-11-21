@@ -49,7 +49,9 @@ footer{color:var(--muted);font-size:11px;margin-top:60px}
 <p class="lede">Twelve characters. Sixty-three distinct postures. Turn, reflect and dress every shape in one shared visual language. The geometry comes from Gomasu; the graphic treatment is an experiment.</p></header>
 <div class="controls" aria-label="Posture filters">
 <label>Colour palette<select id="palette"></select></label>
-<label>Graphic language<select id="family"><option value="splits">Split · two-tone</option><option value="linear">Linear · lines</option><option value="curves">Curved · circles</option><option value="blocks">Blocky · squares</option></select></label>
+<label>Graphic language<select id="family"><option value="curves" selected>Large circle cutout</option><option value="linear">Continuous stripes</option><option value="splits">Clean two-tone split</option><option value="blocks">Broad colour block</option></select></label>
+<label id="studioStripes" hidden>Stripe direction<select id="stripeDirection"><option value="horizontal">Horizontal</option><option value="vertical">Vertical</option><option value="diagonal" selected>Diagonal</option></select></label>
+<label id="studioSplits" hidden>Split direction<select id="splitDirection"><option value="vertical" selected>Vertical</option><option value="horizontal">Horizontal</option><option value="diagonal">Diagonal</option></select></label>
 <label>Resident<select id="shape"><option value="all">All 12 characters</option></select></label>
 <label>Number of postures<select id="countFilter"><option value="all">All symmetries</option><option value="1">One</option><option value="2">Two</option><option value="4">Four</option><option value="8">Eight</option></select></label>
 <label>Face<select id="side"><option value="all">Front + back</option><option value="front">Front only</option><option value="back">Back only</option></select></label>
