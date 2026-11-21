@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: docs
     - stories/coffee-lab/
-    - "stories/kitchen-series/**"
+    - stories/kitchen-series/
 
 website:
   title: "DERAILED."
