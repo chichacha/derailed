@@ -4,6 +4,7 @@ project:
   resources:
     - stories/coffee-lab/
     - stories/kitchen-series/
+    - experiments/
 
 website:
   title: "DERAILED."
