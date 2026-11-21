@@ -63,7 +63,7 @@
     letters.forEach(name=>{
       styles[name].decorated=decorated.has(name);
       styles[name].motif=decorated.has(name)&&pool.length?pick(pool).id:'solid';
-      styles[name].rotation=Math.floor(Math.random()*4);
+      styles[name].rotation=0; // Stable circle-edge placement; rotate manually when desired.
     });
   }
   function initControls(){
