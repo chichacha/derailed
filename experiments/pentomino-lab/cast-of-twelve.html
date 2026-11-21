@@ -78,8 +78,10 @@ footer{margin-top:55px;color:#aaa0aa;font-size:11px;letter-spacing:.07em}
 <div class="controls">
 <label>Colour world <select id="paletteSelect" aria-label="Colour palette"></select></label>
 <label>Graphic language <select id="styleFamily" aria-label="Graphic family">
-<option value="splits">Split · two-tone</option><option value="linear">Linear · lines</option><option value="curves">Curved · circles</option><option value="blocks">Blocky · squares</option>
+<option value="curves" selected>Large circle cutout</option><option value="linear">Continuous stripes</option><option value="splits">Clean two-tone split</option><option value="blocks">Broad colour block</option>
 </select></label>
+<label id="castStripes" hidden>Stripe direction <select id="stripeDirection"><option value="horizontal">Horizontal</option><option value="vertical">Vertical</option><option value="diagonal" selected>Diagonal</option></select></label>
+<label id="castSplits" hidden>Split direction <select id="splitDirection"><option value="vertical" selected>Vertical</option><option value="horizontal">Horizontal</option><option value="diagonal">Diagonal</option></select></label>
 <button id="cycleCast">↻ Next postures</button><button id="downloadSheet">↓ Export character sheet SVG</button>
 </div>
 </header>
