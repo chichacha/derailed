@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1D1C24">
+<meta name="description" content="All 63 canonical Gomasu pentomino orientations, reimagined as disciplined geometric artwork.">
+<title>Posture Studio · 63 Gomasu Poses · DERAILED.</title>
+<style>
+:root{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#1D1C24;color:#f8f4f2;--muted:#bab4be;--line:#47444e;--pink:#f4a9c1}
+*{box-sizing:border-box}body{margin:0}
+a{color:#f4a9c1;text-underline-offset:3px}
+main{max-width:1500px;padding:24px clamp(16px,4vw,64px) 70px;margin:auto}
+nav{display:flex;gap:16px;justify-content:space-between;flex-wrap:wrap;font-size:12px;margin-bottom:48px}
+nav a{font-weight:750;text-decoration:none}
+.eyebrow{color:var(--pink);letter-spacing:.19em;font-size:11px;font-weight:800}
+h1{font-size:clamp(40px,7vw,88px);letter-spacing:-.08em;line-height:1;margin:12px 0 19px}
+h1 span{color:var(--pink)}.lede{max-width:780px;color:#d2cbd1;font-size:clamp(15px,2vw,19px);line-height:1.6}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:end;padding:20px 0;margin-top:18px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.controls label{display:grid;gap:7px;font-size:11px;font-weight:650;color:#d7cdd4;min-width:160px;flex:1}
+select,button{font:inherit;border-radius:9px;background:#34313c;color:#faf5f6;border:1px solid #5e5965;padding:9px 12px;min-height:40px;cursor:pointer}
+button:hover{background:#4a424f}button:focus-visible,select:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.dashboard{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr);gap:24px;align-items:start;margin-top:28px}
+.viewer{border:1px solid var(--line);border-radius:16px;overflow:hidden;position:sticky;top:18px;background:#28252f}
+.viewer-art{background:#faf7f1;padding:24px 16px;min-height:285px;display:grid;place-items:center}
+.viewer-art svg{width:100%;height:auto;max-height:270px}
+.viewer-text{padding:19px 21px 23px}.viewer h2{font-size:29px;letter-spacing:-.05em;margin:2px 0 4px}
+.viewer p{color:var(--muted);font-size:12px;line-height:1.65;margin:9px 0}
+.viewer .jp{color:#f5acc5;font-size:17px;font-weight:600}
+.viewer .meta{display:flex;gap:7px;flex-wrap:wrap;margin:16px 0}.chip{font-size:10px;border:1px solid #5a535e;padding:5px 8px;border-radius:100px}
+.viewer .actions{display:flex;gap:8px;flex-wrap:wrap}.viewer button{flex:1;font-size:12px}
+.gallery-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.gallery-top h2{margin:0;font-size:20px;letter-spacing:-.045em}
+#count{font-size:12px;color:var(--muted)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:10px}
+.pose{padding:0;text-align:left;overflow:hidden;border-radius:12px;min-width:0}
+.pose.active{outline:3px solid var(--pink);outline-offset:0;border-color:var(--pink)}
+.pose-art{display:block;background:#faf7f1;padding:6px}
+.pose-art svg{display:block;width:100%;height:125px}
+.pose-info{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:10px 12px}
+.pose-info strong{font-size:13px}.pose-info span{font-size:10px;color:#d2c2ca}
+.note{padding:18px 20px;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:12px;line-height:1.7;margin-top:22px}
+footer{color:var(--muted);font-size:11px;margin-top:60px}
+@media(max-width:830px){.dashboard{grid-template-columns:1fr}.viewer{position:static;display:grid;grid-template-columns:minmax(150px,1fr) minmax(0,1fr)}.viewer-art{min-height:190px}}
+@media(max-width:500px){nav{margin-bottom:32px}.viewer{display:block}.controls label{min-width:125px}.gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head>
+<body><main>
+<nav><a href="../../index.html">← DERAILED.</a><a href="index.html">↗ Pentomino Pattern Lab</a><a href="cast-of-twelve.html">The Cast of Twelve ↗</a><a href="https://chichacha.github.io/psychic-pento-guacamole/characters/">Gomasu Village ↗</a></nav>
+<header><div class="eyebrow">GOMASU × DERAILED / POSTURE DESIGN STUDIO</div>
+<h1>Sixty-three ways<br>to <span>be yourself.</span></h1>
+<p class="lede">Twelve characters. Sixty-three distinct postures. Turn, reflect and dress every shape in one shared visual language. The geometry comes from Gomasu; the graphic treatment is an experiment.</p></header>
+<div class="controls" aria-label="Posture filters">
+<label>Colour palette<select id="palette"></select></label>
+<label>Graphic language<select id="family"><option value="splits">Split · two-tone</option><option value="linear">Linear · lines</option><option value="curves">Curved · circles</option><option value="blocks">Blocky · squares</option></select></label>
+<label>Resident<select id="shape"><option value="all">All 12 characters</option></select></label>
+<label>Number of postures<select id="countFilter"><option value="all">All symmetries</option><option value="1">One</option><option value="2">Two</option><option value="4">Four</option><option value="8">Eight</option></select></label>
+<label>Face<select id="side"><option value="all">Front + back</option><option value="front">Front only</option><option value="back">Back only</option></select></label>
+</div>
+<div class="dashboard">
+<section class="viewer" aria-label="Selected Gomasu posture">
+<div class="viewer-art" id="focusArt"></div>
+<div class="viewer-text"><div class="eyebrow" id="focusId">X00</div>
+<h2 id="focusName">X-Center</h2><div class="jp" id="focusJa" lang="ja"></div>
+<p id="focusStory"></p><p id="focusComment" lang="ja"></p>
+<div class="meta" id="focusMeta"></div>
+<div class="actions"><button id="next">↻ Next posture</button><button id="download">↓ Export SVG</button></div></div>
+</section>
+<section><div class="gallery-top"><h2>All orientations</h2><span id="count" aria-live="polite">63 postures</span></div>
+<div class="gallery" id="gallery"></div>
+<div class="note"><strong>Why 63?</strong> Every pentomino is five squares, but not every shape has the same symmetries. X has one orientation; I has two; T, U, V, W and Z have four each; F, L, N, P and Y have eight each. Front and back are meaningful only when reflection creates a new shape. The posture IDs, metadata, and character names come from the <a href="https://github.com/chichacha/psychic-pento-guacamole/tree/main/data">Gomasu source datasets</a>.</div>
+</section>
+</div>
+<footer>DERAILED. · One thing led to another. · Posture Studio v0.1</footer>
+</main>
+<script defer src="../shared/colour-system.js"></script>
+<script defer src="data/gomasu.js"></script>
+<script defer src="js/character-dna.js"></script>
+<script defer src="js/portrait.js"></script>
+<script defer src="js/studio.js"></script>
+</body></html>
