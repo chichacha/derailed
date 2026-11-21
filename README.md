@@ -17,6 +17,18 @@ There is no fixed destination.
 
 Built with curiosity, open data, Quarto, R, JavaScript, CSS, and whatever else seems useful along the way.
 
+## Kitchen Series: no Quarto article required
+
+The Kitchen Series experiments use **self-contained HTML** rather than `.qmd` articles.
+
+- Source: `stories/kitchen-series/<slug>/index.html`
+- Public site output: `docs/stories/kitchen-series/<slug>/index.html`
+- The `project.resources` rule in `_quarto.yml` copies these HTML files into the site on `quarto render`.
+- Link each new feature from the homepage in `index.qmd`, then render and commit the updated `docs/` output. You do **not** need to add each HTML file to the Quarto navbar or turn it into a `.qmd` page.
+- Each standalone page can contain its own CSS, JavaScript and images. For now, keep the Kitchen Series as an editorial label and shared folder; a separate series landing page can wait until there are more entries.
+
+First field guide: [Five Ways to Make a Circle](stories/kitchen-series/five-ways-to-make-a-circle/index.html).
+
 ## A small origin story
 
 When creating this repository, GitHub suggested the name `potential-octo-couscous`.
@@ -50,7 +62,7 @@ Render the whole website before publishing:
 quarto render
 ```
 
-The site is written to `_site/`, which is ignored by Git. Quarto
+The site is written to `docs/`, which is tracked for GitHub Pages. Quarto
 automatically finds new `.qmd` articles, so future story pages do not
 need to be registered in `_quarto.yml`.
 
