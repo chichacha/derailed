@@ -4,14 +4,14 @@
 
 This is a **dependency-free static experiment**. Open `index.html` directly in a browser (including from `file://`), or view it on DERAILED after rendering the Quarto site.
 
-## Gomasu × DERAILED: Character DNA (v0.2)
+## Gomasu × DERAILED: Character DNA (v0.3)
 
 This lab reads a **snapshot** of Gomasu Village's authored geometry and names from
 [chichacha/psychic-pento-guacamole/data](https://github.com/chichacha/psychic-pento-guacamole/tree/main/data).
 The source remains in Gomasu; a local bundle makes the DERAILED experiments work offline.
 
 - `data/gomasu.js` — 63 mathematically distinct posture IDs, their five-cell coordinates, front/back metadata, and 12 official characters. Shape + normalized coordinates provide a reproducible crosswalk; all 192 placements across the 16 sample tilings resolve to one of these postures.
-- `js/character-dna.js` — a **posture-aware** renderer: canonical cell identities are carried through rotations and reflections. One composition-level graphic family is shared across the artwork: **Linear**, **Curved**, **Split**, or **Blocky**.
+- `js/character-dna.js` — a **posture-aware** renderer: canonical cell identities are carried through rotations and reflections. One composition-level graphic family is shared across the artwork: **Circle cutout**, **Stripes**, **Clean split**, or **Colour blocks**.
 - `js/portrait.js` — shared SVG portrait generator used by the Cast and Posture Studio.
 - `cast-of-twelve.html` / `js/cast.js` — the 12 canonical Gomasu characters (X featured separately), next-posture buttons, a common graphic-language selector and SVG character-sheet export.
 - `posture-studio.html` / `js/studio.js` — gallery of all 63 postures, with character, symmetry and front/back filters, preview and single-posture SVG export.
@@ -24,20 +24,34 @@ A decoration should follow its *character*, not the board axes. Given a solution
 
 The five-square arrangement is mathematically fixed; the decoration is a creative proposal. X has only one **geometric** orientation despite having a deliberately non-symmetric colour arrangement.
 
+### Whole-piece treatments — not stickers on individual squares
+
+The original motifs were too small and fragmented. The current `js/character-dna.js` draws a continuous geometric shape **first**, then the SVG renderer clips it to the full five-square pentomino:
+
+- **Circle cutout** — one large accent-colour disc starts outside an exposed boundary and enters several connected squares. The edge choice is consistent with each Gomasu character's canonical posture, and rotates or reflects with that character.
+- **Stripes** — repeat real filled bands across the complete shape, not just two decorative lines on one square. Choose horizontal, vertical, or diagonal. **Directions align to the finished artwork** by default, so horizontal remains horizontal even after a piece rotates. The underlying engine also supports `stripeFrame:'character'` to rotate stripe costumes with the piece if wanted later.
+- **Clean split** — one vertical, horizontal, or diagonal two-tone division across the **whole piece**, measured in its canonical posture and transformed with it. No random half-square splits.
+- **Colour blocks** — a single oversized rectangular accent, clipped by the pentomino silhouette.
+- **X** — five unique feature colours, one per square. It intentionally does not follow the other motif rules.
+
+The **Character DNA** editor uses one family across the complete board. The **Manual** editor uses the same whole-piece engine but lets individual pieces choose approved directions and opt out of decoration. Both support the seven-colour palette and SVG/PNG export.
+
+The motif scale slider controls the band spacing and circular cutout size. For a calmer look, begin with 30–45% decorated pieces and neutrals as the secondary colour.
+
 **To refresh the Gomasu snapshot:** update the three source JSON payloads embedded in `data/gomasu.js` from `postures.json`, `character_postures.json` and `characters.json`, check all 63 ID keys, and rerun posture/tiling mapping tests. Do not invent or renumber posture IDs.
 
 ### Compatibility
 
-Saved design JSON continues using `derailed.pentomino/1`. New exports include `settings.designMode` and optional `pieces[shape].decorated` flags. Older designs remain importable, with old `all`/ `stripes` family settings mapped to the restrained styles. No bundler, external library or internet connection is required.
+Saved design JSON continues using `derailed.pentomino/1`. New exports include `settings.designMode`, `settings.stripeDirection`, `settings.splitDirection`, and optional `pieces[shape].decorated` flags. Older designs remain importable, with old `all`/ `stripes` family settings mapped to the restrained styles. No bundler, external library or internet connection is required.
 
 ---
 
 ## What the editor does now
 
 - 16 prevalidated 6 × 10 tilings using all 12 pentominoes exactly once
-- A restrained, posture-aware Character DNA engine, plus 14 legacy motifs grouped into compatible families
+- A restrained, posture-aware Character DNA engine with genuinely continuous cutouts, stripes, splits and colour blocks
 - Five feature colours plus a light and dark neutral; any piece uses a dominant feature colour and an optional second palette token
-- Editable swatches, background, composition mood, disciplined motif family, density, gap, rounding, scale and per-piece styles
+- Editable swatches, background, composition mood, motif family and direction, density, gap, rounding, scale and per-piece styles
 - Exports artwork as SVG or PNG, the colour palette as JSON or CSS, and complete editable designs as JSON
 - Imports saved design JSON **or** a standalone palette JSON
 
@@ -45,16 +59,26 @@ Saved design JSON continues using `derailed.pentomino/1`. New exports include `s
 
 ```text
 experiments/
-├── index.html                    # A future landing page for multiple mini-labs
+├── index.html
 ├── shared/
-│   └── colour-system.js          # Independent design-token engine, version 1
+│   └── colour-system.js
 └── pentomino-lab/
-    ├── index.html                 # Main interactive editor\n    ├── cast-of-twelve.html       # Canonical character portraits\n    ├── posture-studio.html       # All 63 orientations
-    ├── styles.css                 # Responsive editor styling
-    ├── data/tilings.js            # Tiling source and validation\n    ├── data/gomasu.js             # Official posture source snapshot
-    └── js/
-        ├── motifs.js              # Extensible motif registry
-        └── app.js                 # Interaction, SVG rendering and exports
+    ├── index.html                 # Main interactive editor
+    ├── cast-of-twelve.html        # Canonical character portraits
+    ├── posture-studio.html        # 63 orientations
+    ├── styles.css
+    ├── data/
+    │   ├── tilings.js             # Valid 6×10 tilings
+    │   └── gomasu.js              # Source posture snapshot
+    ├── js/
+    │   ├── character-dna.js       # Whole-piece SVG design grammar
+    │   ├── portrait.js            # Shared portrait renderer
+    │   ├── app.js                 # Main editor + exports
+    │   ├── cast.js                # Character sheet
+    │   ├── studio.js              # Posture gallery
+    │   └── motifs.js              # Legacy registry (not loaded)
+    └── tests/
+        └── checks.html            # Browser-side validation
 ```
 
 The boundary matters: **the colour system never imports pentomino logic.** A future Colour Lab can use `../shared/colour-system.js` without loading any shapes. The pentomino renderer, in turn, knows nothing about the details of the preset palettes.
@@ -74,17 +98,11 @@ myPalette: {
 
 All consumers can call `DERAILEDColour.load('myPalette')`, `DERAILEDColour.css(palette)`, `DERAILEDColour.colours(palette)` and `DERAILEDColour.validate(palette)`. Exported palette JSON has a versioned, stable seven-token shape.
 
-### Add a geometric motif
+### Extend the graphic grammar
 
-Before `js/app.js` loads, register a motif:
+Edit `js/character-dna.js` to add another family. All treatments receive the *entire pentomino* in a canonical local coordinate system. Keep a motif simple enough to read at small sizes, and clip it at the piece boundary. The Cast of Twelve, Posture Studio, and the main editor all use this engine through `CharacterDNA.paint(shape, cells, options)`.
 
-```js
-PentominoMotifs.register('my-motif', 'My motif', 'curves', ({x, y, w, h, accent}) =>
-  `<circle cx="${x+w/2}" cy="${y+h/2}" r="30" fill="${accent}"/>`
-);
-```
-
-The motif registry automatically populates the shape inspector. Add a corresponding family option in the UI if you're introducing a new family. The renderer clips the generated SVG to the pentomino's occupied cells.
+The `motifs.js` registry is retained for reference but no longer loaded by the editor; it contains the older cell-level experiments. New work belongs in Character DNA, not the old registry.
 
 ### Add a new tiling algorithm
 
