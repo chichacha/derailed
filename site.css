@@ -447,3 +447,25 @@ body {
   .feature-art-kitchen { min-height: 285px; }
   .kitchen-disc-row { max-width: 420px; }
 }
+
+
+/* Coffee Lab: hand-drawn espresso family, rather than a numeric dashboard. */
+.feature-art-coffee {
+  min-height: 350px;
+  overflow: hidden;
+  background: #283e34;
+  color: #fff1d5;
+}
+.coffee-card-illustration {
+  display: block;
+  width: 100%;
+  max-height: 310px;
+  height: auto;
+  margin: 2px auto 4px;
+}
+.feature-art-coffee .feature-art-top,
+.feature-art-coffee .feature-art-bottom { opacity: .95; }
+@media (max-width: 600px) {
+  .feature-art-coffee { min-height: 290px; }
+  .coffee-card-illustration { max-height: 255px; }
+}
