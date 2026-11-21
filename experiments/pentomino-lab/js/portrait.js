@@ -20,7 +20,7 @@ function portrait(shape,id,palette,family,options={}){
  let drawing='<defs><clipPath id="'+clip+'">'+cuts+'</clipPath></defs>';
  drawing+='<g clip-path="url(#'+clip+')"><rect width="'+size+'" height="'+height+'" fill="'+main+'"/>'+marks+'</g>';
  const label=escape(shape+' '+id+', '+side+', '+D.families[family].label+' graphic style');
- return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+size+' '+height+'" role="img" aria-label="'+label+'">'+drawing+'</svg>';
+ return '<svg xmlns="http://www.w3.org/2000/svg" width="'+size+'" height="'+height+'" viewBox="0 0 '+size+' '+height+'" role="img" aria-label="'+label+'">'+drawing+'</svg>';
 }
 global.CharacterPortrait=Object.freeze({portrait});
 })(window);
