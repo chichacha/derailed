@@ -142,6 +142,37 @@ format:
         <div class="feature-art-bottom"><span class="art-line"></span> BATTER · DOUGH · TRADITION</div>
       </div>
     </article>
+
+    <article class="home-feature">
+      <div class="feature-copy">
+        <p class="home-eyebrow">05 &nbsp;/&nbsp; COFFEE LAB &nbsp;/&nbsp; INTERACTIVE EXPERIMENT</p>
+        <h3><a href="stories/coffee-lab/index.html">What makes a flat white different from a latte?</a></h3>
+        <p class="feature-deck">Espresso, milk, foam, and an unexpectedly complicated family tree. Mix ten classic coffee drinks, dress them up, and explore their neighbors on a logarithmic coffee map.</p>
+        <div class="feature-footer">
+          <span class="feature-tag">COFFEE</span>
+          <span class="feature-tag">INTERACTIVE RECIPES</span>
+          <span class="feature-tag">DATA VISUALIZATION</span>
+        </div>
+        <a class="feature-read" href="stories/coffee-lab/index.html">Enter Coffee Lab <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="feature-art" role="img" aria-label="Coffee Lab illustration: ten espresso-based drink recipes and one interactive workbench.">
+        <div class="feature-art-top">COFFEE LAB &nbsp;·&nbsp; ESPRESSO + MILK + FOAM</div>
+        <div class="feature-clock-row" aria-hidden="true">
+          <div class="feature-city">
+            <span>COFFEE FAMILY</span>
+            <strong>10</strong>
+            <small>RECIPES</small>
+          </div>
+          <div class="feature-difference">→</div>
+          <div class="feature-city">
+            <span>YOUR LAB</span>
+            <strong>01</strong>
+            <small>INTERACTIVE WORKBENCH</small>
+          </div>
+        </div>
+        <div class="feature-art-bottom"><span class="art-line"></span> MIX · TASTE · EXPLORE</div>
+      </div>
+    </article>
   </section>
 
   <section class="home-about" id="about" aria-labelledby="about-title">
