@@ -4,7 +4,7 @@
  const C=window.DERAILEDColour,G=window.GomasuPostures,D=window.CharacterDNA,P=window.CharacterPortrait;
  const $=id=>document.getElementById(id),order='FILPNTUVWYZ',ids=Object.create(null);
  const esc=x=>String(x).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
- let palette=C.load('berry'),family='splits',xColors=[0,1,2,3,4];
+ let palette=C.load('berry'),family='curves',xColors=[0,1,2,3,4];
  for(const name of order)ids[name]=0;
  function download(name,source){
    const u=URL.createObjectURL(new Blob([source],{type:'image/svg+xml;charset=utf-8'})),a=document.createElement('a');
@@ -27,12 +27,17 @@
  function changeX(i){
    const j=xColors.indexOf((xColors[i]+1)%5);[xColors[i],xColors[j]]=[xColors[j],xColors[i]];renderX();
  }
+ function portraitOptions(){return {stripeDirection:$('stripeDirection').value,splitDirection:$('splitDirection').value}}
+ function syncDirectionUI(){
+   $('castStripes').hidden=family!=='linear';
+   $('castSplits').hidden=family!=='splits';
+ }
  function renderCast(){
    const root=$('cast');root.replaceChildren();
    for(const letter of order){
      const person=G.character(letter),poseIds=G.ids(letter),poseId=poseIds[ids[letter]%poseIds.length],meta=G.metadata[poseId];
      const item=document.createElement('article');item.className='card';
-     item.innerHTML='<div class="card-art">'+P.portrait(letter,poseId,palette,family)+'</div>'+
+     item.innerHTML='<div class="card-art">'+P.portrait(letter,poseId,palette,family,portraitOptions())+'</div>'+
        '<div class="card-copy"><div class="card-title"><strong>'+letter+'</strong><span>'+poseIds.length+' postures</span></div>'+
        '<h3 lang="ja">'+esc(person.name_ja)+'</h3>'+
        '<p>'+esc(person.story)+'</p>'+
@@ -49,7 +54,7 @@
    shapes.forEach((shape,i)=>{
      const x=(i%cols)*w,y=Math.floor(i/cols)*h;
      const id=shape==='X'?'X00':G.ids(shape)[ids[shape]%G.ids(shape).length];
-     const portrait=shape==='X'?xMarkup(false):P.portrait(shape,id,palette,family,{idSuffix:'-sheet'});
+     const portrait=shape==='X'?xMarkup(false):P.portrait(shape,id,palette,family,{...portraitOptions(),idSuffix:'-sheet'});
      const person=G.character(shape);
      body+='<g transform="translate('+x+' '+y+')"><rect width="252" height="248" rx="13" fill="'+palette.light+'"/>'+
        '<svg x="16" y="9" width="'+drawWidth+'" height="'+drawHeight+'" viewBox="0 0 '+(shape==='X'?'300 285':'220 190')+'">'+portrait+'</svg>'+
@@ -60,7 +65,9 @@
  const preset=$('paletteSelect');
  Object.entries(C.presets).forEach(([id,p])=>{const o=document.createElement('option');o.value=id;o.textContent=p.name;preset.append(o)});
  preset.value='berry';preset.addEventListener('change',()=>{palette=C.load(preset.value);render()});
- $('styleFamily').addEventListener('change',()=>{family=$('styleFamily').value;render()});
+ $('styleFamily').addEventListener('change',()=>{family=$('styleFamily').value;syncDirectionUI();render()});
+ $('stripeDirection').addEventListener('change',render);
+ $('splitDirection').addEventListener('change',render);
  $('cycleCast').addEventListener('click',()=>{for(const name of order)ids[name]=(ids[name]+1)%G.ids(name).length;renderCast()});
  $('cast').addEventListener('click',e=>{const button=e.target.closest('button[data-next]');if(!button)return;
    const name=button.dataset.next;ids[name]=(ids[name]+1)%G.ids(name).length;renderCast()});
@@ -70,5 +77,5 @@
  $('downloadSheet').addEventListener('click',()=>download('pentomino-cast-of-twelve.svg',sheetFile()));
  $('xArtwork').addEventListener('click',e=>{const el=e.target.closest('[data-cell]');if(el)changeX(Number(el.dataset.cell))});
  $('xArtwork').addEventListener('keydown',e=>{const el=e.target.closest('[data-cell]');if(el&&(e.key==='Enter'||e.key===' ')){e.preventDefault();changeX(Number(el.dataset.cell))}});
- render();
+ syncDirectionUI();render();
 })();
