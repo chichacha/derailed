@@ -117,8 +117,8 @@ function paint(shape,cells,opt={}){
     const [ex,ey]=chooseEdge(base,side);
     // The centre is set just outside an exposed edge. The large disc cuts into
     // multiple neighbouring cells rather than becoming a dot on one cell.
-    const dir={top:[0,-.32],bottom:[0,.32],left:[-.32,0],right:[.32,0]}[side];
-    motif=circle((ex+dir[0])*unit,(ey+dir[1])*unit,unit*1.6*scale,accent);
+    const dir={top:[0,-.5],bottom:[0,.5],left:[-.5,0],right:[.5,0]}[side];
+    motif=circle((ex+dir[0])*unit,(ey+dir[1])*unit,unit*1.35*scale,accent);
   }else if(family==='splits'){
     const direction=['horizontal','vertical','diagonal'].includes(opt.splitDirection)?opt.splitDirection:'vertical';
     if(direction==='horizontal')motif=rect(-unit,height/2,width+unit*2,height/2+unit,accent);
