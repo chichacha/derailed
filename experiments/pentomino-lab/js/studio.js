@@ -6,6 +6,11 @@ const $=id=>document.getElementById(id);
 let selected='X00';
 const all=G.ids();
 function currentPalette(){return C.load($('palette').value)}
+function options(){return {stripeDirection:$('stripeDirection').value,splitDirection:$('splitDirection').value}}
+function syncDirectionUI(){
+ $('studioStripes').hidden=$('family').value!=='linear';
+ $('studioSplits').hidden=$('family').value!=='splits';
+}
 function filters(){
  const shape=$('shape').value,side=$('side').value,n=$('countFilter').value;
  return all.filter(id=>(shape==='all'||id[0]===shape)&&
@@ -15,7 +20,7 @@ function filters(){
 function drawFocus(){
  const id=selected,name=id[0],person=G.character(name),pose=G.metadata[id],count=G.ids(name).length;
  const palette=currentPalette(),family=$('family').value;
- $('focusArt').innerHTML=P.portrait(name,id,palette,family,{size:260,height:260,unit:48});
+ $('focusArt').innerHTML=P.portrait(name,id,palette,family,{...options(),size:260,height:260,unit:48});
  $('focusId').textContent=id+' / '+pose.side.toUpperCase();
  $('focusName').textContent=person.title_en;
  $('focusJa').textContent=person.name_ja;
@@ -27,6 +32,7 @@ function drawFocus(){
  }
 }
 function render(){
+ syncDirectionUI();
  const matching=filters();
  $('count').textContent=matching.length+' of 63 postures';
  if(!matching.length){
@@ -45,7 +51,7 @@ function render(){
    button.type='button';button.className='pose'+(id===selected?' active':'');button.dataset.pose=id;
    button.setAttribute('aria-pressed',id===selected?'true':'false');
    const image=document.createElement('span');image.className='pose-art';
-   image.innerHTML=P.portrait(name,id,currentPalette(),$('family').value);
+   image.innerHTML=P.portrait(name,id,currentPalette(),$('family').value,options());
    const caption=document.createElement('span');caption.className='pose-info';
    const strong=document.createElement('strong');strong.textContent=id;
    const side=document.createElement('span');side.textContent=face;
@@ -60,7 +66,7 @@ for(const shape of G.ORDER){
  const person=G.character(shape),option=document.createElement('option');option.value=shape;option.textContent=shape+' · '+person.title_en;
  $('shape').append(option);
 }
-for(const id of ['palette','family','shape','countFilter','side'])$(id).addEventListener('change',render);
+for(const id of ['palette','family','shape','countFilter','side','stripeDirection','splitDirection'])$(id).addEventListener('change',render);
 $('gallery').addEventListener('click',event=>{
  const pose=event.target.closest('button[data-pose]');if(!pose)return;
  selected=pose.dataset.pose;render();
@@ -71,7 +77,7 @@ $('next').addEventListener('click',()=>{const choices=filters();if(!choices.leng
  if(button)button.scrollIntoView({block:'nearest',behavior:'smooth'});
 });
 $('download').addEventListener('click',()=>{
- const svg=P.portrait(selected[0],selected,currentPalette(),$('family').value,{size:260,height:260,unit:48});
+ const svg=P.portrait(selected[0],selected,currentPalette(),$('family').value,{...options(),size:260,height:260,unit:48});
  const url=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml;charset=utf-8'})),a=document.createElement('a');
  a.href=url;a.download='gomasu-'+selected+'-'+$('family').value+'.svg';
  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1400);
