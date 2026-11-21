@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17171d">
+<title>The Cast of Twelve · Pentomino Lab · DERAILED.</title>
+<meta name="description" content="A playful design rulebook for twelve pentomino characters. Meet X 真ん中おじさん, the five-colour hero.">
+<style>
+:root{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f7f1ed;background:#191920}
+*{box-sizing:border-box}
+body{margin:0}
+main{max-width:1250px;padding:26px clamp(18px,4.5vw,68px) 70px;margin:auto}
+a{color:#f1a4be;text-underline-offset:3px}
+nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:60px;font-size:13px}
+nav a{text-decoration:none;font-weight:750}
+.eyebrow{font-size:10px;color:#f49cbb;letter-spacing:.2em;font-weight:800;text-transform:uppercase}
+h1{letter-spacing:-.075em;font-size:clamp(46px,7.6vw,90px);line-height:.99;margin:13px 0 22px}
+h1 em{font-style:normal;color:#f49cbb}
+.lead{font-size:clamp(16px,2vw,20px);line-height:1.5;color:#d8d2d7;max-width:760px}
+.intro{max-width:800px;margin-bottom:42px}
+.controls{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap;margin:20px 0}
+button,select{border:1px solid #615d69;color:#fdf9f7;background:#35323d;padding:11px 14px;border-radius:9px;font:inherit;min-height:41px}
+button{cursor:pointer;font-size:12px;font-weight:750}
+button:hover{background:#514653}
+button:focus-visible,select:focus-visible{outline:2px solid #f49cbb;outline-offset:3px}
+button.primary{background:#f26a8d;color:#2b1822;border-color:#f26a8d}
+label{font-size:12px;color:#e2d8de;display:flex;gap:8px;align-items:center}
+#paletteSelect{min-width:160px}
+.sectionhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:40px 0 14px}
+h2{font-size:22px;letter-spacing:-.045em;margin:0}
+.sectionhead small,.muted{font-size:12px;color:#b5abb3}
+.hero{display:grid;grid-template-columns:minmax(250px,1fr) minmax(280px,1fr);border:1px solid #55505a;border-radius:20px;overflow:hidden;background:#27252e}
+.xstage{min-height:340px;background:var(--light,#FAF7F1);display:flex;justify-content:center;align-items:center;padding:30px;position:relative}
+.xstage svg{width:100%;max-width:380px;max-height:360px}
+.xhint{position:absolute;bottom:14px;color:#54434a;font-size:11px;text-align:center;left:0;right:0}
+.herocopy{padding:clamp(24px,4vw,43px);display:flex;flex-direction:column;justify-content:center}
+.herocopy h3{font-size:clamp(28px,3vw,42px);letter-spacing:-.055em;margin:8px 0 4px}
+.herocopy .jp{font-size:18px;color:#f7adbf}
+.herocopy p{color:#c9c0c7;line-height:1.65}
+.rulebox{border-left:3px solid #f26a8d;padding:10px 16px;margin:12px 0 20px;background:#ffffff0a}
+.rulebox strong{display:block;font-size:13px}
+.rulebox span{font-size:12px;color:#c8bdc6}
+.hero-actions{display:flex;gap:9px;flex-wrap:wrap}
+.palette-line{display:flex;gap:6px;margin:14px 0}
+.palette-line span{height:14px;flex:1;max-width:36px;border-radius:3px}
+.cast{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.card{border:1px solid #44424c;border-radius:15px;background:#25242d;overflow:hidden}
+.card-art{height:174px;display:flex;align-items:center;justify-content:center;background:#efebe5}
+.card-art svg{width:100%;height:145px}
+.card-copy{padding:16px 17px 19px}
+.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-title strong{font-size:24px}
+.card-title span{font-size:11px;color:#f5acbd;text-align:right}
+.card h3{margin:0 0 6px;font-size:16px;letter-spacing:-.035em}
+.card p{color:#c2b9c3;font-size:12px;margin:0 0 12px;min-height:52px;line-height:1.5}
+.motif{font-size:10px;color:#f9b5c8;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.note{border:1px solid #504b54;border-radius:12px;padding:20px 23px;margin-top:26px;background:#26242c}
+.note h2{font-size:16px}
+.note p{font-size:13px;color:#c9c0c7;max-width:900px;line-height:1.75}
+footer{margin-top:55px;color:#aaa0aa;font-size:11px;letter-spacing:.07em}
+@media(max-width:960px){.cast{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.hero{grid-template-columns:1fr}.cast{grid-template-columns:repeat(2,minmax(0,1fr))}.xstage{min-height:270px}.herocopy{padding:25px}nav{margin-bottom:38px}}
+@media(max-width:420px){.cast{grid-template-columns:1fr}.card-art{height:185px}}
+</style>
+</head>
+<body>
+<main>
+<nav><a href="../../index.html">← DERAILED.</a><a href="index.html">↗ Back to Pentomino Lab</a></nav>
+<header class="intro">
+<div class="eyebrow">PENTOMINO LAB / DESIGN RULE SHEET 001</div>
+<h1>The Cast <em>of Twelve.</em></h1>
+<p class="lead">Twelve shapes, twelve personalities. Geometry gives each pentomino its character; colour and pattern give it a costume. The puzzle stays mathematically honest while the artwork takes a detour.</p>
+<div class="controls"><label>Colour world <select id="paletteSelect" aria-label="Colour palette"></select></label>
+<button id="downloadSheet">↓ Export character sheet SVG</button></div>
+</header>
+<div class="sectionhead"><h2>Meet the hero: X</h2><small>FIVE SQUARES · FIVE FEATURE COLOURS</small></div>
+<section class="hero" aria-label="X character five colour editor">
+<div class="xstage" id="xStage"><div id="xArtwork" aria-label="Five-colour X pentomino"></div>
+<div class="xhint">Tap a square to cycle its colour · all five stay unique</div></div>
+<div class="herocopy"><div class="eyebrow">SPECIAL DESIGN PERMISSION</div>
+<h3>The Center Uncle <span aria-hidden="true">✳</span></h3><div class="jp" lang="ja">真ん中おじさん</div>
+<p>X has only one free geometric orientation. Its perfectly symmetric silhouette makes it the ideal anchor for this tiny cast.</p>
+<div class="rulebox"><strong>Rule X01 — One colour per square.</strong>
+<span>Use all five feature colours exactly once. The centre is the anchor; four colourful arms surround it. No other piece receives all five colours.</span></div>
+<div class="palette-line" id="heroPalette" aria-label="The five feature colours"></div>
+<div class="hero-actions"><button class="primary" id="shuffleX">✳ Shuffle X colours</button><button id="resetX">Reset arrangement</button><button id="downloadX">↓ Export X SVG</button></div>
+</div></section>
+<div class="sectionhead"><h2>The supporting cast</h2><small>ELEVEN PIECES · ELEVEN DISTINCT MOTIF DIRECTIONS</small></div>
+<div id="cast" class="cast" aria-live="polite"></div>
+<section class="note"><h2>A design grammar, not a prison.</h2>
+<p>Eleven supporting pieces each use one dominant feature colour and a restrained neutral accent. Their named motif is a preferred visual language, not an absolute rule. X alone may display all five feature colours simultaneously. These are concept sketches for artwork, not manufacturing-ready vector cut paths. Future versions can make the rules editable, synchronize them with the main Pattern Lab, and export true fabrication outlines.</p></section>
+<footer>GOMASU × DERAILED. · A wonderfully unnecessary cast of characters. · DESIGN RULE SHEET v0.1</footer>
+</main>
+<script src="../shared/colour-system.js"></script>
+<script src="data/tilings.js"></script>
+<script>
+(function(){
+'use strict';
+const C=window.DERAILEDColour,T=window.PentominoTilings;
+const byId=id=>document.getElementById(id);
+const rules={
+F:['The Dancer','くねくねさん','Flowing curves','Curves imply movement across the irregular silhouette.','curves'],
+I:['The Minimalist','まっすぐさん','Long stripes','Parallel stripes emphasize the five-square axis.','stripes'],
+L:['The Corner','かどっこさん','Corner arc','A curved accent celebrates the bend.','corner'],
+P:['The Collector','ぎゅうぎゅうさん','Checker blocks','Small square accents reinforce its compact body.','checker'],
+N:['The Slider','ずれずれさん','Offset bands','Bands shift at the change of direction.','bands'],
+T:['The Signpost','みちしるべさん','Cap + stem','A top band contrasts with its supporting stem.','cap'],
+U:['The Hugger','だっこさん','Inward arches','The arches point toward the empty notch.','arch'],
+V:['The Architect','かくかくさん','Nested corners','Angular accents echo the strong right angle.','corner'],
+W:['The Wanderer','かいだんさん','Stepping dots','Dots climb the staircase one square at a time.','dots'],
+Y:['The Dreamer','えだわかれさん','Branching lines','An accent emerges at the branching junction.','branch'],
+Z:['The Rebel','ジグザグさん','Diagonal rhythm','Diagonal stripes create one zig-zag motion.','stripes']
+};
+const order='FILPNTUVWYZ';
+const normalise=cells=>{
+ const xy=cells.map(i=>[i%10,Math.floor(i/10)]),minx=Math.min(...xy.map(c=>c[0])),miny=Math.min(...xy.map(c=>c[1]));
+ return xy.map(c=>[c[0]-minx,c[1]-miny]).sort((a,b)=>a[1]-b[1]||a[0]-b[0]);
+};
+const pieces=Object.fromEntries(T.solutions[0].map(p=>[p.name,normalise(p.cells)]));
+let palette=C.load('berry'),xColors=[0,1,2,3,4];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function squareSVG(name,unit,offset,styleIndex){
+ const cells=pieces[name],cols=Math.max(...cells.map(c=>c[0]))+1,rows=Math.max(...cells.map(c=>c[1]))+1;
+ const left=(220-cols*unit)/2,top=(190-rows*unit)/2,colors=C.colours(palette);
+ const clip='clip-'+name;
+ const base=cells.map(([x,y])=>'<rect x="'+(left+x*unit+offset/2)+'" y="'+(top+y*unit+offset/2)+'" width="'+(unit-offset)+'" height="'+(unit-offset)+'" rx="3"/>').join('');
+ const style=rules[name],type=style[4],main=colors[styleIndex%5],accent=colors[6];
+ let art='';
+ for(const [cx,cy] of cells){
+ const x=left+cx*unit,y=top+cy*unit,mid=x+unit/2,my=y+unit/2;
+ if(type==='stripes')art+=Array.from({length:5},(_,i)=>'<path d="M '+(x+i*unit/4-10)+' '+y+' l '+unit+' '+unit+'" stroke="'+accent+'" stroke-width="4" opacity=".65"/>').join('');
+ if(type==='curves')art+='<circle cx="'+mid+'" cy="'+my+'" r="'+(unit*.36)+'" fill="none" stroke="'+accent+'" stroke-width="6" opacity=".65"/>';
+ if(type==='corner')art+='<path d="M '+x+' '+(y+unit)+' Q '+x+' '+y+' '+(x+unit)+' '+y+'" fill="none" stroke="'+accent+'" stroke-width="7" opacity=".62"/>';
+ if(type==='checker'&&(cx+cy)%2===0)art+='<rect x="'+x+'" y="'+y+'" width="'+unit/2+'" height="'+unit/2+'" fill="'+accent+'" opacity=".6"/>';
+ if(type==='bands')art+='<path d="M '+x+' '+my+' h '+unit+'" stroke="'+accent+'" stroke-width="9" opacity=".65"/>';
+ if(type==='cap'&&cy===0)art+='<rect x="'+x+'" y="'+y+'" width="'+unit+'" height="'+unit*.32+'" fill="'+accent+'" opacity=".68"/>';
+ if(type==='arch')art+='<circle cx="'+mid+'" cy="'+(y+unit)+'" r="'+unit*.39+'" fill="none" stroke="'+accent+'" stroke-width="7" opacity=".66"/>';
+ if(type==='dots')art+='<circle cx="'+mid+'" cy="'+my+'" r="'+unit*.15+'" fill="'+accent+'" opacity=".78"/>';
+ if(type==='branch')art+='<path d="M '+mid+' '+y+' V '+my+' L '+(x+unit)+' '+(y+unit)+'" fill="none" stroke="'+accent+'" stroke-width="6" opacity=".7"/>';
+ }
+ return '<svg viewBox="0 0 220 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+esc(name)+' pentomino with '+esc(style[2])+'"><defs><clipPath id="'+clip+'">'+base+'</clipPath></defs>'+
+ '<g clip-path="url(#'+clip+')"><rect width="220" height="190" fill="'+main+'"/>'+art+'</g></svg>';
+}
+const xLayout=[[1,0],[0,1],[1,1],[2,1],[1,2]];
+function xMarkup(withControls){
+ const features=palette.features,u=80;
+ const squares=xLayout.map(([cx,cy],i)=>'<rect '+(withControls?'data-cell="'+i+'" tabindex="0" role="button" aria-label="Change colour of '+['top','left','centre','right','bottom'][i]+' square" ':'')+
+ 'x="'+(30+cx*u)+'" y="'+(15+cy*u)+'" width="78" height="78" rx="4" fill="'+features[xColors[i]]+'"/>').join('');
+ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 285" role="img" aria-label="X pentomino, five different feature colours">'+squares+'</svg>';
+}
+function xChange(i){
+ // Cycle by swapping the tapped square with the next feature colour's current location.
+ const wanted=(xColors[i]+1)%5,j=xColors.indexOf(wanted);
+ [xColors[i],xColors[j]]=[xColors[j],xColors[i]];renderX();
+}
+function renderX(){
+ byId('xArtwork').innerHTML=xMarkup(true);
+ byId('heroPalette').replaceChildren(...palette.features.map(c=>{const span=document.createElement('span');span.style.background=c;return span}));
+ byId('xStage').style.setProperty('--light',palette.light);
+}
+function renderCast(){
+ const root=byId('cast');root.replaceChildren();
+ [...order].forEach((letter,i)=>{
+ const [title,jp,motif,desc]=rules[letter],el=document.createElement('article');
+ el.className='card';
+ const visual='<div class="card-art">'+squareSVG(letter,43,1,i)+'</div>';
+ el.innerHTML=visual+'<div class="card-copy"><div class="card-title"><strong>'+letter+'</strong><span lang="ja">'+esc(jp)+'</span></div><h3>'+esc(title)+'</h3><p>'+esc(desc)+'</p><div class="motif">'+esc(motif)+'</div></div>';
+ root.append(el);
+ });
+}
+function render(){renderX();renderCast()}
+function download(filename,content){
+ const blob=new Blob([content],{type:'image/svg+xml;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function xFile(){
+ return xMarkup(false).replace('viewBox="0 0 300 285"','width="900" height="855" viewBox="0 0 300 285"');
+}
+function sheetFile(){
+ const cols=3,w=260,h=248;
+ const tiles=[...order,'X'].map((letter,i)=>{
+ const x=(i%cols)*w,y=Math.floor(i/cols)*h;
+ const svg=letter==='X'?xMarkup(false).replace(/<svg[^>]*>/,'').replace('</svg>',''):squareSVG(letter,43,1,i).replace(/<svg[^>]*>/,'').replace('</svg>','');
+ // Embed each drawing as nested SVG with its own viewport and clip-id namespace.
+ const isolated=letter==='X'?xFile():squareSVG(letter,43,1,i);
+ return '<g transform="translate('+x+' '+y+')"><rect width="250" height="238" rx="14" fill="'+palette.light+'"/>'+
+ '<svg x="12" y="10" width="230" height="190" viewBox="'+(letter==='X'?'0 0 300 285':'0 0 220 190')+'">'+isolated.replace(/<svg[^>]*>/,'').replace('</svg>','')+'</svg>'+
+ '<text x="20" y="220" font-size="18" font-family="sans-serif" font-weight="bold" fill="'+palette.dark+'">'+letter+'</text></g>';
+ }).join('');
+ return '<svg xmlns="http://www.w3.org/2000/svg" width="1560" height="1984" viewBox="0 0 780 992"><rect width="780" height="992" fill="'+palette.dark+'"/>'+tiles+'</svg>';
+}
+const preset=byId('paletteSelect');
+Object.entries(C.presets).forEach(([id,p])=>{const o=document.createElement('option');o.value=id;o.textContent=p.name;preset.append(o)});
+preset.value='berry';
+preset.addEventListener('change',()=>{palette=C.load(preset.value);render()});
+byId('shuffleX').addEventListener('click',()=>{for(let i=4;i>0;i--){const j=Math.floor(Math.random()*(i+1));[xColors[i],xColors[j]]=[xColors[j],xColors[i]]}renderX()});
+byId('resetX').addEventListener('click',()=>{xColors=[0,1,2,3,4];renderX()});
+byId('downloadX').addEventListener('click',()=>download('pentomino-X-five-colours.svg',xFile()));
+byId('downloadSheet').addEventListener('click',()=>download('pentomino-cast-of-twelve.svg',sheetFile()));
+byId('xArtwork').addEventListener('click',e=>{const node=e.target.closest('[data-cell]');if(node)xChange(Number(node.dataset.cell))});
+byId('xArtwork').addEventListener('keydown',e=>{const node=e.target.closest('[data-cell]');if(node&&(e.key==='Enter'||e.key===' ')){e.preventDefault();xChange(Number(node.dataset.cell))}});
+render();
+})();
+</script>
+</body></html>
