@@ -4,12 +4,40 @@
 
 This is a **dependency-free static experiment**. Open `index.html` directly in a browser (including from `file://`), or view it on DERAILED after rendering the Quarto site.
 
+## Gomasu × DERAILED: Character DNA (v0.2)
+
+This lab reads a **snapshot** of Gomasu Village's authored geometry and names from
+[chichacha/psychic-pento-guacamole/data](https://github.com/chichacha/psychic-pento-guacamole/tree/main/data).
+The source remains in Gomasu; a local bundle makes the DERAILED experiments work offline.
+
+- `data/gomasu.js` — 63 mathematically distinct posture IDs, their five-cell coordinates, front/back metadata, and 12 official characters. Shape + normalized coordinates provide a reproducible crosswalk; all 192 placements across the 16 sample tilings resolve to one of these postures.
+- `js/character-dna.js` — a **posture-aware** renderer: canonical cell identities are carried through rotations and reflections. One composition-level graphic family is shared across the artwork: **Linear**, **Curved**, **Split**, or **Blocky**.
+- `js/portrait.js` — shared SVG portrait generator used by the Cast and Posture Studio.
+- `cast-of-twelve.html` / `js/cast.js` — the 12 canonical Gomasu characters (X featured separately), next-posture buttons, a common graphic-language selector and SVG character-sheet export.
+- `posture-studio.html` / `js/studio.js` — gallery of all 63 postures, with character, symmetry and front/back filters, preview and single-posture SVG export.
+
+**Visual discipline:** Default mode is Character DNA with a single motif family and about 45% decorated pieces. The five feature colours plus two neutral tokens still apply; X is the intentional exception where each of its five squares displays a different feature colour. You can still choose **Manual motifs** to experiment, but those options are restricted to the selected graphic family.
+
+### Why canonical cell identity matters
+
+A decoration should follow its *character*, not the board axes. Given a solution placement, `GomasuPostures.resolve('F', cells)` identifies an authored ID such as `F04` and its front/back metadata. `matchingTransform()` associates each of the five new coordinates with a cell of the canonical posture so that the ornament rotates or reflects with the geometry.
+
+The five-square arrangement is mathematically fixed; the decoration is a creative proposal. X has only one **geometric** orientation despite having a deliberately non-symmetric colour arrangement.
+
+**To refresh the Gomasu snapshot:** update the three source JSON payloads embedded in `data/gomasu.js` from `postures.json`, `character_postures.json` and `characters.json`, check all 63 ID keys, and rerun posture/tiling mapping tests. Do not invent or renumber posture IDs.
+
+### Compatibility
+
+Saved design JSON continues using `derailed.pentomino/1`. New exports include `settings.designMode` and optional `pieces[shape].decorated` flags. Older designs remain importable, with old `all`/ `stripes` family settings mapped to the restrained styles. No bundler, external library or internet connection is required.
+
+---
+
 ## What the editor does now
 
 - 16 prevalidated 6 × 10 tilings using all 12 pentominoes exactly once
-- 14 registered motifs: solids, two-tone splits, circles, arches, stripes, dots, checker blocks and sunrise
+- A restrained, posture-aware Character DNA engine, plus 14 legacy motifs grouped into compatible families
 - Five feature colours plus a light and dark neutral; any piece uses a dominant feature colour and an optional second palette token
-- Editable swatches, background, composition mood, motif family, density, gap, rounding, scale and per-piece styles
+- Editable swatches, background, composition mood, disciplined motif family, density, gap, rounding, scale and per-piece styles
 - Exports artwork as SVG or PNG, the colour palette as JSON or CSS, and complete editable designs as JSON
 - Imports saved design JSON **or** a standalone palette JSON
 
@@ -21,9 +49,9 @@ experiments/
 ├── shared/
 │   └── colour-system.js          # Independent design-token engine, version 1
 └── pentomino-lab/
-    ├── index.html                 # Semantic UI; script tags only
+    ├── index.html                 # Main interactive editor\n    ├── cast-of-twelve.html       # Canonical character portraits\n    ├── posture-studio.html       # All 63 orientations
     ├── styles.css                 # Responsive editor styling
-    ├── data/tilings.js            # Tiling source and validation
+    ├── data/tilings.js            # Tiling source and validation\n    ├── data/gomasu.js             # Official posture source snapshot
     └── js/
         ├── motifs.js              # Extensible motif registry
         └── app.js                 # Interaction, SVG rendering and exports
@@ -76,5 +104,5 @@ Do not edit generated `docs/` files directly; edit source under `experiments/`, 
 
 1. **Colour Lab** — independent palette generator, contrast checker, CSS token themes and JSON interchange.
 2. **Tiling Lab** — live exact-cover solver, additional board shapes and deterministic random seeds.
-3. **Pattern Lab** — motif editor, pattern weights, compositional constraints, saved motif presets and Gomasu-inspired details.
+3. **Pattern Lab** — refine Character DNA, poster composition constraints, deterministic random seeds, reusable motif presets.
 4. **Gallery** — export templates (posters, thumbnails, cover art, SVG backgrounds) shared with other DERAILED projects.
