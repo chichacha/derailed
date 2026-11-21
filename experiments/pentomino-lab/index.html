@@ -16,7 +16,7 @@
     <div class="stamp">BEAUTIFULLY<br>CONSTRAINED <span>✳</span></div>
   </header>
   <div style="max-width:1580px;margin:16px auto 0;padding:0 clamp(18px,4vw,64px)">
-    <a href="cast-of-twelve.html" style="display:inline-block;color:#f49cbb;text-decoration:none;font-size:13px;font-weight:750;border-bottom:1px solid #f49cbb;padding-bottom:3px">✳ NEW: Meet the Cast of Twelve — piece design rules &amp; five-colour X →</a>
+    <a href="cast-of-twelve.html" style="display:inline-block;color:#f49cbb;text-decoration:none;font-size:13px;font-weight:750;border-bottom:1px solid #f49cbb;padding-bottom:3px">✳ Meet the Cast of Twelve — character identities →</a> <a href="posture-studio.html" style="display:inline-block;margin-left:18px;color:#cbeef3;text-decoration:none;font-size:13px;font-weight:750;border-bottom:1px solid #cbeef3;padding-bottom:3px">↻ Explore all 63 Gomasu postures →</a>
   </div>
   <main class="layout">
     <section class="workspace" aria-label="Artwork studio">
@@ -27,7 +27,7 @@
         <span class="status" id="tilingLabel">Tiling 01 / 16</span>
       </div>
       <div class="artwork-frame"><div id="board" aria-label="Interactive 6 by 10 pentomino artwork"></div></div>
-      <p class="underboard"><span>Click a shape to style it. Every motif stays inside its pentomino.</span><span id="pieceStats">12 pieces / 60 cells</span></p>
+      <p class="underboard"><span>Click a piece to inspect its Gomasu posture and design. Patterns rotate and reflect with their character.</span><span id="pieceStats">12 pieces / 60 cells</span></p>
       <div class="rules"><span>● Five feature colours</span><span>● Two neutral tokens</span><span>● One dominant colour per shape</span></div>
       <div class="exportbar">
         <button id="exportSvg">↓ SVG artwork</button><button id="exportPng">↓ PNG artwork</button>
@@ -48,17 +48,19 @@
         <p class="hint">Edit any swatch. The seven tokens can be reused in a future Colour Lab or in other DERAILED pages.</p>
       </section>
       <section>
-        <div class="sectiontitle"><h2>02 / Graphic language</h2><span>Motif registry</span></div>
+        <div class="sectiontitle"><h2>02 / Graphic language</h2><span>One family per artwork</span></div>
+        <label for="designMode">Design engine</label><select id="designMode"><option value="character" selected>Character DNA · Gomasu postures</option><option value="free">Manual motifs · constrained</option></select>
         <label for="mood">Composition mood</label><select id="mood">
           <option value="quiet">Quiet / mostly solid</option><option value="graphic" selected>Graphic / balanced</option>
-          <option value="playful">Playful / decorated</option><option value="maximal">Maximal / all patterned</option>
+          <option value="playful">Playful / decorated</option><option value="maximal">Maximal / more decoration</option>
         </select>
-        <label for="family">Motif family</label><select id="family"><option value="all">All geometric motifs</option>
-          <option value="curves">Curves, dots and circles</option><option value="stripes">Stripes and blocks</option><option value="splits">Two-tone splits</option></select>
+        <label for="family">Composition family</label><select id="family">
+          <option value="splits" selected>Split · two-tone</option><option value="linear">Linear · stripes only</option>
+          <option value="curves">Curved · circles only</option><option value="blocks">Blocky · squares only</option></select>
         <label for="pairing">Accent pairing</label><select id="pairing">
-          <option value="mixed">Feature or neutral</option><option value="neutral">Neutrals only</option><option value="feature">Feature colours only</option></select>
-        <label for="density">Decorated pieces <output id="densityValue">60%</output></label>
-        <input id="density" type="range" min="0" max="100" step="5" value="60">
+          <option value="neutral" selected>Neutrals only · restrained</option><option value="mixed">Feature or neutral</option><option value="feature">Feature colours only</option></select>
+        <label for="density">Decorated pieces <output id="densityValue">45%</output></label>
+        <input id="density" type="range" min="0" max="100" step="5" value="45">
         <label for="gap">Spacing <output id="gapValue">2</output></label>
         <input id="gap" type="range" min="0" max="12" step="1" value="2">
         <label for="radius">Corner radius <output id="radiusValue">3</output></label>
@@ -69,13 +71,16 @@
       <section>
         <div class="sectiontitle"><h2>03 / Shape inspector</h2><span id="selectedLabel">F</span></div>
         <div class="piece-chips" id="pieceChips"></div>
-        <label for="pieceMotif">Pattern</label><select id="pieceMotif"></select>
+        <p class="posture-readout" id="postureInfo" aria-live="polite"></p>
+        <p class="hint" id="dnaTrait"></p>
+        <button class="wide" id="toggleDecoration">Turn decoration off</button>
+        <div id="motifInspectorRow"><label for="pieceMotif">Manual pattern</label><select id="pieceMotif"></select></div>
         <div class="btnpair">
           <div><label for="pieceMain">Dominant</label><select id="pieceMain"></select></div>
           <div><label for="pieceAccent">Accent</label><select id="pieceAccent"></select></div>
         </div>
         <button class="wide" id="rotateMotif">↻ Rotate motif direction</button>
-        <p class="hint">The grid is a valid pentomino tiling; the decorative elements are clipped to the selected shape.</p>
+        <p class="hint">Each shape follows a Gomasu posture ID; an unchanging shape can still wear different colours. X alone uses all five feature colours.</p>
       </section>
       <p class="credit">GOMASU × DERAILED. / One thing led to another.</p>
     </aside>
@@ -83,6 +88,8 @@
   <footer>Made to be remixed. <a href="README.md">How it works</a> · <a href="https://github.com/chichacha/derailed">Source on GitHub</a></footer>
   <script defer src="../shared/colour-system.js"></script>
   <script defer src="data/tilings.js"></script>
+  <script defer src="data/gomasu.js"></script>
+  <script defer src="js/character-dna.js"></script>
   <script defer src="js/motifs.js"></script>
   <script defer src="js/app.js"></script>
 </body>
