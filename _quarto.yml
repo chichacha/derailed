@@ -18,6 +18,8 @@ website:
     left:
       - text: "Stories"
         href: index.qmd#stories
+      - text: "Experiments"
+        href: experiments/index.html
       - text: "About"
         href: index.qmd#about
     right:
