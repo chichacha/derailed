@@ -4,8 +4,8 @@
    Classic scripts intentionally work from file:// without a local server. */
 (function(){
   'use strict';
-  const C=window.DERAILEDColour,T=window.PentominoTilings,M=window.PentominoMotifs;
-  if(!C||!T||!M){document.getElementById('board').textContent='Missing lab modules. Check the relative script paths.';return}
+  const C=window.DERAILEDColour,T=window.PentominoTilings,M=window.PentominoMotifs,G=window.GomasuPostures,D=window.CharacterDNA;
+  if(!C||!T||!M||!G||!D){document.getElementById('board').textContent='Missing lab modules. Check the relative script paths.';return}
   const $=id=>document.getElementById(id), pick=arr=>arr[Math.floor(Math.random()*arr.length)];
   const shuffle=arr=>{const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
   const n=(value,min,max,fallback=min)=>{const v=Number(value);return Number.isFinite(v)?Math.min(max,Math.max(min,v)):fallback};
@@ -20,14 +20,35 @@
   function assignColors(){
     const mains=shuffle([0,1,2,3,4,0,1,2,3,4,0,3]);
     letters.forEach((name,i)=>{
-      const old=styles[name]||{};styles[name]={...old,main:mains[i],accent:accentFor(mains[i]),motif:old.motif||'solid',rotation:old.rotation||0};
+      const old=styles[name]||{};styles[name]={...old,main:mains[i],accent:accentFor(mains[i]),motif:old.motif||'solid',rotation:old.rotation||0,decorated:old.decorated!==false};
     });
   }
+  const manualGroups={
+    linear:['broad-stripes','fine-stripes','diagonal-stripes'],
+    curves:['half-circle','quarter-circle','dots','rings','arches'],
+    splits:['vertical-split','horizontal-split','diagonal-split'],
+    blocks:['checker']
+  };
+  function manualPool(){return (manualGroups[$('family').value]||manualGroups.splits).map(id=>M.get(id))}
+  function refillMotifChoices(){
+    const picker=$('pieceMotif'),available=[M.get('solid'),...manualPool()];
+    picker.replaceChildren();
+    for(const m of available){
+      const opt=document.createElement('option');opt.value=m.id;opt.textContent=m.label;picker.add(opt);
+    }
+  }
+  function updateModeUI(){
+    const manual=$('designMode').value==='free';
+    $('motifInspectorRow').hidden=!manual;
+    $('rotateMotif').hidden=!manual;
+    refillMotifChoices();
+  }
   function remix(){
-    const pool=M.byFamily($('family').value);
+    const pool=manualPool();
     const count=Math.round(Number($('density').value)*letters.length/100);
     const decorated=new Set(shuffle(letters).slice(0,count));
     letters.forEach(name=>{
+      styles[name].decorated=decorated.has(name);
       styles[name].motif=decorated.has(name)&&pool.length?pick(pool).id:'solid';
       styles[name].rotation=Math.floor(Math.random()*4);
     });
@@ -38,9 +59,7 @@
       const o=document.createElement('option');o.value=id;o.textContent=p.name;preset.add(o);
     }
     const custom=document.createElement('option');custom.value='custom';custom.textContent='Custom palette';preset.add(custom);
-    for(const m of M.all()){
-      const option=document.createElement('option');option.value=m.id;option.textContent=m.label;$('pieceMotif').add(option);
-    }
+    refillMotifChoices();
     for(let i=0;i<7;i++){
       if(i<5){const o=document.createElement('option');o.value=i;o.textContent=labels[i];$('pieceMain').add(o)}
       const a=document.createElement('option');a.value=i;a.textContent=labels[i];$('pieceAccent').add(a);
@@ -55,21 +74,26 @@
     });
     $('background').addEventListener('change',render);
     $('mood').addEventListener('change',()=>{
-      $('density').value={quiet:30,graphic:60,playful:80,maximal:100}[$('mood').value]||60;
+      $('density').value={quiet:20,graphic:45,playful:60,maximal:75}[$('mood').value]||45;
       remix();render();syncInspector();
     });
-    $('family').addEventListener('change',()=>{remix();render();syncInspector()});
+    $('designMode').addEventListener('change',()=>{updateModeUI();remix();syncInspector();render()});
+    $('family').addEventListener('change',()=>{updateModeUI();remix();render();syncInspector()});
     $('pairing').addEventListener('change',()=>{
       letters.forEach(name=>{styles[name].accent=accentFor(styles[name].main)});render();syncInspector();
     });
     $('density').addEventListener('input',()=>{remix();render();syncInspector()});
     for(const id of ['gap','radius','scale'])$(id).addEventListener('input',render);
-    $('pieceMotif').addEventListener('change',()=>{styles[selected].motif=$('pieceMotif').value;render()});
+    $('pieceMotif').addEventListener('change',()=>{
+      if($('designMode').value!=='free')return;
+      styles[selected].motif=$('pieceMotif').value;styles[selected].decorated=styles[selected].motif!=='solid';render();syncInspector();
+    });
+    $('toggleDecoration').addEventListener('click',()=>{styles[selected].decorated=!styles[selected].decorated;syncInspector();render()});
     $('pieceMain').addEventListener('change',()=>{styles[selected].main=Number($('pieceMain').value);if(styles[selected].main===styles[selected].accent)styles[selected].accent=accentFor(styles[selected].main);syncInspector();render()});
     $('pieceAccent').addEventListener('change',()=>{styles[selected].accent=Number($('pieceAccent').value);render()});
     $('rotateMotif').addEventListener('click',()=>{styles[selected].rotation=(styles[selected].rotation+1)%4;render()});
     $('newTiling').addEventListener('click',()=>{
-      solution=(solution+1+Math.floor(Math.random()*(T.solutions.length-1)))%T.solutions.length;render();
+      solution=(solution+1+Math.floor(Math.random()*(T.solutions.length-1)))%T.solutions.length;render();syncInspector();
     });
     $('remix').addEventListener('click',()=>{remix();render();syncInspector()});
     $('shuffle').addEventListener('click',()=>{assignColors();render();syncInspector()});
@@ -108,7 +132,15 @@
   function syncInspector(){
     $('selectedLabel').textContent='Piece '+selected;
     for(const b of $('pieceChips').children)b.classList.toggle('active',b.dataset.name===selected);
-    const s=styles[selected];$('pieceMotif').value=s.motif;$('pieceMain').value=s.main;$('pieceAccent').value=s.accent;
+    const s=styles[selected],tile=T.solutions[solution].find(t=>t.name===selected);
+    const pose=G.resolve(selected,tile.cells.map(z=>[z%10,Math.floor(z/10)]));
+    const character=G.character(selected);
+    $('postureInfo').textContent=pose.id+' · '+pose.side+' · '+pose.orientationCount+' posture'+(pose.orientationCount!==1?'s':'');
+    $('dnaTrait').textContent=(character?.name_ja||selected)+' — '+D.profiles[selected].idea;
+    $('toggleDecoration').textContent=selected==='X'?'X keeps its five-colour signature':s.decorated?'Turn decoration off':'Turn decoration on';
+    $('toggleDecoration').disabled=selected==='X';
+    $('pieceMotif').value=manualPool().some(m=>m.id===s.motif)?s.motif:'solid';
+    $('pieceMain').value=s.main;$('pieceAccent').value=s.accent;
   }
   const f=x=>Math.round(x*100)/100;
   function buildSVG(showSelected){
@@ -121,9 +153,15 @@
       const clipId='clip-'+tile.name;
       defs+='<clipPath id="'+clipId+'">'+cells.map(c=>'<rect x="'+f(c.x+gap/2)+'" y="'+f(c.y+gap/2)+'" width="'+f(unit-gap)+'" height="'+f(unit-gap)+'" rx="'+f(radius)+'"/>').join('')+'</clipPath>';
       const p={x,y,w,h,cells,unit,rotation:piece.rotation,scale,main:colorsNow[piece.main],accent:colorsNow[piece.accent]};
-      body+='<g data-piece="'+tile.name+'" aria-label="Pentomino '+tile.name+'">';
+      const dna=D.paint(tile.name,cells,{
+        unit,features:colorsNow.slice(0,5),accent:p.accent,family:$('family').value,
+        decorated:piece.decorated,scale
+      });
+      body+='<g data-piece="'+tile.name+'" data-posture="'+dna.posture.id+'" aria-label="Pentomino '+tile.name+', posture '+dna.posture.id+'">';
       body+='<g clip-path="url(#'+clipId+')"><rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+p.main+'"/>';
-      body+=M.get(piece.motif).render(p)+'</g>';
+      if($('designMode').value==='character'||tile.name==='X')body+=dna.svg;
+      else if(piece.decorated)body+=M.get(manualPool().some(m=>m.id===piece.motif)?piece.motif:'solid').render(p);
+      body+='</g>';
       if(showSelected&&tile.name===selected){
         body+='<g pointer-events="none">'+cells.map(c=>'<rect x="'+f(c.x+gap/2+1)+'" y="'+f(c.y+gap/2+1)+'" width="'+f(unit-gap-2)+'" height="'+f(unit-gap-2)+'" rx="'+f(radius)+'" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-dasharray="5 5"/>').join('')+'</g>';
       }
@@ -135,7 +173,7 @@
     for(const id of ['density','gap','radius','scale'])$(id+'Value').textContent=$(id).value+(id==='density'||id==='scale'?'%':'');
     $('board').innerHTML=buildSVG(true);
     $('tilingLabel').textContent='Tiling '+String(solution+1).padStart(2,'0')+' / '+T.solutions.length;
-    $('pieceStats').textContent='12 pieces / 60 cells / '+letters.filter(n=>styles[n].motif!=='solid').length+' patterned';
+    $('pieceStats').textContent='12 shapes / 60 squares / '+letters.filter(n=>styles[n].decorated).length+' decorated / 63 possible postures';
   }
   function download(filename,blob){
     const url=URL.createObjectURL(blob),a=document.createElement('a');
@@ -153,7 +191,7 @@
   }
   function snapshot(){
     return {schema:'derailed.pentomino/1',palette:C.validate(palette),solution,settings:{
-      background:Number($('background').value),mood:$('mood').value,family:$('family').value,pairing:$('pairing').value,
+      background:Number($('background').value),mood:$('mood').value,family:$('family').value,pairing:$('pairing').value,designMode:$('designMode').value,
       density:Number($('density').value),gap:Number($('gap').value),radius:Number($('radius').value),scale:Number($('scale').value)
     },pieces:styles};
   }
@@ -168,16 +206,21 @@
         const bounds={background:[0,6],density:[0,100],gap:[0,12],radius:[0,24],scale:[55,150]};
         $(id).value=n(s[id],bounds[id][0],bounds[id][1],Number($(id).value));
       }
-      for(const id of ['mood','family','pairing'])if([...$(id).options].some(o=>o.value===s[id]))$(id).value=s[id];
+      for(const id of ['mood','pairing','designMode'])if([...$(id).options].some(o=>o.value===s[id]))$(id).value=s[id];
+      // Legacy designs used "all" and "stripes"; map them to a disciplined grammar.
+      const familyAliases={all:'splits',stripes:'linear'};
+      $('family').value=familyAliases[s.family]||s.family||'splits';
+      updateModeUI();
       for(const name of letters){
         const p=input.pieces?.[name]||{};
         styles[name]={
           main:n(p.main,0,4,0)|0,accent:n(p.accent,0,6,5)|0,
-          motif:M.get(p.motif).id,rotation:n(p.rotation,0,3,0)|0
+          motif:M.get(p.motif).id,rotation:n(p.rotation,0,3,0)|0,
+          decorated:p.decorated!==undefined?Boolean(p.decorated):p.motif!=='solid'
         };
       }
     }
     $('preset').value='custom';refreshSwatches();syncInspector();render();
   }
-  initControls();assignColors();remix();refreshSwatches();syncInspector();render();
+  initControls();updateModeUI();assignColors();remix();refreshSwatches();syncInspector();render();
 })();
