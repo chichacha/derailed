@@ -48,15 +48,31 @@
         <p class="hint">Edit any swatch. The seven tokens can be reused in a future Colour Lab or in other DERAILED pages.</p>
       </section>
       <section>
-        <div class="sectiontitle"><h2>02 / Graphic language</h2><span>One family per artwork</span></div>
+        <div class="sectiontitle"><h2>02 / Graphic language</h2><span>One bold graphic treatment</span></div>
         <label for="designMode">Design engine</label><select id="designMode"><option value="character" selected>Character DNA · Gomasu postures</option><option value="free">Manual motifs · constrained</option></select>
         <label for="mood">Composition mood</label><select id="mood">
           <option value="quiet">Quiet / mostly solid</option><option value="graphic" selected>Graphic / balanced</option>
           <option value="playful">Playful / decorated</option><option value="maximal">Maximal / more decoration</option>
         </select>
         <label for="family">Composition family</label><select id="family">
-          <option value="splits" selected>Split · two-tone</option><option value="linear">Linear · stripes only</option>
-          <option value="curves">Curved · circles only</option><option value="blocks">Blocky · squares only</option></select>
+          <option value="curves" selected>Circle cutout · large accent circle</option><option value="linear">Stripes · repeat across piece</option>
+          <option value="splits">Clean split · two-tone</option><option value="blocks">Colour blocks · bold rectangles</option></select>
+        <div id="stripeControls" class="family-controls" hidden>
+          <label for="stripeDirection">Stripe direction</label>
+          <select id="stripeDirection">
+            <option value="horizontal">Horizontal stripes</option>
+            <option value="vertical">Vertical stripes</option>
+            <option value="diagonal" selected>Diagonal stripes</option>
+          </select>
+        </div>
+        <div id="splitControls" class="family-controls" hidden>
+          <label for="splitDirection">Split direction</label>
+          <select id="splitDirection">
+            <option value="vertical" selected>Vertical half</option>
+            <option value="horizontal">Horizontal half</option>
+            <option value="diagonal">Diagonal half</option>
+          </select>
+        </div>
         <label for="pairing">Accent pairing</label><select id="pairing">
           <option value="neutral" selected>Neutrals only · restrained</option><option value="mixed">Feature or neutral</option><option value="feature">Feature colours only</option></select>
         <label for="density">Decorated pieces <output id="densityValue">45%</output></label>
