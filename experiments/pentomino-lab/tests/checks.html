@@ -43,14 +43,28 @@ h1{letter-spacing:-.05em}li{padding:6px 0}.pass{color:#267053}.fail{color:#b23b5
    if(count!==192)throw Error('Expected 192 placements');
    return count+' placements';
  });
- check('Four restrained graphic families render all 63 postures',()=>{
+ check('Four whole-piece families and three directions render all 63 postures',()=>{
    let count=0;const palette=C.load('berry');
-   for(const id of G.ids())for(const family of Object.keys(D.families)){
-     const s=P.portrait(id[0],id,palette,family);
-     if(!s.startsWith('<svg')||!s.includes('</svg>'))throw Error('Could not draw '+id+' in '+family);
+   for(const id of G.ids())for(const family of Object.keys(D.families))
+     for(const direction of ['horizontal','vertical','diagonal']){
+       const s=P.portrait(id[0],id,palette,family,{stripeDirection:direction,splitDirection:direction});
+       if(!s.startsWith('<svg')||!s.includes('</svg>')||!s.includes('<clipPath'))
+         throw Error('Could not draw '+id+' in '+family+' / '+direction);
+       count++;
+     }
+   return count+' renderings';
+ });
+ check('Circle accents are big enough to span multiple squares',()=>{
+   let count=0;
+   for(const person of G.characters){
+     if(person.shape==='X')continue; // X always uses its special five-colour treatment
+     const id=G.ids(person.shape)[0],cells=G.posePoints(id).map(pt=>({x:pt.x*40,y:pt.y*40}));
+     const s=D.paint(person.shape,cells,{unit:40,family:'curves',accent:'#222222'}).svg;
+     const hit=s.match(/<circle[^>]+r="([^"]+)"/);
+     if(!hit||Number(hit[1])<=40)throw Error('Expected a large cutout for '+person.shape);
      count++;
    }
-   return count+' renderings';
+   return count+' of 11 non-X pieces';
  });
  check('Colour tokens are reusable across mini-labs',()=>{
    const palette=C.load('berry');if(C.colours(palette).length!==7)throw Error('Need seven tokens');
