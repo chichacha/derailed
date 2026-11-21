@@ -91,7 +91,7 @@ function paint(shape,cells,opt={}){
     }else{
       const minK=Math.floor((minX-maxY-unit)/step)*step,maxK=maxX-minY+unit;
       for(let k=minK;k<=maxK;k+=step)
-        bands+='<path d="M '+fmt(k+minY)+' '+fmt(minY-unit)+' L '+fmt(k+maxY+unit)+' '+fmt(maxY+unit)+'" stroke="'+accent+'" stroke-width="'+fmt(thickness)+'" fill="none"/>';
+        bands+='<path d="M '+fmt(k+minY-unit)+' '+fmt(minY-unit)+' L '+fmt(k+maxY+unit)+' '+fmt(maxY+unit)+'" stroke="'+accent+'" stroke-width="'+fmt(thickness)+'" fill="none"/>';
     }
     return {svg:bands,posture,profile,transform};
   }
