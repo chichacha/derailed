@@ -121,6 +121,8 @@ Open [tests/checks.html](tests/checks.html) directly in a browser. This no-build
 - All **252 combinations** of 63 postures × four graphic families
 - The shared seven-token colour system
 
+The [Cast of Twelve interaction test](tests/cast-interaction.html) additionally clicks **all 11** posture buttons and checks that each one advances its own ID and artwork without replacing the gallery or losing keyboard focus. That protects against scroll anchoring problems on rows after the first.
+
 ## Publishing
 
 The root `_quarto.yml` contains `experiments/` in `project.resources`, so **`quarto render`** copies the entire directory to `docs/experiments/` and retains the relative script paths. No `.qmd`, Node, build chain, external CSS, or CDN is necessary. The source HTML alone is not a published page until the rendered `docs/` output is committed and deployed.
