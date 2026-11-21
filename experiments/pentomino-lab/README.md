@@ -94,6 +94,15 @@ The app reads `PentominoTilings.solutions`: an array of solutions, each with 12 
 
 Use the shared colour module in a new folder, for example `experiments/colour-lab/index.html`. Start with the same palette JSON contract and add generated palettes, contrast diagnostics, harmony rules, CSS variables and export templates there. **Do not copy** the palette logic into every experiment.
 
+## Validation
+
+Open [tests/checks.html](tests/checks.html) directly in a browser. This no-build checker verifies:
+
+- All **63** canonical Gomasu postures and their unique geometry
+- Every one of the **192 placements** across the 16 sample tilings
+- All **252 combinations** of 63 postures × four graphic families
+- The shared seven-token colour system
+
 ## Publishing
 
 The root `_quarto.yml` contains `experiments/` in `project.resources`, so **`quarto render`** copies the entire directory to `docs/experiments/` and retains the relative script paths. No `.qmd`, Node, build chain, external CSS, or CDN is necessary. The source HTML alone is not a published page until the rendered `docs/` output is committed and deployed.
