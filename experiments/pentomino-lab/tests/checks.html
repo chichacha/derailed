@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pentomino Lab — Validation</title>
+<style>
+body{font:15px/1.6 system-ui,sans-serif;background:#faf8f2;color:#2c2b32;max-width:760px;margin:60px auto;padding:0 20px}
+h1{letter-spacing:-.05em}li{padding:6px 0}.pass{color:#267053}.fail{color:#b23b52}code{font-size:13px}
+</style></head><body><p><a href="../index.html">← Pentomino Lab</a></p>
+<h1>Posture &amp; Artwork Validation</h1>
+<p>Works offline. Checks the 63 Gomasu postures against 16 DERAILED tilings and every design family.</p><ol id="checks"><li>Running checks…</li></ol>
+<script src="../../shared/colour-system.js"></script>
+<script src="../data/tilings.js"></script>
+<script src="../data/gomasu.js"></script>
+<script src="../js/character-dna.js"></script>
+<script src="../js/portrait.js"></script>
+<script>
+(function(){
+ const C=window.DERAILEDColour,T=window.PentominoTilings,G=window.GomasuPostures,D=window.CharacterDNA,P=window.CharacterPortrait;
+ const out=document.querySelector('#checks');out.replaceChildren();
+ const check=(label,fn)=>{const li=document.createElement('li');try{const detail=fn();
+   li.className='pass';li.textContent='✓ '+label+(detail?' — '+detail:'');
+ }catch(e){li.className='fail';li.textContent='✗ '+label+' — '+e.message}
+ out.append(li)};
+ check('Exactly 63 posture IDs and 12 distinct shapes',()=>{
+   if(G.ids().length!==63||G.characters.length!==12)throw Error('Unexpected data count');
+   return '63 / 12';
+ });
+ check('Every Gomasu pose has valid five-square geometry',()=>{
+   for(const id of G.ids()){
+    const cells=G.posePoints(id);
+    if(cells.length!==5||new Set(cells.map(p=>p.x+','+p.y)).size!==5)throw Error('Invalid '+id);
+    if(G.resolve(id[0],cells).id!==id)throw Error('Posture mismatch '+id);
+   }
+   return '63 of 63';
+ });
+ check('All 16 6×10 tilings match canonical postures',()=>{
+   let count=0;
+   for(const solution of T.solutions)for(const piece of solution){
+    const pts=piece.cells.map(z=>[z%10,Math.floor(z/10)]);
+    const pose=G.resolve(piece.name,pts),transform=G.matchingTransform(piece.name,pts);
+    if(transform.indices.length!==5||new Set(transform.indices).size!==5)throw Error('Invalid '+pose.id);
+    count++;
+   }
+   if(count!==192)throw Error('Expected 192 placements');
+   return count+' placements';
+ });
+ check('Four whole-piece families and three directions render all 63 postures',()=>{
+   let count=0;const palette=C.load('berry');
+   for(const id of G.ids())for(const family of Object.keys(D.families))
+     for(const direction of ['horizontal','vertical','diagonal']){
+       const s=P.portrait(id[0],id,palette,family,{stripeDirection:direction,splitDirection:direction});
+       if(!s.startsWith('<svg')||!s.includes('</svg>')||!s.includes('<clipPath'))
+         throw Error('Could not draw '+id+' in '+family+' / '+direction);
+       count++;
+     }
+   return count+' renderings';
+ });
+ check('Circle accents are big enough to span multiple squares',()=>{
+   let count=0;
+   for(const person of G.characters){
+     if(person.shape==='X')continue; // X always uses its special five-colour treatment
+     const id=G.ids(person.shape)[0],cells=G.posePoints(id).map(pt=>({x:pt.x*40,y:pt.y*40}));
+     const s=D.paint(person.shape,cells,{unit:40,family:'curves',accent:'#222222'}).svg;
+     const hit=s.match(/<circle[^>]+r="([^"]+)"/);
+     if(!hit||Number(hit[1])<=40)throw Error('Expected a large cutout for '+person.shape);
+     count++;
+   }
+   return count+' of 11 non-X pieces';
+ });
+ check('Colour tokens are reusable across mini-labs',()=>{
+   const palette=C.load('berry');if(C.colours(palette).length!==7)throw Error('Need seven tokens');
+   if(!C.css(palette).includes('--neutral-dark'))throw Error('Missing CSS token');
+   return '5 feature colours + 2 neutrals';
+ });
+})();
+</script></body></html>

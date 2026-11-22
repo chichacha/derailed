@@ -404,3 +404,68 @@ body {
   .feature-art-monkey { min-height: 270px; }
   .feature-monkey-quote { font-size: clamp(2rem, 7.5vw, 3rem); }
 }
+
+
+/* Kitchen Series: five overlapping food families, one round visual motif. */
+.feature-art-kitchen {
+  position: relative;
+  isolation: isolate;
+  min-height: 340px;
+  background: #274038;
+  color: #fff8eb;
+  overflow: hidden;
+}
+.kitchen-disc-row {
+  display: flex;
+  align-items: center;
+  gap: clamp(4px, .65vw, 10px);
+  margin: 18px 0 0;
+}
+.kitchen-disc {
+  width: 18%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid #fae6c7;
+  box-shadow: 0 6px 15px #0c18154f, inset 0 0 9px #a06c3d66;
+  background: #efcb91;
+}
+.kitchen-disc:nth-child(1) { background: radial-gradient(circle at 32% 42%, #cf9650 0 14%, transparent 15%), #ead3a6; }
+.kitchen-disc:nth-child(2) { background: radial-gradient(circle at 52% 47%, #d99d4e 0 65%, #ad7238 80%); }
+.kitchen-disc:nth-child(3) { background: radial-gradient(circle at 30% 35%, #a66a46 0 8%, transparent 9%), #e4c185; }
+.kitchen-disc:nth-child(4) { background: radial-gradient(circle at 60% 60%, #946039 0 14%, transparent 15%), #d5aa70; }
+.kitchen-disc:nth-child(5) { background: radial-gradient(circle at 50% 52%, #efce9f 0 30%, #92725c 32%); }
+.feature-kitchen-quote {
+  font: 700 clamp(1.5rem, 2.7vw, 3rem)/1.06 'Space Grotesk', sans-serif;
+  letter-spacing: -.045em;
+  margin: 8px 0 18px;
+}
+.feature-kitchen-quote em {
+  font: italic 400 1em Georgia, serif;
+  color: #f1c98b;
+}
+@media (max-width: 600px) {
+  .feature-art-kitchen { min-height: 285px; }
+  .kitchen-disc-row { max-width: 420px; }
+}
+
+
+/* Coffee Lab: hand-drawn espresso family, rather than a numeric dashboard. */
+.feature-art-coffee {
+  min-height: 350px;
+  overflow: hidden;
+  background: #283e34;
+  color: #fff1d5;
+}
+.coffee-card-illustration {
+  display: block;
+  width: 100%;
+  max-height: 310px;
+  height: auto;
+  margin: 2px auto 4px;
+}
+.feature-art-coffee .feature-art-top,
+.feature-art-coffee .feature-art-bottom { opacity: .95; }
+@media (max-width: 600px) {
+  .feature-art-coffee { min-height: 290px; }
+  .coffee-card-illustration { max-height: 255px; }
+}
