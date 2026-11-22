@@ -9,6 +9,17 @@ const $=id=>document.getElementById(id);
 const key='derailed.colour-lab-curate/v1',labels=['01','02','03','04','05','LIGHT','DARK'];
 const HEX=/^#[0-9A-F]{6}$/i;
 const seeds=SEED.palettes.map(p=>({...p,features:[...p.features],tags:[...p.tags]}));
+const categoryFor=Object.fromEntries((SEED.collections||[]).flatMap(group=>group.names.map(name=>[name,group.category])));
+function buildCollectionFilter(){
+ const dropdown=$('collection');
+ for(const group of SEED.collections||[]){
+   const section=document.createElement('optgroup');section.label=group.category;
+   for(const name of group.names){
+     const opt=document.createElement('option');opt.value=name;opt.textContent=name;section.append(opt);
+   }
+   dropdown.append(section);
+ }
+}
 let custom=[],stars=new Set(),selected=seeds[0].id,storageOK=true,showFav=false;
 function idNow(){return 'mine-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,8)}
 function cleanTags(value){return Array.isArray(value)?value.map(String).map(x=>x.trim()).filter(Boolean).slice(0,12):String(value||'').split(',').map(x=>x.trim()).filter(Boolean).slice(0,12)}
@@ -40,7 +51,7 @@ function make(tag,cls,text){
 function showGallery(){
  const filter=$('collection').value,needle=$('search').value.trim().toLowerCase(),root=$('gallery');
  const matching=all().filter(p=>(filter==='all'||filter===p.collection)&&(!showFav||stars.has(p.id))&&
-   (!needle||[p.name,p.note,p.collection,...p.tags].join(' ').toLowerCase().includes(needle)));
+   (!needle||[p.name,p.note,p.collection,categoryFor[p.collection]||'',...p.tags].join(' ').toLowerCase().includes(needle)));
  root.replaceChildren();
  for(const p of matching){
   const card=make('article','palette-card'+(p.id===selected?' is-selected':''));
@@ -50,7 +61,8 @@ function showGallery(){
   swatches(p).slice(0,5).forEach(col=>{const bar=make('span');bar.style.backgroundColor=col;art.append(bar)});
   const info=make('div','card-info');
   const title=make('button');title.type='button';title.dataset.select=p.id;
-  const name=make('strong',null,p.name),group=make('small',null,p.collection);
+  const name=make('strong',null,p.name),
+        group=make('small',null,(categoryFor[p.collection]&&p.collection!=='My palettes'?categoryFor[p.collection]+' / ':'')+p.collection);
   title.append(name,group);
   const star=make('button','star',stars.has(p.id)?'♥':'♡');
   star.type='button';star.dataset.favorite=p.id;
@@ -214,6 +226,6 @@ function wire(){
  $('import').addEventListener('click',()=>$('importFile').click());
  $('importFile').addEventListener('change',()=>importFile($('importFile').files[0]));
 }
-readStorage();wire();select(selected);
+readStorage();buildCollectionFilter();wire();select(selected);
 if(!storageOK)notice('Storage not available here. Export your collection JSON to preserve edits.');
 })();
