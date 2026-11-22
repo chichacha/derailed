@@ -51,6 +51,22 @@ footer{padding:3rem max(5vw,20px);background:var(--deep);color:#eef2e7;font-size
 @media(max-width:720px){.hero-inner{grid-template-columns:1fr;gap:1.8rem;padding-top:7rem}.hero h1{font-size:clamp(3.5rem,15vw,6rem)}.hero-frame{min-height:360px;border-width:7px;border-radius:7px 7px 60px 7px}.hero-caption,.comparison-caption{font-size:.6rem}.comparison-fallback{grid-template-columns:1fr}.versus{padding:.5rem}}
 @media(prefers-reduced-motion:no-preference){.hero-painting{animation:painting-arrives 1.2s both ease-out}@keyframes painting-arrives{from{opacity:0;transform:scale(1.045)}to{opacity:1;transform:scale(1)}}}
 
+
+/* LAB 06: image reveal by changing just one class, rather than animating the image itself. */
+.bum-reveal{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:clamp(2rem,5vw,5rem);align-items:center;margin-top:3.5rem}
+.bum-copy h3{font-size:clamp(3.4rem,6.5vw,7rem);margin:.35em 0;line-height:.95}.bum-copy h3 em{color:var(--rust)}
+.bum-copy>p:not(.copy){font-size:1.05rem;line-height:1.7;max-width:32rem}
+.rump-trigger{background:var(--deep);color:white;border:0;padding:1rem 1.5rem;font-weight:750;transition:transform .2s}.rump-trigger:hover{transform:translateY(-2px)}
+.reveal-caption{font-size:.84rem!important;color:var(--muted)}
+.rump-figure{margin:0;min-width:0}.rump-photo-wrap{aspect-ratio:3/2;overflow:hidden;position:relative;background:#a5b6a2;border:9px solid #fdf9ed;box-shadow:0 18px 60px #192d231c;border-radius:16px}
+.rump-photo-wrap img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.photo-cover{position:absolute;inset:0;background:repeating-linear-gradient(35deg,#284e43 0,#284e43 40px,#2c5849 40px,#2c5849 80px);z-index:2;color:#f8f2e0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.6rem;transition:clip-path .9s cubic-bezier(.2,.8,.2,1);clip-path:inset(0 0 0 0)}
+.cover-label,.cover-note{font-size:.72rem;letter-spacing:.18em;font-weight:850;text-align:center}.cover-question{font:italic clamp(7rem,16vw,15rem) Georgia,serif;line-height:1}
+.rump-figure.uncovered .photo-cover{clip-path:inset(0 0 0 100%)}.reveal-sticker{position:absolute;bottom:1rem;right:1rem;z-index:1;display:grid;place-content:center;text-align:center;border-radius:50%;background:var(--gold);color:var(--ink);font-weight:900;line-height:1.05;letter-spacing:.03em;width:100px;height:100px;transform:rotate(10deg);box-shadow:0 4px 16px #18271966}
+.rump-figure figcaption{font-size:.75rem;line-height:1.6;margin-top:.8rem;color:var(--muted)}.rump-figure figcaption a{color:var(--deep);text-underline-offset:2px}
+@media(max-width:720px){.bum-reveal{grid-template-columns:1fr}.bum-copy h3{font-size:clamp(3.6rem,13vw,6rem)}.rump-photo-wrap{border-width:5px}.reveal-sticker{width:75px;height:75px;font-size:.8rem}}
+@media(prefers-reduced-motion:reduce){.photo-cover{transition:none}}
+
 </style>
 </head>
 <body>
@@ -86,9 +102,24 @@ footer{padding:3rem max(5vw,20px);background:var(--deep);color:#eef2e7;font-size
  <p class="note" style="color:#cbd9cd">Note: UK “elk” commonly denotes moose in traditional usage; “wapiti” specifically names the North American species. Japanese ワピチ names the wapiti, while ヘラジカ names the moose.</p>
  </div></section>
 <section><div class="chapter reveal"><div class="chapter-number">03 / THE MOST IMPORTANT ANATOMICAL DETAIL</div><h2>Wapiti means…<br><span class="highlight">white rump.</span></h2><p class="copy">“Wapiti” comes from Shawnee, an Indigenous North American language. It refers to that pale patch around the elk's backside. ワピチ。白いお尻。A glorious name for a glorious animal.</p>
- <div class="fact-card"><div><div class="eyebrow">REVEAL NO. 03</div><strong>THE WHITE BUM</strong><p class="copy">Unfortunately, my elk was lying down. His famous backside was not available for inspection.</p><button type="button" class="toggle-art" id="reveal-rump" aria-pressed="false">Reveal the pale rump →</button></div>
- <svg class="butt" viewBox="0 0 320 260" role="img" aria-label="Playful stylized rear view of an elk, with an optional highlighted pale rump patch"><path d="M80 56Q160 8 240 56Q282 102 252 192Q218 244 160 246Q102 244 68 192Q38 102 80 56" fill="#896547"/><path d="M132 202Q120 244 113 260M188 202Q201 244 207 260" stroke="#543f31" stroke-width="20" fill="none"/><path id="rump-patch" d="M95 134 Q160 100 225 134 Q250 183 210 215 Q160 239 110 215 Q70 182 95 134" fill="#d8c8a0" opacity=".05" style="transition:opacity .45s"/><path d="M160 204Q160 234 167 246" fill="none" stroke="#5b4839" stroke-width="7" stroke-linecap="round"/><path d="M150 57Q160 87 171 57" fill="none" stroke="#634b37" stroke-width="15" stroke-linecap="round"/></svg>
- </div></div></section>
+ <div class="bum-reveal">
+  <div class="bum-copy">
+    <div class="eyebrow">REVEAL NO. 03 / THE GREAT RUMP INVESTIGATION</div>
+    <h3>THE WHITE<br><em>BUM.</em></h3>
+    <p class="copy">Unfortunately, my elk was lying down. His famous backside was not available for inspection.</p>
+    <p>But a field guide in Oregon has a rather spectacular demonstration. Ready to see what <em>wapiti</em> is talking about?</p>
+    <button type="button" class="toggle-art rump-trigger" id="reveal-rump" aria-expanded="false" aria-controls="rump-photo">Reveal the evidence →</button>
+    <p class="reveal-caption" id="rump-status" role="status" aria-live="polite">Exhibit A is classified. For now.</p>
+  </div>
+  <figure class="rump-figure" id="rump-photo">
+    <div class="rump-photo-wrap">
+      <div class="photo-cover" aria-hidden="true"><span class="cover-label">EXHIBIT A</span><span class="cover-question">?</span><span class="cover-note">THE EVIDENCE<br>IS UNDER COVER</span></div>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Dean_Creek_Elk_Viewing_Area_%2817978426109%29.jpg" alt="A photograph of the Roosevelt elk information sign at Dean Creek, Oregon, featuring an illustration of an elk with a clearly pale rump" loading="lazy" decoding="async">
+      <div class="reveal-sticker" aria-hidden="true">WHITE<br>RUMP!</div>
+    </div>
+    <figcaption>Photograph of an interpretive sign at Dean Creek, Oregon—not a live elk. Photo: Bob Wick / BLM Oregon & Washington, 2015. <a href="https://commons.wikimedia.org/wiki/File:Dean_Creek_Elk_Viewing_Area_(17978426109).jpg" target="_blank" rel="noopener noreferrer">Image source</a> · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a>. Shown without alteration; interactive cover added on this page.</figcaption>
+  </figure>
+</div></div></section>
 <section class="dark"><div class="chapter reveal"><div class="chapter-number">04 / AN HONOUR BEFORE THE PRESIDENCY</div><h2>Wait. Which<br><span class="highlight">Roosevelt?</span></h2><p class="copy">Theodore Roosevelt did not have to discover the animal himself. Zoologist C. Hart Merriam described the Olympic Peninsula elk and named it in Roosevelt's honour in 1897—four years before Roosevelt became U.S. president.</p><div class="timeline"><div class="event"><div class="year">1893</div><h3>A conversation about elk</h3><p>Merriam and Roosevelt discuss elk at Chicago's World's Columbian Exposition.</p></div><div class="event"><div class="year">1897</div><h3>An elk gets a presidential-sounding name</h3><p>Merriam describes the Olympic Peninsula elk as distinct and honours Roosevelt in the name. Roosevelt is not yet president.</p></div><div class="event"><div class="year">1909</div><h3>Protecting the animal's home</h3><p>As president, Roosevelt creates Mount Olympus National Monument to protect the elk's habitat; the area later becomes part of Olympic National Park.</p></div></div></div></section>
 <section><div class="chapter reveal"><div class="chapter-number">05 / A TALE OF TWO ELK</div><h2>Same family.<br><span class="highlight">Different neighbourhood.</span></h2><p class="copy">The elk you saw in Jasper were most likely <strong>Rocky Mountain elk</strong>. A bull resting on Vancouver Island is much more likely <strong>Roosevelt elk</strong>. Roosevelt elk are especially heavy-bodied, adapted to the rainy Pacific coast. Location is a clue; a quick glance at antlers alone isn't a foolproof subspecies test.</p><div class="fact-card"><div><div class="eyebrow">PACIFIC COAST</div><h3 style="font-size:clamp(2.4rem,5vw,5rem)">Roosevelt elk</h3><p>Dark coastal forests. Massive body. My very sleepy neighbour.</p></div><div><div class="eyebrow">ROCKY MOUNTAINS</div><h3 style="font-size:clamp(2.4rem,5vw,5rem)">Rocky Mountain elk</h3><p>Mountain valleys and meadows. The likely elk of our Jasper memory.</p></div></div></div></section>
 <section class="end"><div class="chapter reveal"><div class="eyebrow">END OF DETOUR. FOR NOW.</div><h2>I went outside to look at nature. <span class="highlight">I came back with a vocabulary problem.</span></h2><p>An elk. A wapiti. A Roosevelt. A deer. A bull. A white bum. The animal never once got up.</p><p>DERAILED. — One thing led to another.</p><a href="#top" id="again">Start again ↑</a></div></section>
@@ -120,7 +151,15 @@ const names={
  jp:{region:'JAPANESE',name:'ワピチ',species:'Cervus canadensis',meaning:'ワピチ (wapiti) is this species. Moose is ヘラジカ; ordinary deer is シカ.',gloss:'ワピチ ≠ ヘラジカ'}
 };
 document.querySelectorAll('[data-place]').forEach(button=>button.addEventListener('click',()=>{const data=names[button.dataset.place];document.querySelectorAll('[data-place]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));document.querySelector('#region').textContent=data.region;document.querySelector('#animal-name').textContent=data.name;document.querySelector('#species').textContent=data.species;document.querySelector('#meaning').textContent=data.meaning;document.querySelector('#gloss').textContent=data.gloss;}));
-document.querySelector('#reveal-rump').addEventListener('click',e=>{const button=e.currentTarget;const showing=button.getAttribute('aria-pressed')!=='true';button.setAttribute('aria-pressed',String(showing));button.textContent=showing?'Hide the pale rump ←':'Reveal the pale rump →';document.querySelector('#rump-patch').style.opacity=showing?'1':'.05';});
+/* LAB 06: A disclosure button changes a CSS state and exposes real image evidence. */
+document.querySelector('#reveal-rump').addEventListener('click',event=>{
+ const button=event.currentTarget, panel=document.querySelector('#rump-photo');
+ const isOpen=button.getAttribute('aria-expanded')!=='true';
+ button.setAttribute('aria-expanded',String(isOpen));
+ panel.classList.toggle('uncovered',isOpen);
+ button.textContent=isOpen?'Cover the evidence again ←':'Reveal the evidence →';
+ document.querySelector('#rump-status').textContent=isOpen?'Plot twist: it is a photo of an illustrated elk sign. Still a magnificent white bum.':'Exhibit A is classified. For now.';
+});
 document.querySelector('#again').addEventListener('click',e=>{e.preventDefault();scrollTo({top:0,behavior:reduceMotion?'instant':'smooth'});});
 </script>
 </body></html>
