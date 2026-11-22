@@ -10,11 +10,25 @@ main{padding:32px clamp(20px,4vw,64px) 55px;max-width:1700px;margin:auto}
 h1{font-size:clamp(42px,6.5vw,88px);line-height:.94;letter-spacing:-.075em;margin:10px 0 14px}h1 em{font-weight:450;color:#f49cbb}
 .intro{color:#b5bbc2;max-width:650px;line-height:1.6;margin:0 0 24px}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:20px;align-items:stretch}
-.viewer{position:relative;min-height:580px;background:radial-gradient(circle at 50% 30%,#363842,#20232b 65%);border:1px solid #ffffff25;border-radius:18px;overflow:hidden}
+.viewer{position:relative;height:clamp(540px,73vh,770px);min-height:0;background:radial-gradient(circle at 50% 30%,#363842,#20232b 65%);border:1px solid #ffffff25;border-radius:18px;overflow:hidden}
 #canvas{position:absolute;inset:0}#canvas canvas{width:100%;height:100%;display:block;touch-action:none}
 .viewer-label{position:absolute;left:20px;top:20px;pointer-events:none;font-size:11px;letter-spacing:.15em;color:#d5d7dd}
 .viewer-help{position:absolute;bottom:17px;left:20px;right:20px;pointer-events:none;display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#d5d7dd}
-aside{background:#22252d;border:1px solid #ffffff20;border-radius:18px;padding:23px;display:flex;flex-direction:column;gap:19px}
+.panel{background:#22252d;border:1px solid #ffffff20;border-radius:18px;padding:16px;display:flex;flex-direction:column;height:clamp(540px,73vh,770px);min-height:0;gap:14px;overflow:hidden}
+.studio-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;flex:none}
+.studio-tabs button{width:100%;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 1px;border:1px solid transparent;background:transparent;color:#b9bdc7;border-radius:8px;font-size:11px;line-height:1.3;font-weight:750}
+.studio-tabs button:hover{background:#ffffff0b}
+.studio-tabs button[aria-selected="true"]{border-color:#f49cbb90;background:#f49cbb18;color:#ffe0ea}
+.tab-no{color:#f49cbb;font-size:10px;letter-spacing:.09em}
+.studio-tab-scroll{overflow-y:auto;overflow-x:hidden;min-height:0;flex:1;padding:6px 6px 10px 2px;scrollbar-width:thin;scrollbar-color:#606777 transparent}
+.studio-panel{display:flex;flex-direction:column;gap:17px;min-width:0}
+.studio-panel[hidden]{display:none}
+.studio-panel h2{margin:0 0 1px}
+.panel-footer{border-top:1px solid #ffffff1c;padding-top:12px;display:flex;flex-direction:column;gap:8px;flex:none}
+.panel-footer .status{font-size:11px;min-height:1.25em;line-height:1.4}
+.panel-footer .lab-link{font-size:11px;color:#bdc5d1;text-decoration:none}
+.panel-footer .lab-link:hover{text-decoration:underline}
+.camera-actions button{padding:8px 5px;font-size:11px}
 h2{font-size:12px;letter-spacing:.14em;margin:0;color:#f49cbb;text-transform:uppercase}
 .group{display:flex;flex-direction:column;gap:9px}.group[hidden]{display:none}.group label{font-size:12px;color:#d0d0d7;display:flex;justify-content:space-between}
 select,button,input[type=range]{width:100%}select,button{border:1px solid #ffffff28;border-radius:8px;background:#323640;color:#f7f1ea;padding:11px 12px;font:inherit;font-size:13px}
@@ -33,8 +47,8 @@ input{accent-color:#f49cbb}.swatches{display:flex;gap:5px}.swatches span{height:
 .note{font-size:12px;line-height:1.65;color:#abb0ba;margin:0}
 .status{min-height:2em;font-size:12px;color:#cbeef3}
 footer{padding:10px 0;color:#9095a0;font-size:12px}
-@media(max-width:900px){.layout{grid-template-columns:1fr}.viewer{min-height:490px}aside{display:grid;grid-template-columns:1fr 1fr}.group{min-width:0}}
-@media(max-width:540px){aside{display:flex}.viewer{min-height:420px}.viewer-help{display:block}.viewer-help span{display:block;margin-top:4px}}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.viewer{height:clamp(420px,65vh,650px)}.panel{height:480px}.group{min-width:0}}
+@media(max-width:540px){.panel{height:480px}.viewer{height:clamp(360px,54vh,500px)}.viewer-help{display:block}.viewer-help span{display:block;margin-top:4px}}
 </style>
 <script defer src="../shared/colour-system.js"></script>
 <script defer src="../pentomino-lab/data/tilings.js"></script>
@@ -47,43 +61,47 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 <div class="layout"><section class="viewer" aria-label="Interactive Three.js 3D pentomino viewer">
 <div id="canvas"></div><div class="viewer-label">PENTOMINO OBJECT STUDY / THREE.JS</div>
 <div class="viewer-help"><span>DRAG · ORBIT &nbsp; / &nbsp; SCROLL · ZOOM</span><span>12 MESHES / PBR MATERIALS</span></div></section>
-<aside><h2>01 / Shape & composition</h2>
-<div class="group"><label for="arrangement">Arrangement</label><select id="arrangement"><option value="tiling">Together / 6 × 10 tiling</option><option value="exploded">Exploded / aligned Z-axis stack</option></select></div>
+<aside class="panel" aria-label="Pentomino Studio controls">
+<nav class="studio-tabs" role="tablist" aria-label="Studio sections"><button type="button" id="tab-shape" role="tab" aria-controls="panel-shape" aria-selected="true" tabindex="0" data-tab="shape"><span class="tab-no">01</span><span>Shape</span></button>
+<button type="button" id="tab-material" role="tab" aria-controls="panel-material" aria-selected="false" tabindex="-1" data-tab="material"><span class="tab-no">02</span><span>Colour</span></button>
+<button type="button" id="tab-piece" role="tab" aria-controls="panel-piece" aria-selected="false" tabindex="-1" data-tab="piece"><span class="tab-no">03</span><span>Piece</span></button>
+<button type="button" id="tab-save" role="tab" aria-controls="panel-save" aria-selected="false" tabindex="-1" data-tab="save"><span class="tab-no">04</span><span>Save</span></button>
+<button type="button" id="tab-print" role="tab" aria-controls="panel-print" aria-selected="false" tabindex="-1" data-tab="print"><span class="tab-no">05</span><span>Print</span></button></nav>
+<div class="studio-tab-scroll"><section class="studio-panel" role="tabpanel" id="panel-shape" aria-labelledby="tab-shape" tabindex="0"><h2>01 / Shape & composition</h2><div class="group"><label for="arrangement">Arrangement</label><select id="arrangement"><option value="tiling">Together / 6 × 10 tiling</option><option value="exploded">Exploded / aligned Z-axis stack</option></select></div>
 <div class="group"><label for="solution">Tiling <output id="solutionLabel">01 / 16</output></label><input id="solution" type="range" min="0" max="15" value="0"></div>
 <div class="group"><label for="depth">Extrusion depth <output id="depthLabel">0.26</output></label><input id="depth" type="range" min=".08" max=".65" step=".01" value=".26"></div>
 <div class="group"><label for="corner">Corner softness <output id="cornerLabel">0.12</output></label><input id="corner" type="range" min="0" max=".24" step=".01" value=".12"></div>
 <div class="group" id="togetherSpacing"><label for="gap">Piece gap <output id="gapLabel">0.18</output></label><input id="gap" type="range" min=".12" max=".35" step=".01" value=".18"></div>
-<div class="group" id="layerSpacing" hidden><label for="layerPitch">Z-axis layer spacing <output id="layerPitchLabel">1.25</output></label><input id="layerPitch" type="range" min=".9" max="2.4" step=".05" value="1.25"></div>
-<h2>02 / Material</h2><div class="group"><label for="palette">Original lab palette</label><select id="palette"></select><div class="swatches" id="swatches"></div></div>
+<div class="group" id="layerSpacing" hidden><label for="layerPitch">Z-axis layer spacing <output id="layerPitchLabel">1.25</output></label><input id="layerPitch" type="range" min=".9" max="2.4" step=".05" value="1.25"></div></section>
+<section class="studio-panel" role="tabpanel" id="panel-material" aria-labelledby="tab-material" tabindex="0" hidden><h2>02 / Colour & surface</h2><div class="group"><label for="palette">Original lab palette</label><select id="palette"></select><div class="swatches" id="swatches"></div></div>
 <div class="group"><label for="finish">Surface finishes</label><select id="finish"><option value="paired-satin" selected>Matte + satin pairs</option><option value="paired">Matte + glossy pairs</option><option value="matte">All matte</option><option value="ceramic">All glazed ceramic</option><option value="metal">All satin metal</option></select></div>
 <div class="group"><label>12 piece identities <span>5 colour pairs + 2 neutrals</span></label><div id="materialKey" class="material-key" aria-label="Colour and finish assigned to each pentomino"></div></div>
 <div class="group"><label for="pattern">Surface graphics</label><select id="pattern">
 <option value="none" selected>None / clean colour</option><option value="classic">Original-lab-inspired motifs</option>
 <option value="stripes">Continuous stripes</option><option value="dots">Subtle dots</option><option value="grid">Fine grid</option>
 <option value="arc">Oversized circle</option><option value="split">Diagonal split</option><option value="blocks">Bold blocks</option>
-</select><p class="note">Graphics are textures on the broad faces, included in GLB, not physically embossed.</p></div>
-<h2>03 / Design a piece</h2>
-<div class="group"><label for="pieceSelect">Select pentomino</label><select id="pieceSelect"></select></div>
+</select><p class="note">Graphics are textures on the broad faces, included in GLB, not physically embossed.</p></div></section>
+<section class="studio-panel" role="tabpanel" id="panel-piece" aria-labelledby="tab-piece" tabindex="0" hidden><h2>03 / Design a piece</h2><div class="group"><label for="pieceSelect">Select pentomino</label><select id="pieceSelect"></select></div>
 <div class="group"><label for="pieceColour">Colour token</label><select id="pieceColour"></select></div>
 <div class="group"><label for="pieceFinish">Piece finish</label><select id="pieceFinish"><option value="matte">Soft matte</option><option value="satin">Subtle satin</option><option value="glossy">Glossy</option><option value="ceramic">Ceramic</option><option value="metal">Metal</option></select></div>
 <div class="group"><label for="piecePattern">Piece graphic</label><select id="piecePattern"></select></div>
 <button id="resetDesign">↺ Restore curated pairings</button>
-<div class="btnrow"><button id="turntable">Pause rotation</button><button id="reset">Reset camera</button></div>
-<h2>04 / Keep your creation</h2>
-<button class="primary" id="export">↓ Export coloured .GLB</button>
+</section>
+<section class="studio-panel" role="tabpanel" id="panel-save" aria-labelledby="tab-save" tabindex="0" hidden><h2>04 / Keep your creation</h2><button class="primary" id="export">↓ Export coloured .GLB</button>
 <div class="btnrow"><button id="saveDesign">↓ Design JSON</button><button id="importDesign">↑ Open design JSON</button></div>
 <input id="designFile" type="file" accept=".json,application/json" hidden>
-<p class="note">GLB keeps colour, textures and material sheen. Design JSON lets you reopen your editable selections.</p>
-<h2>05 / Make it physical</h2>
-<div class="group"><label for="cellMm">Unit square edge <output id="cellMmLabel">20 mm</output></label>
+<p class="note">GLB keeps colour, textures and material sheen. Design JSON lets you reopen your editable selections.</p></section>
+<section class="studio-panel" role="tabpanel" id="panel-print" aria-labelledby="tab-print" tabindex="0" hidden><h2>05 / Make it physical</h2><div class="group"><label for="cellMm">Unit square edge <output id="cellMmLabel">20 mm</output></label>
 <input id="cellMm" type="range" min="10" max="35" step="1" value="20">
 <p class="note" id="printDimensions">Set approx. 200 × 120 mm · 7.4 mm thick</p></div>
 <div class="btnrow"><button id="exportStl">↓ Full set STL</button><button id="exportPieceStl">↓ Selected piece STL</button></div>
 <p class="note">STL is geometry only: it does not print colours, satin finishes or graphic textures. Pieces export flat on a build plate regardless of the 3D preview arrangement. STL coordinates use millimetres (the file itself has no unit metadata). Verify scale, watertightness and printer tolerances with a slicer or print shop.</p>
-<p class="note">Curated pairs: F/Z (fluid), L/Y (long), P/U (compact), N/W (stepped), T/V (angular). I uses foreground; X uses background.</p>
+<p class="note">Curated pairs: F/Z (fluid), L/Y (long), P/U (compact), N/W (stepped), T/V (angular). I uses foreground; X uses background.</p></section></div>
+<div class="panel-footer">
+<div class="btnrow camera-actions"><button id="turntable">Pause rotation</button><button id="reset">Reset camera</button></div>
 <div class="status" id="status" role="status" aria-live="polite">Loading 3D engine…</div>
-<p class="note"><a href="../pentomino-lab/index.html">Back to the original 2D Pentomino Lab ↗</a></p>
-</aside></div>
+<a class="lab-link" href="../pentomino-lab/index.html">← Original 2D Pentomino Lab</a>
+</div></aside></div>
 <footer>DERAILED. × GOMASU · Data and palettes reused from Pentomino Pattern Lab · Three.js / glTF 2.0</footer>
 </main>
 <script type="module">
@@ -123,7 +141,7 @@ function renderMaterialKey(palette,mode){
   item.type='button';item.className='material-item'+(name===selectedPiece?' active':'');
   item.title=name+' · '+identity.token+' · '+identity.finish+(identity.pattern==='none'?'':' · '+identity.pattern);
   item.setAttribute('aria-label','Design pentomino '+name);
-  item.onclick=()=>{selectedPiece=name;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor()};
+  item.onclick=()=>{selectedPiece=name;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor();activateTab('piece')};
   const dot=document.createElement('span');dot.className='material-dot';dot.style.background=identity.color;
   const info=document.createElement('div');info.className='material-meta';
   const strong=document.createElement('strong');strong.textContent=name;
@@ -142,6 +160,26 @@ function overrideSelected(field,value){
  (pieceOverrides[selectedPiece]||=(Object.create(null)))[field]=value;
  renderPieces();
 }
+function activateTab(name,focus=false){
+ const tabs=[...document.querySelectorAll('.studio-tabs [role="tab"]')];
+ for(const tab of tabs){
+  const active=tab.dataset.tab===name;
+  tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;
+  document.getElementById(tab.getAttribute('aria-controls')).hidden=!active;
+  if(active&&focus)tab.focus();
+ }
+ document.querySelector('.studio-tab-scroll').scrollTop=0;
+}
+const studioTabs=[...document.querySelectorAll('.studio-tabs [role="tab"]')];
+studioTabs.forEach((tab,index)=>{
+ tab.addEventListener('click',()=>activateTab(tab.dataset.tab));
+ tab.addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  event.preventDefault();
+  const next=event.key==='Home'?0:event.key==='End'?studioTabs.length-1:(index+(event.key==='ArrowLeft'?-1:1)+studioTabs.length)%studioTabs.length;
+  activateTab(studioTabs[next].dataset.tab,true);
+ });
+});
 const host=$('canvas'),scene=new THREE.Scene(),group=new THREE.Group();scene.add(group);
 const camera=new THREE.PerspectiveCamera(39,1,.05,150);camera.position.set(10,-12,15);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:false});
@@ -237,13 +275,20 @@ function graphicTexture(identity,letter){
  texture.needsUpdate=true;
  return texture;
 }
-// Fit a single, composition-wide graphic to each whole-piece silhouette.
-// ExtrudeGeometry puts material index 0 on broad caps and index 1 on sidewalls.
+// Isotropic world-unit mapping: no stretching on tall or wide pentominoes.
+// ExtrudeGeometry's material-0 groups are the broad caps; preserve side UVs.
 function fitGraphicUV(geometry){
  geometry.computeBoundingBox();
  const b=geometry.boundingBox,p=geometry.getAttribute('position'),uv=geometry.getAttribute('uv');
- const width=Math.max(.0001,b.max.x-b.min.x),height=Math.max(.0001,b.max.y-b.min.y);
- for(let i=0;i<uv.count;i++)uv.setXY(i,(p.getX(i)-b.min.x)/width,(p.getY(i)-b.min.y)/height);
+ const midX=(b.min.x+b.max.x)*.5,midY=(b.min.y+b.max.y)*.5;
+ const size=6; // uniform six-unit square graphic canvas for EVERY piece
+ for(const g of geometry.groups){
+  if(g.materialIndex!==0)continue;
+  const end=Math.min(g.start+g.count,uv.count);
+  for(let i=g.start;i<end;i++){
+   uv.setXY(i,.5+(p.getX(i)-midX)/size,.5+(p.getY(i)-midY)/size);
+  }
+ }
  uv.needsUpdate=true;
 }
 function disposeMesh(mesh){
@@ -443,7 +488,7 @@ renderer.domElement.addEventListener('click',event=>{
  pointer.set((event.clientX-bounds.left)/bounds.width*2-1,-(event.clientY-bounds.top)/bounds.height*2+1);
  raycaster.setFromCamera(pointer,camera);
  const hit=raycaster.intersectObjects(meshes,false)[0];
- if(hit){selectedPiece=hit.object.userData.letter;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor()}
+ if(hit){selectedPiece=hit.object.userData.letter;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor();activateTab('piece')}
 });
 $('export').onclick=async()=>{
  const btn=$('export');btn.disabled=true;$('status').textContent='Building binary glTF…';
