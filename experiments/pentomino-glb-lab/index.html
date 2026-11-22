@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pentomino GLB Studio — DERAILED.</title>
+<meta name="description" content="Twelve pentominoes made tangible: explore extruded shapes, shared colour palettes and export real GLB models.">
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#171a21;color:#f7f1ea;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}a{color:inherit}header{padding:22px clamp(20px,4vw,64px);display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #ffffff24}
+.brand{text-decoration:none;font-size:13px;font-weight:800;letter-spacing:.1em}.tag{font-size:10px;letter-spacing:.18em;color:#f49cbb;font-weight:800}
+main{padding:32px clamp(20px,4vw,64px) 55px;max-width:1700px;margin:auto}
+h1{font-size:clamp(42px,6.5vw,88px);line-height:.94;letter-spacing:-.075em;margin:10px 0 14px}h1 em{font-weight:450;color:#f49cbb}
+.intro{color:#b5bbc2;max-width:650px;line-height:1.6;margin:0 0 24px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:20px;align-items:stretch}
+.viewer{position:relative;min-height:580px;background:radial-gradient(circle at 50% 30%,#363842,#20232b 65%);border:1px solid #ffffff25;border-radius:18px;overflow:hidden}
+#canvas{position:absolute;inset:0}#canvas canvas{width:100%;height:100%;display:block;touch-action:none}
+.viewer-label{position:absolute;left:20px;top:20px;pointer-events:none;font-size:11px;letter-spacing:.15em;color:#d5d7dd}
+.viewer-help{position:absolute;bottom:17px;left:20px;right:20px;pointer-events:none;display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#d5d7dd}
+aside{background:#22252d;border:1px solid #ffffff20;border-radius:18px;padding:23px;display:flex;flex-direction:column;gap:19px}
+h2{font-size:12px;letter-spacing:.14em;margin:0;color:#f49cbb;text-transform:uppercase}
+.group{display:flex;flex-direction:column;gap:9px}.group label{font-size:12px;color:#d0d0d7;display:flex;justify-content:space-between}
+select,button,input[type=range]{width:100%}select,button{border:1px solid #ffffff28;border-radius:8px;background:#323640;color:#f7f1ea;padding:11px 12px;font:inherit;font-size:13px}
+button{cursor:pointer;font-weight:700}button:hover{background:#474c5a}button.primary{background:#f49cbb;color:#261c2c;border-color:#f49cbb}button.primary:hover{background:#ffd0e0}
+input{accent-color:#f49cbb}.swatches{display:flex;gap:5px}.swatches span{height:25px;flex:1;border-radius:5px;border:1px solid #ffffff20}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.note{font-size:12px;line-height:1.65;color:#abb0ba;margin:0}
+.status{min-height:2em;font-size:12px;color:#cbeef3}
+footer{padding:10px 0;color:#9095a0;font-size:12px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.viewer{min-height:490px}aside{display:grid;grid-template-columns:1fr 1fr}.group{min-width:0}}
+@media(max-width:540px){aside{display:flex}.viewer{min-height:420px}.viewer-help{display:block}.viewer-help span{display:block;margin-top:4px}}
+</style>
+<script defer src="../shared/colour-system.js"></script>
+<script defer src="../pentomino-lab/data/tilings.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"}}</script>
+</head><body>
+<header><a class="brand" href="../index.html">← DERAILED. / EXPERIMENTS</a><span class="tag">PENTOMINO LAB / 3D DETOUR</span></header>
+<main><p class="tag">12 SHAPES · 60 SQUARES · ONE MORE DIMENSION</p>
+<h1>From flat to <em>form.</em></h1>
+<p class="intro">The same twelve pentominoes, now with depth, light and material. Rotate the scene, switch a palette, rearrange the pieces and take home a real binary GLB model.</p>
+<div class="layout"><section class="viewer" aria-label="Interactive Three.js 3D pentomino viewer">
+<div id="canvas"></div><div class="viewer-label">PENTOMINO OBJECT STUDY / THREE.JS</div>
+<div class="viewer-help"><span>DRAG · ORBIT &nbsp; / &nbsp; SCROLL · ZOOM</span><span>12 MESHES / PBR MATERIALS</span></div></section>
+<aside><h2>01 / Shape & composition</h2>
+<div class="group"><label for="arrangement">Arrangement</label><select id="arrangement"><option value="tiling">Together / 6 × 10 tiling</option><option value="exploded">Exploded / 12 individuals</option></select></div>
+<div class="group"><label for="solution">Tiling <output id="solutionLabel">01 / 16</output></label><input id="solution" type="range" min="0" max="15" value="0"></div>
+<div class="group"><label for="depth">Extrusion depth <output id="depthLabel">0.26</output></label><input id="depth" type="range" min=".08" max=".65" step=".01" value=".26"></div>
+<h2>02 / Material</h2><div class="group"><label for="palette">Original lab palette</label><select id="palette"></select><div class="swatches" id="swatches"></div></div>
+<div class="group"><label for="finish">Surface finish</label><select id="finish"><option value="ceramic">Glazed ceramic</option><option value="matte">Soft matte</option><option value="metal">Satin metal</option></select></div>
+<div class="btnrow"><button id="turntable">Pause rotation</button><button id="reset">Reset camera</button></div>
+<h2>03 / Take it with you</h2><button class="primary" id="export">↓ Export coloured .GLB</button>
+<p class="note">The GLB contains twelve real, separate extruded meshes and their colour/material properties. Open it in Blender or a glTF viewer. It is not an STL and not a screenshot.</p>
+<div class="status" id="status" role="status" aria-live="polite">Loading 3D engine…</div>
+<p class="note"><a href="../pentomino-lab/index.html">Back to the original 2D Pentomino Lab ↗</a></p>
+</aside></div>
+<footer>DERAILED. × GOMASU · Data and palettes reused from Pentomino Pattern Lab · Three.js / glTF 2.0</footer>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+const T=window.PentominoTilings,C=window.DERAILEDColour;
+const $=id=>document.getElementById(id), letters=[...T.letters];
+const host=$('canvas'),scene=new THREE.Scene(),group=new THREE.Group();scene.add(group);
+const camera=new THREE.PerspectiveCamera(39,1,.05,100);camera.position.set(10,-12,15);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.55;
+host.append(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.target.set(0,0,0);
+scene.add(new THREE.HemisphereLight(0xffffff,0x536077,2.6));
+const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(-4,-6,13);scene.add(key);
+const fill=new THREE.DirectionalLight(0xbccfff,1.8);fill.position.set(6,5,8);scene.add(fill);
+const background=new THREE.Color('#22252d');scene.background=background;
+let spinning=true, meshes=[];
+function edgesOf(cells){
+ const s=new Set(cells.map(i=>(i%10)+','+Math.floor(i/10))),edges=[];
+ for(const idx of cells){const x=idx%10,y=Math.floor(idx/10);
+  if(!s.has(x+','+(y-1)))edges.push([[x,y],[x+1,y]]);
+  if(!s.has((x+1)+','+y))edges.push([[x+1,y],[x+1,y+1]]);
+  if(!s.has(x+','+(y+1)))edges.push([[x+1,y+1],[x,y+1]]);
+  if(!s.has((x-1)+','+y))edges.push([[x,y+1],[x,y]]);
+ }
+ const byStart=new Map(edges.map(e=>[e[0].join(','),e[1]])),outline=[edges[0][0]];
+ let current=edges[0][1],guard=0;
+ while(current.join(',')!==outline[0].join(',')&&guard++<30){outline.push(current);current=byStart.get(current.join(','));if(!current)throw Error('Invalid outline');}
+ if(guard>=30)throw Error('Contour did not close');
+ return outline;
+}
+function shapeFor(cells){
+ const outline=edgesOf(cells),shape=new THREE.Shape();
+ outline.forEach(([x,y],i)=>i?shape.lineTo(x,-y):shape.moveTo(x,-y));shape.closePath();return shape;
+}
+function renderPieces(){
+ for(const m of meshes){group.remove(m);m.geometry.dispose();m.material.dispose()}meshes=[];
+ const palette=C.load($('palette').value),colors=palette.features,depth=Number($('depth').value),finish=$('finish').value;
+ const settings=finish==='ceramic'?{roughness:.22,metalness:0}:finish==='metal'?{roughness:.31,metalness:.65}:{roughness:.86,metalness:0};
+ const exploded=$('arrangement').value==='exploded';
+ for(const [i,tile] of T.solutions[Number($('solution').value)].entries()){
+  const shape=shapeFor(tile.cells);
+  const geom=new THREE.ExtrudeGeometry(shape,{depth,steps:1,bevelEnabled:true,bevelThickness:.045,bevelSize:.045,bevelSegments:3,curveSegments:3});
+  geom.computeVertexNormals();
+  const material=new THREE.MeshStandardMaterial({color:colors[(i*7+Math.floor(i/5))%5],...settings});
+  const mesh=new THREE.Mesh(geom,material);mesh.name='Pentomino '+tile.name;
+  mesh.userData={letter:tile.name,palette:palette.name};
+  mesh.position.set(-5,3,-depth/2);
+  if(exploded){const angle=i*2.399963229728653;mesh.position.x+=Math.cos(angle)*(1.1+Math.sqrt(i)*.48);mesh.position.y+=Math.sin(angle)*(1.1+Math.sqrt(i)*.48);mesh.position.z+=.2*Math.sin(i*1.7);}
+  group.add(mesh);meshes.push(mesh);
+ }
+ $('solutionLabel').textContent=String(Number($('solution').value)+1).padStart(2,'0')+' / '+T.solutions.length;
+ $('depthLabel').textContent=depth.toFixed(2);
+ $('swatches').replaceChildren(...C.colours(palette).map(hex=>{const el=document.createElement('span');el.style.background=hex;el.title=hex;return el}));
+ $('status').textContent='Ready · '+meshes.length+' separate material-bearing meshes';
+}
+for(const [id,p] of Object.entries(C.presets)){const option=document.createElement('option');option.value=id;option.textContent=p.name;$('palette').append(option)}
+$('palette').value='berry';
+for(const id of ['palette','solution','depth','finish','arrangement'])$(id).addEventListener('input',renderPieces);
+$('turntable').onclick=()=>{spinning=!spinning;$('turntable').textContent=spinning?'Pause rotation':'Resume rotation'};
+$('reset').onclick=()=>{camera.position.set(10,-12,15);controls.target.set(0,0,0);controls.update()};
+$('export').onclick=async()=>{
+ const btn=$('export');btn.disabled=true;$('status').textContent='Building binary glTF…';
+ try{
+  const exportScene=new THREE.Scene();const bundle=new THREE.Group();bundle.name='DERAILED Pentominoes';
+  meshes.forEach(m=>bundle.add(m.clone()));exportScene.add(bundle);
+  const exporter=new GLTFExporter();
+  const output=await exporter.parseAsync(exportScene,{binary:true,onlyVisible:true,trs:false});
+  const blob=new Blob([output],{type:'model/gltf-binary'}),url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='derailed-pentomino-'+$('palette').value+'.glb';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+  $('status').textContent='Exported '+(blob.size/1024).toFixed(0)+' KB GLB · 12 meshes';
+ }catch(error){console.error(error);$('status').textContent='Export failed: '+error.message}
+ finally{btn.disabled=false}
+};
+const resize=new ResizeObserver(()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)});resize.observe(host);
+renderPieces();
+let last=performance.now();renderer.setAnimationLoop(now=>{const dt=Math.min((now-last)/1000,.05);last=now;if(spinning&&!controls.state)group.rotation.z+=dt*.085;controls.update();renderer.render(scene,camera)});
+</script></body></html>
