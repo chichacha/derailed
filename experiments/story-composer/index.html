@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4f0e8">
+<title>Story Composer — DERAILED.</title>
+<style>
+:root{--paper:#f4f0e8;--surface:#fffcf6;--ink:#283a31;--muted:#63736a;--rule:#d7d9ce;--accent:#ac614b;--deep:#214536;--soft:#e6e9dc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+a{color:inherit;text-underline-offset:4px}:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:17px clamp(17px,3.7vw,55px);border-bottom:1px solid var(--rule)}
+.brand{font-weight:900;letter-spacing:.16em;text-decoration:none;font-size:12px}
+.eyebrow{font-size:11px;font-weight:850;letter-spacing:.15em;text-transform:uppercase;color:var(--accent)}
+header .eyebrow{color:var(--muted)}
+main{max-width:1700px;margin:auto;padding:clamp(20px,3.4vw,52px)}
+.intro{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:25px}
+h1,h2,h3{font-family:Georgia,"Times New Roman",serif;line-height:1.06;letter-spacing:-.05em}
+h1{font-size:clamp(43px,5.3vw,75px);margin:5px 0 12px}
+h1 em{color:var(--accent);font-weight:400}
+.intro p{font-size:15px;color:#526258;max-width:630px;margin:0}
+.privacy-pill{border:1px solid #b8c5b7;border-radius:30px;padding:9px 14px;background:#e6ebe1;color:#456050;white-space:nowrap;font-size:12px;font-weight:750}
+.workspace{display:grid;grid-template-columns:minmax(210px,245px) minmax(330px,1fr) minmax(295px,340px);align-items:start;gap:17px}
+.panel{background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:19px}
+.panel h2{font-size:25px;margin:4px 0 15px}
+.panel .label{font-size:11px;font-weight:850;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+small,.hint{font-size:12px;color:var(--muted)}
+.button{display:inline-flex;justify-content:center;align-items:center;gap:6px;border:1px solid #b5bfb4;border-radius:9px;padding:10px 12px;font-weight:750;background:white;color:var(--ink);text-decoration:none}
+.button:hover:not(:disabled){border-color:var(--accent)}
+.button.primary{background:var(--deep);border-color:var(--deep);color:white}
+.button.danger{color:#9f4739;background:#fff8f4}
+.button.small{padding:7px 9px;font-size:12px}
+.block{width:100%}
+.scene-list{display:flex;flex-direction:column;gap:9px;margin:16px 0}
+.scene-card{display:flex;align-items:center;gap:9px;width:100%;padding:9px;border:1px solid var(--rule);border-radius:10px;text-align:left;background:#fff}
+.scene-card[aria-current=true]{border-color:var(--accent);background:#fff7ef;box-shadow:0 0 0 1px var(--accent) inset}
+.scene-thumb{width:53px;height:66px;border-radius:5px;object-fit:cover;flex:none;background:linear-gradient(145deg,#274838,#edc884)}
+.scene-card .mini{min-width:0;flex:1}
+.scene-card .mini strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scene-card .mini span{display:block;font-size:10px;color:var(--muted)}
+.reorder{display:flex;gap:7px}
+.reorder button{flex:1}
+.divider{height:1px;background:var(--rule);margin:17px 0}
+.field{display:block;margin:0 0 15px}
+.field>span{display:block;font-size:12px;font-weight:800;margin:0 0 6px}
+.field input[type=text],.field select,.field textarea{display:block;width:100%;border:1px solid #bbc4b9;border-radius:9px;background:white;color:var(--ink);padding:10px 11px;min-width:0}
+.field textarea{min-height:70px;resize:vertical;line-height:1.55}
+.field input[type=range]{display:block;width:100%;accent-color:var(--accent)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.row>*{min-width:0}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.file-zone{border:1px dashed #a3b2a4;background:#eff2e9;border-radius:12px;padding:16px;text-align:center;margin-top:12px}
+.file-zone.drag{border-color:var(--accent);background:#fff2df}
+input[type=file]{max-width:100%;font-size:12px}
+.stage-panel{min-width:0;display:flex;flex-direction:column;align-items:center;gap:15px}
+.preview-header{width:100%;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.preview-header h2{margin:0;font-size:23px}
+.preview-frame{width:min(100%,440px);aspect-ratio:4/5;background:#244633;border:8px solid #fff;box-shadow:0 21px 50px #18342726;border-radius:9px;overflow:hidden}
+canvas{display:block;width:100%;height:100%}
+.preview-nav{display:flex;align-items:center;justify-content:center;gap:14px}
+.preview-nav button{border-radius:50%;width:39px;height:39px;background:white;border:1px solid var(--rule);font-size:18px}
+.stage-note{max-width:440px;font-size:12px;color:var(--muted);text-align:center}
+.export{width:100%;background:#eff1e8;border:1px solid #d4d9ce;border-radius:12px;padding:16px}
+.export .button{margin:4px 5px 4px 0}
+.status{color:#4c6659;font-size:12px;min-height:20px;margin:10px 0 0}
+.editor-head{display:flex;justify-content:space-between;align-items:start;gap:10px}
+.editor-head h2{margin:4px 0 16px}
+.role-prompt{background:#f0f1e7;border-radius:10px;padding:12px;margin-bottom:16px;color:#4d6455;font-size:12px}
+.role-prompt strong{display:block;color:var(--ink);margin-bottom:3px}
+.footer-note{max-width:850px;margin:20px 0 0;color:var(--muted);font-size:12px}
+code{padding:1px 4px;border-radius:4px;background:#e6e8df}
+@media(max-width:1160px){.workspace{grid-template-columns:220px minmax(280px,1fr)}.inspector{grid-column:1 / -1}.inspector .fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}}
+@media(max-width:760px){.intro{display:block}.privacy-pill{display:inline-block;margin-top:15px}.workspace{grid-template-columns:1fr}.stage-panel{grid-row:1}.inspector{grid-column:auto}.inspector .fields{display:block}.preview-frame{width:min(100%,375px)}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><a class="brand" href="../index.html">DERAILED.</a><span class="eyebrow">EXPERIMENT / STORY COMPOSER 001</span></header>
+<main>
+<div class="intro">
+ <div><span class="eyebrow">A little publishing studio for curious people</span><h1>Photos into <em>stories.</em></h1><p>Arrange your favourite moments, write something worth remembering, and export a beautiful Instagram carousel. Your photographs stay on your device.</p></div>
+ <span class="privacy-pill">🔒 Local-first · no photo uploads</span>
+</div>
+<div class="workspace">
+ <aside class="panel" aria-label="Story scenes">
+  <span class="label">01 / Your story</span><h2>Scenes <span id="count" style="font:600 13px system-ui;color:var(--muted)"></span></h2>
+  <label class="field"><span>Story title</span><input id="storyTitle" type="text" maxlength="65" value="Small discoveries" placeholder="Give your story a name"></label>
+  <div class="file-zone" id="dropZone"><strong>＋ Add photos</strong><p class="hint">Select several images or drag them here. JPEG, PNG, and other browser-readable images.</p><input id="addPhotos" type="file" accept="image/*" multiple aria-label="Add several local photos"></div>
+  <div class="scene-list" id="sceneList" aria-label="Select and arrange scenes"></div>
+  <div class="row"><button class="button small" id="addBlank" type="button">＋ Text slide</button><button class="button small" id="startFresh" type="button">New story</button></div>
+  <div class="divider"></div>
+  <span class="label">Scene order</span>
+  <div class="row reorder" style="margin-top:9px"><button class="button small" id="moveUp" type="button">↑ Earlier</button><button class="button small" id="moveDown" type="button">↓ Later</button></div>
+  <p class="hint">Choose a scene to edit. Use the arrows to change its position in the story.</p>
+ </aside>
+ <section class="stage-panel panel" aria-label="Slide preview">
+  <div class="preview-header"><h2>02 / Preview</h2><span class="label">4:5 Instagram carousel</span></div>
+  <div class="preview-frame"><canvas id="preview" width="1080" height="1350" role="img" aria-label="Live preview of the selected story slide"></canvas></div>
+  <div class="preview-nav"><button id="previous" type="button" aria-label="Previous scene">←</button><span id="position" style="font-weight:750">01 / 03</span><button id="next" type="button" aria-label="Next scene">→</button></div>
+  <div class="stage-note">Each slide exports at <strong>1080 × 1350 pixels</strong>. The preview uses the same rendering code as the final PNG.</div>
+  <div class="export">
+    <span class="label">03 / Take it with you</span><h2 style="font-size:24px;margin:7px 0 12px">Export your story</h2>
+    <div class="row">
+      <button id="downloadSlide" class="button" type="button">↓ This PNG</button>
+      <button id="downloadZip" class="button primary" type="button">↓ All slides as ZIP</button>
+      <button id="downloadCaptions" class="button" type="button">↓ Captions .txt</button>
+    </div>
+    <p class="hint">The ZIP contains numbered PNGs in your chosen order. Captions are also available as a separate text file for your post.</p>
+    <p id="status" class="status" role="status" aria-live="polite">Ready. Try the sample scenes, or add photos from your computer.</p>
+  </div>
+ </section>
+ <section class="panel inspector" aria-label="Selected scene settings">
+  <div class="editor-head"><div><span class="label">04 / Make it meaningful</span><h2>Edit this scene</h2></div><button id="remove" class="button small danger" type="button">Remove</button></div>
+  <div class="fields">
+   <label class="field"><span>Role in the story</span><select id="role"><option value="Encounter">Encounter</option><option value="Detail">Detail</option><option value="Discovery">Discovery</option><option value="Surprise">Surprise</option><option value="Reflection">Reflection</option><option value="Other">Other</option></select></label>
+   <div class="role-prompt" id="rolePrompt"><strong>A little narrative nudge</strong>What caught your attention?</div>
+   <label class="field"><span>Small label</span><input id="eyebrow" type="text" maxlength="42" placeholder="e.g. A morning walk"></label>
+   <label class="field"><span>Headline</span><textarea id="headline" maxlength="100" rows="2" placeholder="A few words that make someone curious"></textarea></label>
+   <label class="field"><span>Caption / observation</span><textarea id="caption" maxlength="240" rows="4" placeholder="What do you want someone to notice or remember?"></textarea><span class="hint">A concise observation works well on the slide. The full text is also included in your captions file.</span></label>
+   <label class="field"><span>Layout</span><select id="layout"><option value="full">Full-bleed photograph</option><option value="split">Editorial split</option><option value="type">Typography poster</option></select></label>
+   <label class="field"><span>Colour palette</span><select id="palette"><option value="moss">Moss & cream</option><option value="clay">Warm clay</option><option value="ink">Midnight ink</option><option value="blue">Coastal blue</option></select></label>
+   <div class="twocol">
+    <label class="field"><span>Photo horizontal focus</span><input id="focusX" type="range" min="0" max="100" value="50"></label>
+    <label class="field"><span>Photo vertical focus</span><input id="focusY" type="range" min="0" max="100" value="50"></label>
+   </div>
+   <label class="field"><span>Replace this scene's image</span><input id="replacePhoto" type="file" accept="image/*"><span class="hint">Optional. Replacing a photo never uploads it.</span></label>
+  </div>
+ </section>
+</div>
+<p class="footer-note">This is a private, browser-only composer: images are held in memory for this tab and never sent to a server. The demo scenes use generated shapes, not photos. Refreshing clears your edits and selected images; export before closing. No project saving or video export in v0.1.</p>
+</main>
+<script>
+"use strict";
+/*
+ * DERAILED Story Composer v0.1
+ * All art is rendered with Canvas 2D. No remote libraries, network calls,
+ * background uploads, cookies, localStorage, or server-side processing.
+ */
+const W=1080,H=1350;
+const canvas=document.getElementById("preview");
+const ctx=canvas.getContext("2d",{alpha:false});
+const $=id=>document.getElementById(id);
+const palettes={
+ moss:{bg:"#1f4536",paper:"#f2eddf",ink:"#243d33",light:"#fffaf0",accent:"#dab879",wash:"#c0ccb7"},
+ clay:{bg:"#9b5647",paper:"#f6e7da",ink:"#613c35",light:"#fff7ed",accent:"#e7b889",wash:"#f1c3aa"},
+ ink:{bg:"#202c3a",paper:"#ece9e0",ink:"#252d3a",light:"#f8f4e9",accent:"#e9be74",wash:"#b6bfce"},
+ blue:{bg:"#275a73",paper:"#ecf1ee",ink:"#264960",light:"#fbfdfa",accent:"#c8dcaa",wash:"#bad5de"}
+};
+const prompts={
+ Encounter:"What first caught your eye? Set the scene without explaining everything.",
+ Detail:"What tiny detail deserves a closer look?",
+ Discovery:"What did you learn, notice, or understand differently?",
+ Surprise:"What unexpected thing changes the meaning of this moment?",
+ Reflection:"What stayed with you after the moment passed?",
+ Other:"What should someone feel or notice at this point in your story?"
+};
+let uid=0,scenes=[],selectedId=null,usingDemo=true,busy=false;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const num=i=>String(i).padStart(2,"0");
+const cleanName=s=>(s||"my-story").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,42)||"my-story";
+const demo=()=>[
+ {role:"Encounter",eyebrow:"FIELD NOTES / 01",headline:"AN ORDINARY DAY.",caption:"Until something made me stop and look again.",layout:"full",palette:"moss"},
+ {role:"Detail",eyebrow:"A CLOSER LOOK",headline:"IT'S THE SMALL THINGS.",caption:"Sometimes the best part of a photograph is the detail you almost missed.",layout:"split",palette:"clay"},
+ {role:"Reflection",eyebrow:"ONE THING LED TO ANOTHER",headline:"LOOK A LITTLE LONGER.",caption:"A tiny observation can become a whole story.",layout:"type",palette:"ink"}
+].map(props=>makeScene(props));
+function makeScene(props={}){return {id:++uid,role:"Encounter",eyebrow:"A SMALL OBSERVATION",headline:"A MOMENT WORTH KEEPING.",caption:"",layout:"full",palette:"moss",focusX:50,focusY:50,img:null,url:null,fileName:null,...props}}
+function active(){return scenes.find(s=>s.id===selectedId)||scenes[0]}
+function setStatus(msg){$("status").textContent=msg}
+function fill(g,c,x,y,w,h){g.fillStyle=c;g.fillRect(x,y,w,h)}
+function ellipse(g,x,y,rx,ry,color){g.beginPath();g.ellipse(x,y,rx,ry,0,0,Math.PI*2);g.fillStyle=color;g.fill()}
+function cover(g,img,x,y,w,h,fx=50,fy=50){
+ if(!img?.naturalWidth)return false;
+ const iw=img.naturalWidth,ih=img.naturalHeight;
+ const scale=Math.max(w/iw,h/ih),sw=w/scale,sh=h/scale;
+ const sx=clamp((iw-sw)*fx/100,0,iw-sw),sy=clamp((ih-sh)*fy/100,0,ih-sh);
+ g.drawImage(img,sx,sy,sw,sh,x,y,w,h);return true;
+}
+function noPhoto(g,p,x,y,w,h){
+ fill(g,p.bg,x,y,w,h);
+ g.save();g.beginPath();g.rect(x,y,w,h);g.clip();
+ ellipse(g,x+w*.82,y+h*.27,w*.46,h*.32,p.accent);
+ ellipse(g,x+w*.11,y+h*.87,w*.53,h*.38,p.wash);
+ ellipse(g,x+w*.55,y+h*.65,w*.24,h*.22,p.bg);
+ g.restore();
+}
+function text(g,value,x,y,size,color,weight=700,font="Arial, sans-serif",align="left"){
+ g.font=weight+" "+size+"px "+font;g.fillStyle=color;g.textAlign=align;g.textBaseline="top";
+ g.fillText(value,x,y);
+}
+function wrap(g,value,maxWidth){
+ let out=[];
+ for(const paragraph of String(value||"").split(/\n/)){
+  let row="";
+  for(const word of paragraph.split(/\s+/).filter(Boolean)){
+   const next=row?row+" "+word:word;
+   if(row&&g.measureText(next).width>maxWidth){out.push(row);row=word}
+   else row=next;
+  }
+  if(row)out.push(row);
+ }
+ return out;
+}
+function typeBlock(g,value,x,y,width,opts={}){
+ const raw=(value||"").trim();if(!raw)return y;
+ const family=opts.font||"Georgia, serif";
+ const weight=opts.weight||700;
+ let size=opts.size||88,lines=[];
+ const minSize=opts.minSize||31,maxLines=opts.maxLines||3;
+ while(size>minSize){
+  g.font=weight+" "+size+"px "+family;
+  lines=wrap(g,raw,width);
+  if(lines.length<=maxLines&&lines.every(s=>g.measureText(s).width<=width))break;
+  size-=3;
+ }
+ g.font=weight+" "+size+"px "+family;
+ if(!lines.length)lines=wrap(g,raw,width);
+ if(lines.length>maxLines){
+  lines=lines.slice(0,maxLines);let last=lines[maxLines-1];
+  while(last.length&&g.measureText(last+"…").width>width)last=last.slice(0,-1);
+  lines[maxLines-1]=last+"…";
+ }
+ const lh=size*(opts.leading||1.12);
+ lines.forEach((s,i)=>text(g,s,x,y+i*lh,size,opts.color||"#fff",weight,family));
+ return y+lines.length*lh;
+}
+function chrome(g,p,s,index,total,onDark){
+ const color=onDark?p.light:p.ink;
+ fill(g,p.accent,66,56,78,6);
+ text(g,(s.eyebrow||s.role).toUpperCase(),66,83,25,color,800);
+ fill(g,color,66,1260,948,2);
+ text(g,($("storyTitle").value.trim()||"UNTITLED STORY").toUpperCase().slice(0,48),66,1280,24,color,800);
+ text(g,num(index+1)+" / "+num(total),1012,1280,24,color,800,"Arial, sans-serif","right");
+}
+function drawSlide(g,s,index,total){
+ const p=palettes[s.palette]||palettes.moss;
+ g.clearRect(0,0,W,H);
+ if(s.layout==="split"){
+  fill(g,p.paper,0,0,W,H);
+  g.save();g.beginPath();g.rect(66,160,948,540);g.clip();
+  if(!cover(g,s.img,66,160,948,540,s.focusX,s.focusY))noPhoto(g,p,66,160,948,540);
+  g.restore();
+  text(g,(s.eyebrow||s.role).toUpperCase(),67,92,24,p.ink,800);
+  typeBlock(g,s.headline,66,748,948,{size:85,minSize:42,maxLines:2,color:p.ink});
+  typeBlock(g,s.caption,68,1000,932,{size:39,minSize:29,maxLines:4,color:p.ink,weight:400,font:"Arial, sans-serif",leading:1.26});
+  fill(g,p.ink,66,1260,948,2);
+  text(g,($("storyTitle").value.trim()||"UNTITLED STORY").toUpperCase().slice(0,48),66,1280,24,p.ink,800);
+  text(g,num(index+1)+" / "+num(total),1012,1280,24,p.ink,800,"Arial, sans-serif","right");
+ }else if(s.layout==="type"){
+  fill(g,p.bg,0,0,W,H);
+  ellipse(g,1000,65,270,270,p.wash);
+  typeBlock(g,s.headline,66,182,930,{size:102,minSize:49,maxLines:2,color:p.light});
+  g.save();g.beginPath();g.rect(66,480,948,430);g.clip();
+  if(!cover(g,s.img,66,480,948,430,s.focusX,s.focusY))noPhoto(g,p,66,480,948,430);
+  g.restore();
+  typeBlock(g,s.caption,68,973,926,{size:41,minSize:30,maxLines:4,color:p.light,weight:400,font:"Arial, sans-serif",leading:1.24});
+  chrome(g,p,s,index,total,true);
+ }else{
+  if(!cover(g,s.img,0,0,W,H,s.focusX,s.focusY))noPhoto(g,p,0,0,W,H);
+  const grad=g.createLinearGradient(0,450,0,1350);
+  grad.addColorStop(0,"rgba(8,19,15,0.03)");
+  grad.addColorStop(.49,"rgba(8,19,15,0.67)");
+  grad.addColorStop(1,"rgba(8,19,15,0.90)");
+  fill(g,grad,0,0,W,H);
+  typeBlock(g,s.headline,66,700,936,{size:104,minSize:50,maxLines:3,color:"#fff9ee"});
+  typeBlock(g,s.caption,68,1064,928,{size:39,minSize:28,maxLines:3,color:"#fff8ea",weight:400,font:"Arial, sans-serif",leading:1.22});
+  chrome(g,p,s,index,total,true);
+ }
+}
+function draw(){const s=active();if(!s)return;drawSlide(ctx,s,scenes.indexOf(s),scenes.length)}
+function renderRail(){
+ const box=$("sceneList");box.replaceChildren();
+ scenes.forEach((s,i)=>{
+  const b=document.createElement("button");b.type="button";b.className="scene-card";b.setAttribute("aria-current",String(s.id===selectedId));
+  const thumb=s.img?document.createElement("img"):document.createElement("div");
+  thumb.className="scene-thumb";thumb.setAttribute("aria-hidden","true");
+  if(s.img)thumb.src=s.url;else thumb.style.background="linear-gradient(130deg,"+(palettes[s.palette]?.bg||"#284938")+" 45%,"+(palettes[s.palette]?.accent||"#d8b775")+" 45%)";
+  const detail=document.createElement("div");detail.className="mini";
+  const title=document.createElement("strong");title.textContent=num(i+1)+" · "+(s.headline||"Untitled slide").replace(/\n/g," ");
+  const caption=document.createElement("span");caption.textContent=s.role+" · "+(s.img?"Photo":"Text");
+  detail.append(title,caption);b.append(thumb,detail);
+  b.addEventListener("click",()=>select(s.id));
+  box.append(b);
+ });
+ $("count").textContent="("+scenes.length+")";
+}
+function renderInspector(){
+ const s=active();if(!s)return;
+ ["role","eyebrow","headline","caption","layout","palette","focusX","focusY"].forEach(k=>$(k).value=s[k]);
+ $("rolePrompt").replaceChildren();
+ const strong=document.createElement("strong");strong.textContent="A little narrative nudge";
+ $("rolePrompt").append(strong,document.createTextNode(prompts[s.role]||prompts.Other));
+ $("replacePhoto").value="";
+ const i=scenes.indexOf(s);
+ $("position").textContent=num(i+1)+" / "+num(scenes.length);
+ $("previous").disabled=i===0;$("next").disabled=i===scenes.length-1;
+ $("moveUp").disabled=i===0;$("moveDown").disabled=i===scenes.length-1;
+ $("remove").disabled=scenes.length===1;
+}
+function select(id){selectedId=id;renderRail();renderInspector();draw()}
+function update(k,v){
+ const s=active();if(!s||busy)return;
+ s[k]=v;
+ if(k==="role"&&(!s.eyebrow||Object.values(prompts).includes(s.eyebrow)))s.eyebrow=v.toUpperCase();
+ if(k==="role"){
+  const strong=document.createElement("strong");strong.textContent="A little narrative nudge";
+  $("rolePrompt").replaceChildren(strong,document.createTextNode(prompts[v]||prompts.Other));
+ }
+ renderRail();draw();
+}
+["role","eyebrow","headline","caption","layout","palette","focusX","focusY"].forEach(id=>{
+ $(id).addEventListener("input",()=>update(id,id.startsWith("focus")?Number($(id).value):$(id).value));
+});
+$("storyTitle").addEventListener("input",draw);
+function move(offset){
+ if(busy)return;
+ const s=active(),i=scenes.indexOf(s),j=i+offset;
+ if(j<0||j>=scenes.length)return;
+ [scenes[i],scenes[j]]=[scenes[j],scenes[i]];
+ select(s.id);setStatus("Scene moved. The export order has changed.");
+}
+$("moveUp").addEventListener("click",()=>move(-1));
+$("moveDown").addEventListener("click",()=>move(1));
+$("previous").addEventListener("click",()=>{const i=scenes.indexOf(active());if(i>0)select(scenes[i-1].id)});
+$("next").addEventListener("click",()=>{const i=scenes.indexOf(active());if(i<scenes.length-1)select(scenes[i+1].id)});
+$("addBlank").addEventListener("click",()=>{
+ if(busy)return;
+ if(usingDemo){releaseAll();scenes=[];usingDemo=false}
+ const s=makeScene({role:"Other",eyebrow:"A PAUSE IN THE STORY",headline:"A LITTLE PAUSE.",caption:"",layout:"type"});
+ scenes.push(s);select(s.id);setStatus("Text scene added.");
+});
+$("startFresh").addEventListener("click",()=>{
+ if(busy)return;
+ if(scenes.some(s=>s.img)&&!confirm("Start a new story? Your current images and edits will be cleared."))return;
+ releaseAll();usingDemo=false;scenes=[makeScene({headline:"YOUR STORY BEGINS.",caption:"",layout:"type",role:"Encounter"})];
+ $("storyTitle").value="Untitled story";select(scenes[0].id);setStatus("New blank story. Your photos are still on your computer.");
+});
+$("remove").addEventListener("click",()=>{
+ if(busy||scenes.length===1)return;
+ const s=active(),i=scenes.indexOf(s);if(s.url)URL.revokeObjectURL(s.url);
+ scenes.splice(i,1);select(scenes[Math.min(i,scenes.length-1)].id);setStatus("Scene removed from this browser session.");
+});
+function releaseAll(){scenes.forEach(s=>{if(s.url)URL.revokeObjectURL(s.url)})}
+function readImage(file){
+ return new Promise((resolve,reject)=>{
+  if(!file.type.startsWith("image/")){reject(new Error("Not an image"));return}
+  const url=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>resolve({img,url});
+  img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("Image format not supported by this browser"))};
+  img.src=url;
+ });
+}
+async function addFiles(list){
+ if(busy)return;
+ const files=Array.from(list||[]).filter(f=>f.type.startsWith("image/"));
+ if(!files.length){setStatus("Choose an image file to add.");return}
+ const slots=Math.max(0,20-(usingDemo?0:scenes.length));
+ if(!slots){setStatus("The first version supports up to 20 scenes.");return}
+ busy=true;setStatus("Reading images locally…");
+ const additions=[];let rejected=0;
+ for(const file of files.slice(0,slots)){
+  try{
+   const {img,url}=await readImage(file);
+   additions.push(makeScene({img,url,fileName:file.name,role:"Detail",eyebrow:"A MOMENT IN THE STORY",headline:"A MOMENT TO REMEMBER.",caption:"",layout:"split"}));
+  }catch(err){rejected++}
+ }
+ if(additions.length){
+  if(usingDemo){releaseAll();scenes=[];usingDemo=false}
+  scenes.push(...additions);select(additions[0].id);
+ }
+ busy=false;setStatus(additions.length+" photo(s) added privately."+(rejected?" "+rejected+" couldn't be opened.":""));
+}
+$("addPhotos").addEventListener("change",e=>{addFiles(e.target.files);e.target.value=""});
+$("replacePhoto").addEventListener("change",async e=>{
+ const file=e.target.files?.[0];e.target.value="";if(!file||busy)return;
+ const s=active();busy=true;
+ try{const {img,url}=await readImage(file);if(s.url)URL.revokeObjectURL(s.url);s.img=img;s.url=url;s.fileName=file.name;draw();renderRail();setStatus("Scene photo replaced locally.")}
+ catch(err){setStatus("Could not open that photo. Try JPEG or PNG.")}
+ finally{busy=false}
+});
+const drop=$("dropZone");
+["dragenter","dragover"].forEach(event=>drop.addEventListener(event,e=>{e.preventDefault();drop.classList.add("drag")}));
+["dragleave","drop"].forEach(event=>drop.addEventListener(event,e=>{e.preventDefault();drop.classList.remove("drag")}));
+drop.addEventListener("drop",e=>addFiles(e.dataTransfer?.files));
+function download(blob,name){
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),60000);
+}
+function canvasBlob(g){return new Promise((resolve,reject)=>g.toBlob(b=>b?resolve(b):reject(new Error("PNG encoding failed")),"image/png"))}
+function pngFor(s,index){
+ const c=document.createElement("canvas");c.width=W;c.height=H;
+ drawSlide(c.getContext("2d",{alpha:false}),s,index,scenes.length);
+ return canvasBlob(c);
+}
+function captionText(){
+ let s=($("storyTitle").value.trim()||"Untitled story")+"\n\n";
+ scenes.forEach((scene,i)=>{
+  s+=num(i+1)+" — "+(scene.role||"Scene")+"\n";
+  if(scene.headline)s+=scene.headline.replace(/\n/g," ")+"\n";
+  if(scene.caption)s+=scene.caption+"\n";
+  s+="\n";
+ });
+ return s.trim()+"\n";
+}
+$("downloadCaptions").addEventListener("click",()=>{
+ download(new Blob([captionText()],{type:"text/plain;charset=utf-8"}),cleanName($("storyTitle").value)+"-captions.txt");
+ setStatus("Captions downloaded as text.");
+});
+$("downloadSlide").addEventListener("click",async()=>{
+ if(busy)return;busy=true;const btn=$("downloadSlide");btn.disabled=true;
+ try{const s=active(),i=scenes.indexOf(s),blob=await pngFor(s,i);download(blob,"slide-"+num(i+1)+".png");setStatus("Selected slide saved as PNG.")}
+ catch(e){setStatus("Could not export the slide: "+e.message)}
+ finally{btn.disabled=false;busy=false}
+});
+/* Minimal self-contained ZIP writer; uses stored (uncompressed) PNGs.
+   PNG data is already compressed, so extra ZIP compression rarely helps. */
+const encoder=new TextEncoder();
+function crc32(bytes){
+ let crc=0xffffffff;
+ for(const b of bytes){crc^=b;for(let n=0;n<8;n++)crc=(crc>>>1)^((crc&1)?0xedb88320:0)}
+ return (crc^0xffffffff)>>>0;
+}
+function put16(view,offset,value){view.setUint16(offset,value,true)}
+function put32(view,offset,value){view.setUint32(offset,value>>>0,true)}
+function makeZip(entries){
+ const parts=[],directory=[];let offset=0,dirSize=0;
+ for(const item of entries){
+  const name=encoder.encode(item.name),bytes=item.bytes,crc=crc32(bytes);
+  const h=new Uint8Array(30+name.length),v=new DataView(h.buffer);
+  put32(v,0,0x04034b50);put16(v,4,20);put16(v,6,0x0800);put16(v,8,0);
+  put16(v,10,0);put16(v,12,0x5021);put32(v,14,crc);
+  put32(v,18,bytes.length);put32(v,22,bytes.length);put16(v,26,name.length);put16(v,28,0);
+  h.set(name,30);parts.push(h,bytes);
+  const c=new Uint8Array(46+name.length),d=new DataView(c.buffer);
+  put32(d,0,0x02014b50);put16(d,4,20);put16(d,6,20);put16(d,8,0x0800);
+  put16(d,10,0);put16(d,12,0);put16(d,14,0x5021);put32(d,16,crc);
+  put32(d,20,bytes.length);put32(d,24,bytes.length);put16(d,28,name.length);
+  put16(d,30,0);put16(d,32,0);put16(d,34,0);put16(d,36,0);
+  put32(d,38,0);put32(d,42,offset);c.set(name,46);
+  directory.push(c);dirSize+=c.length;offset+=h.length+bytes.length;
+ }
+ const e=new Uint8Array(22),v=new DataView(e.buffer);
+ put32(v,0,0x06054b50);put16(v,4,0);put16(v,6,0);
+ put16(v,8,entries.length);put16(v,10,entries.length);
+ put32(v,12,dirSize);put32(v,16,offset);put16(v,20,0);
+ return new Blob([...parts,...directory,e],{type:"application/zip"});
+}
+$("downloadZip").addEventListener("click",async()=>{
+ if(busy)return;busy=true;
+ const button=$("downloadZip");button.disabled=true;
+ try{
+  const entries=[];
+  for(let i=0;i<scenes.length;i++){
+   setStatus("Rendering slide "+(i+1)+" of "+scenes.length+"…");
+   const blob=await pngFor(scenes[i],i);
+   entries.push({name:"slide-"+num(i+1)+".png",bytes:new Uint8Array(await blob.arrayBuffer())});
+  }
+  entries.push({name:"captions.txt",bytes:encoder.encode(captionText())});
+  download(makeZip(entries),cleanName($("storyTitle").value)+"-carousel.zip");
+  setStatus("Carousel ZIP ready: "+scenes.length+" PNG slides + captions.txt.");
+ }catch(err){setStatus("Export failed: "+err.message)}
+ finally{button.disabled=false;busy=false}
+});
+window.addEventListener("pagehide",releaseAll);
+scenes=demo();selectedId=scenes[0].id;
+renderRail();renderInspector();draw();
+</script>
+</body>
+</html>
