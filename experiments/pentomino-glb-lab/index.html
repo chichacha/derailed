@@ -90,6 +90,8 @@ function shapeFor(cells){
 }
 function fitCamera(){
  // Fit each arrangement independently, including narrower/mobile viewports.
+ camera.aspect=Math.max(host.clientWidth,1)/Math.max(host.clientHeight,1);
+ camera.updateProjectionMatrix();
  const exploded=$('arrangement').value==='exploded';
  const width=exploded?26:11,height=exploded?19:7.5;
  const aspect=Math.max(camera.aspect,.45);
