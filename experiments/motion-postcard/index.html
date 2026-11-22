@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A tiny vertical motion postcard you can play, customise and record in your browser.">
+<title>Motion Postcard — DERAILED.</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;background:#f5f1eb;color:#262935}*{box-sizing:border-box}body{margin:0}a{color:inherit}
+button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #dd779f;outline-offset:3px}
+header{padding:23px clamp(20px,5vw,70px) 35px;background:#262935;color:#fff}header a{color:#e7a9bc;font-size:12px;text-decoration:none;font-weight:800}
+header h1{font-size:clamp(44px,7vw,95px);letter-spacing:-.085em;line-height:.95;margin:30px 0 15px}header h1 em{font-style:normal;color:#f2ae73}
+header p{color:#d8d3dc;line-height:1.55;max-width:650px}.eyebrow{font-size:10px;letter-spacing:.2em;font-weight:900;text-transform:uppercase;color:#ad5678}
+header .eyebrow{color:#e8b0c4}
+main{max-width:1200px;margin:auto;padding:32px clamp(18px,4vw,55px) 70px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:28px;align-items:start}
+.stage{background:#292735;border-radius:16px;padding:20px;display:flex;justify-content:center}
+canvas{width:min(100%,350px);height:auto;aspect-ratio:9/16;display:block;border-radius:4px;box-shadow:0 16px 42px #0005}
+.stage-note{margin:12px 0 0;color:#6a6570;font-size:12px;line-height:1.55}.panel{background:#fff;border:1px solid #e3dbd6;border-radius:14px;padding:24px;position:sticky;top:15px}
+.panel h2{margin:6px 0 20px;letter-spacing:-.055em;font-size:27px}
+label{display:block;font-size:12px;font-weight:750;margin:16px 0 6px}
+select,input:not([type=range]){border:1px solid #dcd3d1;border-radius:7px;padding:10px;width:100%;background:#fbfaf7;color:#272632}
+input[type=range]{width:100%;accent-color:#ac5978}.row{display:flex;gap:8px;flex-wrap:wrap}.row button{flex:1}
+button{border:1px solid #d7cfd0;border-radius:8px;padding:11px 12px;background:#fff;color:#2d2834;font-size:12px;font-weight:750}button:hover{border-color:#bd7590}
+button.primary{background:#9d4b70;border-color:#9d4b70;color:white}button:disabled{opacity:.55;cursor:not-allowed}
+.stat{color:#a44e70;font-weight:850}output{float:right;color:#a45574}
+.helper{font-size:11px;color:#817781;line-height:1.6}.status{font-size:12px;color:#8d4568;min-height:20px;line-height:1.5}
+.section{border-top:1px solid #eee7e4;padding-top:16px;margin-top:17px}
+footer{max-width:1200px;margin:0 auto;padding:24px clamp(18px,4vw,55px) 60px;border-top:1px solid #e4ddd9;font-size:12px;color:#79717c}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.panel{position:static}.stage{padding:15px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head><body>
+<header><a href="../index.html">← DERAILED. / EXPERIMENTS</a>
+<p class="eyebrow" style="margin-top:40px">MOTION EXPERIMENT / POSTCARD 001</p>
+<h1>Little things<br><em>in motion.</em></h1>
+<p>Twelve restless geometric pieces find their places, celebrate for a moment, and drift away again. A tiny motion postcard built entirely in the browser.</p></header>
+<main><div class="layout">
+<div>
+ <div class="stage"><canvas id="art" width="540" height="960" role="img" aria-label="Animated geometric shapes assembling into a playful grid, then scattering into a loop">Your browser does not support Canvas.</canvas></div>
+ <p class="stage-note">Vertical 9:16 canvas · 540 × 960 pixels · silent seamless loop · no libraries, no build step. Recording is WebM in supporting browsers.</p>
+</div>
+<aside class="panel">
+ <span class="eyebrow">THE MOTION WORKBENCH</span><h2>Direct the little ballet.</h2>
+ <label for="palette">Colour story</label><select id="palette"><option value="sorbet">Sorbet Assembly</option><option value="material">Bold & Bright</option><option value="night">Midnight Gallery</option><option value="coffee">Coffee Morning</option></select>
+ <label for="choreography">Choreography</label><select id="choreography"><option value="spiral">Spiral entrance</option><option value="rise">Rise from below</option><option value="orbit">Orbit and settle</option></select>
+ <label for="duration">Loop duration <output id="durationOut">12 seconds</output></label><input id="duration" type="range" min="6" max="20" step="1" value="12">
+ <label for="title">Title on postcard</label><input id="title" value="A LITTLE DETOUR" maxlength="28">
+ <div class="section">
+  <div class="row"><button type="button" id="toggle">❚❚ Pause</button><button type="button" id="restart">↻ Restart</button></div>
+  <p class="helper">The choreography repeats automatically. Pause or restart whenever you like.</p>
+ </div>
+ <div class="section">
+  <span class="eyebrow">EXPORT THE EXPERIMENT</span>
+  <div class="row" style="margin-top:13px"><button type="button" id="record" class="primary">● Record one loop</button><button type="button" id="savePoster">↓ PNG still</button></div>
+  <p id="status" class="status" role="status" aria-live="polite"></p>
+  <p class="helper">Recording captures the canvas without browser controls. It exports a silent WebM video if your browser supports MediaRecorder. For MP4, convert afterwards with a video editor or FFmpeg.</p>
+  <p class="helper">If the record button is unavailable, you can still screen-record the animation.</p>
+ </div>
+</aside></div></main>
+<footer>DERAILED. · One thing led to another. · A little movement can change everything.</footer>
+<script>
+(function(){
+"use strict";
+const canvas=document.getElementById('art'),ctx=canvas.getContext('2d'),W=540,H=960,TAU=Math.PI*2;
+const el=id=>document.getElementById(id),colors={
+ sorbet:{bg:'#FFF1E6',ink:'#33273A',paper:'#FFFCF5',shapes:['#D45B7B','#F09A68','#EBC76D','#7F9F9A','#A68EC7']},
+ material:{bg:'#F8F6EE',ink:'#26364D',paper:'#FFFFFF',shapes:['#EF5350','#FFCA28','#42A5F5','#66BB6A','#AB47BC']},
+ night:{bg:'#242638',ink:'#F7EAD9',paper:'#303346',shapes:['#EBA27C','#D481AB','#F0D06F','#83B8C1','#9990D0']},
+ coffee:{bg:'#F6EBDD',ink:'#3C2B29',paper:'#FFFAF0',shapes:['#67473B','#B27959','#DBAF80','#91A59A','#DA8C87']}
+};
+let time=0,last=0,playing=!window.matchMedia('(prefers-reduced-motion: reduce)').matches,recorder=null,stream=null,recordChunks=[],recording=false;
+const pieces=Array.from({length:12},(_,i)=>({i,c:i%4,r:Math.floor(i/4),turn:(i%2?1:-1),shape:i%4}));
+const ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
+const lerp=(a,b,t)=>a+(b-a)*t;
+function rect(x,y,w,h,r,col){ctx.fillStyle=col;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
+function drawShape(x,y,size,angle,color,shape){
+ ctx.save();ctx.translate(x,y);ctx.rotate(angle);
+ ctx.fillStyle=color;
+ if(shape===0){ctx.beginPath();ctx.roundRect(-size/2,-size/2,size,size,size*.15);ctx.fill()}
+ else if(shape===1){ctx.beginPath();ctx.arc(0,0,size*.51,0,TAU);ctx.fill()}
+ else if(shape===2){ctx.beginPath();ctx.moveTo(0,-size*.6);ctx.lineTo(size*.6,size*.45);ctx.lineTo(-size*.6,size*.45);ctx.closePath();ctx.fill()}
+ else{ctx.beginPath();ctx.roundRect(-size*.24,-size*.57,size*.48,size*1.14,size*.24);ctx.fill()}
+ ctx.restore();
+}
+function phase(t){return (t%1+1)%1}
+function draw(t){
+ const p=colors[el('palette').value]||colors.sorbet,kind=el('choreography').value;
+ ctx.fillStyle=p.bg;ctx.fillRect(0,0,W,H);
+ // Faint print-like lines lend the composition a little editorial structure.
+ ctx.globalAlpha=.13;for(let i=0;i<9;i++)rect(52,192+i*72,436,1,0,p.ink);ctx.globalAlpha=1;
+ ctx.fillStyle=p.ink;ctx.textAlign='left';
+ ctx.font='bold 15px system-ui, sans-serif';ctx.fillText('DERAILED.  /  MOTION STUDY 001',52,72);
+ ctx.font='800 52px system-ui, sans-serif';ctx.fillText(el('title').value||'A LITTLE DETOUR',52,142,440);
+ const enter=ease(t/.32),leave=ease((t-.72)/.28),settle=enter*(1-leave);
+ for(const o of pieces){
+  const i=o.i,tx=103+o.c*111,ty=316+o.r*124,size=76;
+  const theta=(i/12)*TAU+Math.PI*.2;
+  let sx,sy;
+  if(kind==='rise'){sx=tx+Math.sin(i*2.8)*170;sy=H+230+i*23}
+  else if(kind==='orbit'){sx=W/2+Math.cos(theta+Math.PI)*330;sy=H/2+Math.sin(theta+Math.PI)*500}
+  else{sx=W/2+Math.cos(theta)*440;sy=H/2+Math.sin(theta)*520}
+  const exitX=W/2+Math.cos(theta+1.1)*570,exitY=H/2+Math.sin(theta+1.1)*680;
+  const stagger=ease((t-i*.011)/.25)*(1-ease((t-.77-(11-i)*.007)/.22));
+  const mix=settle*stagger;
+  let x=lerp(sx,tx,mix),y=lerp(sy,ty,mix);
+  x=lerp(x,exitX,leave);y=lerp(y,exitY,leave);
+  let rot=lerp(theta*2.5,0,mix)+leave*2*TAU*o.turn;
+  if(t>.38&&t<.7){rot+=Math.sin((t-.38)*TAU*2+i*.6)*.035;}
+  drawShape(x,y,size,rot,p.shapes[i%p.shapes.length],o.shape);
+ }
+ // The entire composition is cyclic: first/last frame are the same empty board.
+ ctx.fillStyle=p.ink;ctx.font='600 21px Georgia,serif';ctx.fillText('Small shapes. Big detours.',52,792);
+ ctx.globalAlpha=.65;ctx.font='14px system-ui,sans-serif';ctx.fillText('ONE THING LED TO ANOTHER.',52,824);ctx.globalAlpha=1;
+ for(let i=0;i<5;i++)rect(52+i*31,879,22,7,3,p.shapes[i]);
+ ctx.textAlign='right';ctx.font='12px system-ui,sans-serif';ctx.fillText(''+String(Math.floor(t*100)).padStart(2,'0')+' / 100',488,888);
+}
+function loop(ms){
+ if(last&&playing&&!recording){time+=(ms-last)/1000;}
+ last=ms;
+ if(!recording)draw(phase(time/Number(el('duration').value)));
+ requestAnimationFrame(loop);
+}
+function setPlaying(v){playing=v;el('toggle').textContent=v?'❚❚ Pause':'▶ Play'}
+el('toggle').addEventListener('click',()=>setPlaying(!playing));
+el('restart').addEventListener('click',()=>{time=0;draw(0)});
+el('duration').addEventListener('input',()=>el('durationOut').textContent=el('duration').value+' seconds');
+function saveBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+el('savePoster').addEventListener('click',()=>{
+ const previous=time;draw(.51);
+ canvas.toBlob(blob=>{if(blob)saveBlob(blob,'derailed-motion-postcard.png');else el('status').textContent='PNG export unavailable.'},'image/png');
+ time=previous;
+});
+function supportedMime(){
+ if(!window.MediaRecorder||!canvas.captureStream)return '';
+ for(const type of ['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']){
+  if(MediaRecorder.isTypeSupported(type))return type;
+ }
+ return '';
+}
+const mime=supportedMime();
+if(!mime){el('record').disabled=true;el('status').textContent='Video recording is not supported by this browser. Try Chrome or Firefox, or use screen recording.';}
+el('record').addEventListener('click',()=>{
+ if(recording||!mime)return;
+ const duration=Number(el('duration').value),btn=el('record'),status=el('status');
+ // Use an independent, fixed-time capture clock while recording.
+ // Real-time canvas capture avoids requiring a headless renderer.
+ recording=true;recordChunks=[];btn.disabled=true;
+ const wasPlaying=playing;setPlaying(false);
+ try{
+  stream=canvas.captureStream(30);
+  recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:6000000});
+  recorder.ondataavailable=e=>{if(e.data&&e.data.size)recordChunks.push(e.data)};
+  recorder.onerror=()=>{status.textContent='Recording failed. Try a screen recorder.'};
+  recorder.onstop=()=>{
+   if(recordChunks.length)saveBlob(new Blob(recordChunks,{type:mime}),'derailed-motion-postcard.webm');
+   else status.textContent='No video frames were captured.';
+   stream?.getTracks().forEach(track=>track.stop());stream=null;
+   recording=false;btn.disabled=false;setPlaying(wasPlaying);last=0;
+   if(recordChunks.length)status.textContent='WebM downloaded. Your motion postcard is ready.';
+  };
+  recorder.start(300);
+  const started=performance.now();
+  function capture(now){
+   if(!recording||!recorder||recorder.state==='inactive')return;
+   const elapsed=(now-started)/1000;
+   // Draw the exact time position in the animation independently of playback speed.
+   draw(phase(Math.min(elapsed,duration)/duration));
+   status.textContent='Recording… '+Math.min(duration,elapsed).toFixed(1)+' / '+duration+' seconds';
+   if(elapsed>=duration){draw(0);recorder.stop();}
+   else requestAnimationFrame(capture);
+  }
+  requestAnimationFrame(capture);
+ }catch(error){
+  stream?.getTracks().forEach(track=>track.stop());stream=null;
+  recording=false;btn.disabled=false;setPlaying(wasPlaying);
+  status.textContent='Recording unavailable: '+error.message;
+ }
+});
+draw(0);requestAnimationFrame(loop);
+})();
+</script></body></html>
