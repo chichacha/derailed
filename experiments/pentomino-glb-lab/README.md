@@ -24,12 +24,29 @@ Clicking a mesh in the 3D viewer, or choosing a shape in the colour key, opens *
 
 Graphics use *equal X and Y scale*, anchored to each piece's bounding-box centre on a fixed six-square canvas. This avoids stretching dots into ovals or changing stripe proportions on long pieces such as I or Y. Only the broad front/back caps receive this graphic UV mapping; the bevels and walls keep their solid material colour. This is a UV fix, not a change to printable geometry.
 
+## True cube mode and future 3D packing
+
+In **01 Shape → Piece geometry**, choose one of two modes:
+
+- **Soft slab (default):** retained design-object mode with variable extrusion depth, rounded contours, bevels, and optional piece gaps.
+- **True cubes (1 × 1 × 1):** the five joined unit squares become five full unit cubes. The piece is extruded to exactly one unit in Z, with zero bevel, zero rounding, and zero internal gap. These constraints override (but do not erase) the slab sliders; the slab controls reappear when switching back.
+
+All twelve pieces therefore contain **60 unit cubes**, making **5 × 6 × 2** and **4 × 5 × 3** valid *target volumes* for future three-dimensional packing. The current Together arrangement is still the original **6 × 10 × 1** tiling, while Exploded is a layered visual display. **No 3D packing solver is implemented yet**, so the controls do not currently arrange the pieces into a 5 × 6 × 2 or 4 × 5 × 3 box.
+
+STL export uses the same exact cube-mode geometry and the configured millimetres-per-cube edge length. Since a tiled board would touch and potentially fuse neighbouring pieces in a slicer, the **full-set cube STL** instead arranges whole, unchanged solids as **12 separate 4 × 3 print islands** with gaps. The layout may exceed a smaller printer bed; export one piece at a time for print tests. The selected-piece STL begins at the origin.
+
+## Original Gomasu character edition
+
+In **02 Colour → Colour collection**, select **Gomasu Originals · 12 characters** for the twelve authentic character colours. They come directly from the included Gomasu source snapshot (`../pentomino-lab/data/gomasu.js`), whose `characters` dataset mirrors [the original Gomasu character data](https://github.com/chichacha/psychic-pento-guacamole/blob/main/data/characters.json).
+
+Each piece receives the exact colour of its character (e.g. X `#F0B6DF`, I `#FDCFAB`). The earlier five-feature/two-neutral DERAILED palettes remain available and unchanged. This special edition is **not constrained to five colours**. The finish selector still controls matte, satin, etc. Per-piece colour editing switches between seven standard tokens and twelve Gomasu characters based on the selected collection; corresponding overrides are kept separate in design JSON.
+
 ## Play
 
 - **Together:** valid 6 × 10 pentomino tiling with independently adjustable spacing.
 - **Exploded:** every shape's geometric centre aligns to x = 0, y = 0; their z positions form an adjustable vertical stack.
 - **Shape:** depth and rounded corners with a gently bevelled 3D edge.
-- **Colour:** the original DERAILED 5-feature + 2-neutral palette presets.
+- **Colour:** the original DERAILED 5-feature + 2-neutral palette presets, plus twelve original Gomasu character colours.
 - **Finishes:** matte + subtle satin pairs (default), matte + gloss, all matte, ceramic, or satin metal.
 - **Graphics:** optional continuous stripes, dots, grids, arcs, splits, blocks, and four *original-lab-inspired* motif families. These are new procedural graphics inspired by the lab, **not** exact reproductions of Gomasu's posture-aware Character DNA.
 - **Editor:** click a shape in the viewport, choose a letter, or click the material key to assign that piece a different palette token, finish, or motif. Use Restore curated pairings to reset individual overrides.
