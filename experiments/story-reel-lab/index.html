@@ -148,12 +148,12 @@ function paintBase(t){
  }
  const grad=ctx.createLinearGradient(0,350,0,1280);grad.addColorStop(0,'#112f2400');grad.addColorStop(.55,'#112f24a8');grad.addColorStop(1,'#112f24f9');rect(0,0,WIDTH,HEIGHT,grad);
 }
-function scene1(t){ctx.save();ctx.globalAlpha=opacity(t,0,3.2);paintBase(t);corner();
+function scene1(t){ctx.save();ctx.globalAlpha=opacity(t,-.45,3.2);paintBase(t);corner();
  const p=ease((t-.22)/.8);ctx.save();ctx.translate(0,(1-p)*55);
  text('ONE VERY LARGE',48,860,{size:25,weight:900,color:C.gold,tracking:3,alpha:p});
  lines(['NEIGHBOUR.','ONE VERY','QUIET NAP.'],47,958,92,{size:77,color:C.cream,alpha:p});
  ctx.restore();footer('VANCOUVER ISLAND · A TRUE ENCOUNTER');ctx.restore()}
-function scene2(t){ctx.save();ctx.globalAlpha=opacity(t,3.2,6.2);rect(0,0,WIDTH,HEIGHT,C.paper);
+function scene2(t){ctx.save();ctx.globalAlpha=opacity(t,2.75,6.2);rect(0,0,WIDTH,HEIGHT,C.paper);
  circle(625,260,330,'#e9d4b7');circle(53,1030,340,'#dfb998');
  text('THEN THE QUESTION:',50,170,{size:24,weight:900,color:C.rust,tracking:3});
  const p=ease((t-3.45)/.75);ctx.save();ctx.translate(0,(1-p)*100);
@@ -162,7 +162,7 @@ function scene2(t){ctx.save();ctx.globalAlpha=opacity(t,3.2,6.2);rect(0,0,WIDTH,
  rect(50,1045,620,3,C.ink);serif('Same family. Different names.',50,1113,{size:40,color:C.ink});
  text('THE GREAT IDENTITY CRISIS',50,1200,{size:20,color:C.rust,weight:900,tracking:2});
  ctx.restore()}
-function scene3(t){ctx.save();ctx.globalAlpha=opacity(t,6.2,9.4);rect(0,0,WIDTH,HEIGHT,C.green);
+function scene3(t){ctx.save();ctx.globalAlpha=opacity(t,5.75,9.4);rect(0,0,WIDTH,HEIGHT,C.green);
  corner();text('THE ATLANTIC MAKES IT WEIRD',48,210,{size:26,color:C.gold,weight:900,tracking:2});
  const rows=[['🇨🇦','ELK','wapiti'],['🇬🇧','WAPITI','“elk” can mean moose'],['🇯🇵','ワピチ','the same animal']];
  rows.forEach((r,i)=>{const p=ease((t-6.4-i*.4)/.5);const y=320+i*244;ctx.save();ctx.globalAlpha=p;ctx.translate((1-p)*55,0);
@@ -171,7 +171,7 @@ function scene3(t){ctx.save();ctx.globalAlpha=opacity(t,6.2,9.4);rect(0,0,WIDTH,
  serif(r[1],171,y+92,{size:r[1].length>6?65:84,color:C.ink});
  text(r[2],173,y+147,{size:25,color:'#4e6758',weight:600});ctx.restore()});
  footer('THE ANIMAL NEVER CHANGED');ctx.restore()}
-function scene4(t){ctx.save();ctx.globalAlpha=opacity(t,9.4,12.2);rect(0,0,WIDTH,HEIGHT,C.gold);
+function scene4(t){ctx.save();ctx.globalAlpha=opacity(t,8.95,12.2);rect(0,0,WIDTH,HEIGHT,C.gold);
  // Decorative rump-shaped illustration is intentionally abstract: don't depict a moose.
  circle(360,610,294,'#926b4c');ctx.save();ctx.translate(360,610);ctx.scale(1,1.12);
  circle(0,38,mix(30,175,ease((t-9.95)/.7)),C.cream);
@@ -180,7 +180,7 @@ function scene4(t){ctx.save();ctx.globalAlpha=opacity(t,9.4,12.2);rect(0,0,WIDTH
  const p=ease((t-9.65)/.65);ctx.save();ctx.translate(0,(1-p)*70);
  lines(['WHITE', 'BUM?!'],50,910,150,{size:142,color:C.ink,alpha:p});
  ctx.restore();
- text('THE SHA WNEE NAME REFERS TO THE PALE RUMP'.replace('SHA WNEE','SHAWNEE'),52,1165,{size:18,color:C.ink,weight:850,tracking:1});
+ text('SHAWNEE: A NAME FOR THE PALE RUMP',52,1165,{size:18,color:C.ink,weight:850,tracking:1});
  ctx.restore()}
 function scene5(t){ctx.save();ctx.globalAlpha=smooth((t-12.2)/.48);rect(0,0,WIDTH,HEIGHT,C.paper);
  circle(615,70,285,'#d6c5a6');circle(-70,1150,300,'#c6d3b7');
