@@ -20,6 +20,12 @@ h2{font-size:12px;letter-spacing:.14em;margin:0;color:#f49cbb;text-transform:upp
 select,button,input[type=range]{width:100%}select,button{border:1px solid #ffffff28;border-radius:8px;background:#323640;color:#f7f1ea;padding:11px 12px;font:inherit;font-size:13px}
 button{cursor:pointer;font-weight:700}button:hover{background:#474c5a}button.primary{background:#f49cbb;color:#261c2c;border-color:#f49cbb}button.primary:hover{background:#ffd0e0}
 input{accent-color:#f49cbb}.swatches{display:flex;gap:5px}.swatches span{height:25px;flex:1;border-radius:5px;border:1px solid #ffffff20}
+.material-key{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.material-item{display:flex;align-items:center;gap:6px;min-width:0;padding:7px 6px;background:#ffffff09;border:1px solid #ffffff18;border-radius:8px}
+.material-dot{width:14px;height:14px;flex:none;border-radius:4px;border:1px solid #ffffff65}
+.material-meta{display:flex;flex-direction:column;min-width:0}
+.material-meta strong{font-size:12px;line-height:1.2}
+.material-meta small{font-size:10px;color:#aab2bf;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .btnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .note{font-size:12px;line-height:1.65;color:#abb0ba;margin:0}
 .status{min-height:2em;font-size:12px;color:#cbeef3}
@@ -34,7 +40,7 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 <header><a class="brand" href="../index.html">← DERAILED. / EXPERIMENTS</a><span class="tag">PENTOMINO LAB / 3D DETOUR</span></header>
 <main><p class="tag">12 SHAPES · 60 SQUARES · ONE MORE DIMENSION</p>
 <h1>From flat to <em>form.</em></h1>
-<p class="intro">The same twelve pentominoes, now with rounded corners, soft bevels and material. Explore a gently spaced tiling or a twelve-layer Z-axis stack, then export a real binary GLB model.</p>
+<p class="intro">Twelve pentominoes. Seven palette colours. Twelve material identities. Explore softly bevelled shapes in a spaced tiling or a Z-axis stack, then export a real GLB model.</p>
 <div class="layout"><section class="viewer" aria-label="Interactive Three.js 3D pentomino viewer">
 <div id="canvas"></div><div class="viewer-label">PENTOMINO OBJECT STUDY / THREE.JS</div>
 <div class="viewer-help"><span>DRAG · ORBIT &nbsp; / &nbsp; SCROLL · ZOOM</span><span>12 MESHES / PBR MATERIALS</span></div></section>
@@ -46,10 +52,11 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 <div class="group" id="togetherSpacing"><label for="gap">Piece gap <output id="gapLabel">0.18</output></label><input id="gap" type="range" min=".12" max=".35" step=".01" value=".18"></div>
 <div class="group" id="layerSpacing" hidden><label for="layerPitch">Z-axis layer spacing <output id="layerPitchLabel">1.25</output></label><input id="layerPitch" type="range" min=".9" max="2.4" step=".05" value="1.25"></div>
 <h2>02 / Material</h2><div class="group"><label for="palette">Original lab palette</label><select id="palette"></select><div class="swatches" id="swatches"></div></div>
-<div class="group"><label for="finish">Surface finish</label><select id="finish"><option value="matte" selected>Matte · velvety</option><option value="ceramic">Glazed ceramic</option><option value="metal">Satin metal</option></select></div>
+<div class="group"><label for="finish">Surface finishes</label><select id="finish"><option value="paired" selected>Matte + glossy pairs</option><option value="paired-metal">Matte + satin pairs</option><option value="matte">All matte</option><option value="ceramic">All glazed ceramic</option><option value="metal">All satin metal</option></select></div>
+<div class="group"><label>12 piece identities <span>5 colour pairs + 2 neutrals</span></label><div id="materialKey" class="material-key" aria-label="Colour and finish assigned to each pentomino"></div></div>
 <div class="btnrow"><button id="turntable">Pause rotation</button><button id="reset">Reset camera</button></div>
 <h2>03 / Take it with you</h2><button class="primary" id="export">↓ Export coloured .GLB</button>
-<p class="note">The GLB contains twelve real, separate extruded meshes and their colour/material properties. Open it in Blender or a glTF viewer. It is not an STL and not a screenshot.</p>
+<p class="note">I uses the dark foreground neutral; X uses the light background neutral. Each feature colour appears twice: one matte and one glossy (or satin). The GLB retains all twelve separate meshes and their materials.</p>
 <div class="status" id="status" role="status" aria-live="polite">Loading 3D engine…</div>
 <p class="note"><a href="../pentomino-lab/index.html">Back to the original 2D Pentomino Lab ↗</a></p>
 </aside></div>
@@ -61,6 +68,35 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 const T=window.PentominoTilings,C=window.DERAILEDColour;
 const $=id=>document.getElementById(id), letters=[...T.letters];
+const featureLetters=letters.filter(name=>name!=='I'&&name!=='X');
+// Exactly 12 identities: 2 neutral pieces + five feature colours used twice each.
+function materialIdentity(letter,palette,mode){
+ const isNeutral=letter==='I'||letter==='X';
+ const rank=featureLetters.indexOf(letter),featureIndex=Math.floor(rank/2),second=rank%2===1;
+ const color=isNeutral?(letter==='I'?palette.dark:palette.light):palette.features[featureIndex];
+ const token=isNeutral?(letter==='I'?'Foreground':'Background'):'Feature '+(featureIndex+1);
+ const finish=mode==='paired'?(isNeutral||!second?'matte':'glossy'):
+  mode==='paired-metal'?(isNeutral||!second?'matte':'satin'):mode;
+ return {color,token,finish};
+}
+function finishSettings(finish){
+ return finish==='glossy'?{roughness:.14,metalness:0}:
+  finish==='ceramic'?{roughness:.22,metalness:0}:
+  finish==='satin'||finish==='metal'?{roughness:.31,metalness:.65}:
+  {roughness:1,metalness:0};
+}
+function renderMaterialKey(palette,mode){
+ const key=$('materialKey');key.replaceChildren();
+ for(const name of letters){
+  const identity=materialIdentity(name,palette,mode),item=document.createElement('div');
+  item.className='material-item';item.title=name+' · '+identity.token+' · '+identity.finish;
+  const dot=document.createElement('span');dot.className='material-dot';dot.style.background=identity.color;
+  const info=document.createElement('div');info.className='material-meta';
+  const strong=document.createElement('strong');strong.textContent=name;
+  const small=document.createElement('small');small.textContent=identity.finish;
+  info.append(strong,small);item.append(dot,info);key.append(item);
+ }
+}
 const host=$('canvas'),scene=new THREE.Scene(),group=new THREE.Group();scene.add(group);
 const camera=new THREE.PerspectiveCamera(39,1,.05,150);camera.position.set(10,-12,15);
 const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:false});
@@ -138,17 +174,18 @@ function fitCamera(){
 }
 function renderPieces(){
  for(const m of meshes){group.remove(m);m.geometry.dispose();m.material.dispose()}meshes=[];
- const palette=C.load($('palette').value),colors=palette.features,depth=Number($('depth').value),finish=$('finish').value;
- const settings=finish==='ceramic'?{roughness:.22,metalness:0}:finish==='metal'?{roughness:.31,metalness:.65}:{roughness:1,metalness:0};
+ const palette=C.load($('palette').value),depth=Number($('depth').value),mode=$('finish').value;
  const exploded=$('arrangement').value==='exploded';
  for(const [i,tile] of T.solutions[Number($('solution').value)].entries()){
   const shape=shapeFor(tile.cells,exploded?0:Number($('gap').value),Number($('corner').value));
   const bevelThickness=Math.min(.055,depth*.27);
   const geom=new THREE.ExtrudeGeometry(shape,{depth,steps:1,bevelEnabled:true,bevelThickness,bevelSize:.048,bevelSegments:5,curveSegments:6});
   geom.computeVertexNormals();
-  const material=new THREE.MeshStandardMaterial({color:colors[(i*7+Math.floor(i/5))%5],...settings});
+  const identity=materialIdentity(tile.name,palette,mode);
+  const material=new THREE.MeshStandardMaterial({color:identity.color,...finishSettings(identity.finish)});
+  material.name=tile.name+' · '+identity.token+' · '+identity.finish;
   const mesh=new THREE.Mesh(geom,material);mesh.name='Pentomino '+tile.name;
-  mesh.userData={letter:tile.name,palette:palette.name};
+  mesh.userData={letter:tile.name,palette:palette.name,paletteToken:identity.token,surfaceFinish:identity.finish};
   if(exploded){
    // Centre each mesh's local geometry: every pivot is EXACTLY x=0, y=0.
    // Only Z differs; no offsets or X/Y tilts that could conjoin layers.
@@ -168,8 +205,9 @@ function renderPieces(){
  for(const id of ['corner','gap','layerPitch'])$(id+'Label').textContent=Number($(id).value).toFixed(2);
  $('togetherSpacing').hidden=exploded;
  $('layerSpacing').hidden=!exploded;
- $('swatches').replaceChildren(...C.colours(palette).map(hex=>{const el=document.createElement('span');el.style.background=hex;el.title=hex;return el}));
- $('status').textContent='Ready · '+meshes.length+' separate material-bearing meshes';
+ $('swatches').replaceChildren(...C.colours(palette).map((hex,i)=>{const el=document.createElement('span');el.style.background=hex;el.title=(i<5?'Feature '+(i+1):i===5?'Background · X':'Foreground · I')+' · '+hex;return el}));
+ renderMaterialKey(palette,mode);
+ $('status').textContent='Ready · '+meshes.length+' unique piece identities · '+(mode==='paired'?'matte + glossy':mode==='paired-metal'?'matte + satin':mode);
 }
 for(const [id,p] of Object.entries(C.presets)){const option=document.createElement('option');option.value=id;option.textContent=p.name;$('palette').append(option)}
 $('palette').value='berry';
