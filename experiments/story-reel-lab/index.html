@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elk Identity Crisis — Story Reel Lab / DERAILED.</title>
+<meta name="theme-color" content="#ede7db">
+<style>
+:root{--paper:#ede7db;--ink:#21382f;--muted:#66716b;--rust:#b75c41;--line:#c7c9bd;--deep:#15392f;--gold:#e4bd73}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.6 system-ui,-apple-system,sans-serif}
+a{color:inherit;text-underline-offset:4px}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--rust);outline-offset:3px}
+header{padding:22px clamp(20px,5vw,75px);display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line)}
+.brand{font-weight:900;text-decoration:none;letter-spacing:.13em;font-size:13px}
+.serial{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700}
+main{max-width:1390px;margin:auto;padding:clamp(24px,5vw,68px)}
+.layout{display:grid;grid-template-columns:minmax(320px,.92fr) minmax(340px,1.08fr);gap:clamp(30px,5vw,86px);align-items:start}
+.eyebrow{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.19em;color:var(--rust);margin:0 0 10px}
+h1,h2{font-family:Georgia,"Times New Roman",serif;letter-spacing:-.06em;line-height:1.04}
+h1{font-size:clamp(48px,6.2vw,88px);margin:0 0 20px}
+h1 em{color:var(--rust);font-weight:400}
+.lead{font-size:18px;max-width:580px;line-height:1.7;color:#455950}
+.player{margin-top:28px;border:1px solid var(--line);background:#f8f5ed;border-radius:20px;padding:22px}
+.player h2{font-size:25px;margin:0 0 14px}
+.controls{display:flex;gap:9px;flex-wrap:wrap}
+.btn{border:1px solid #b6bfb3;background:white;color:var(--ink);border-radius:100px;padding:10px 18px;font-weight:750}
+.btn.primary{background:var(--deep);color:white;border-color:var(--deep)}
+.btn:hover:not(:disabled){border-color:var(--rust)}
+.scrub{width:100%;accent-color:var(--rust);margin:19px 0 2px;cursor:pointer}
+.time{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+.timeline-labels{display:flex;justify-content:space-between;gap:6px;margin-top:20px;font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--muted)}
+.timeline-labels span{min-width:0}
+.status{min-height:24px;font-size:13px;margin:12px 0 0;color:#486151}
+.lesson{border-top:1px solid var(--line);margin-top:28px;padding-top:22px}
+.lesson h2{font-size:26px;margin:0 0 14px}
+.lesson p{font-size:14px;color:#5d6b62;max-width:550px}
+.lesson code{padding:2px 5px;background:#fffaf3;border-radius:4px;font-size:.9em}
+.lesson ul{padding-left:20px;font-size:14px;line-height:1.9}
+.reel-column{display:flex;justify-content:center;align-items:flex-start}
+.reel-shell{width:min(100%,430px);position:sticky;top:18px}
+.reel-frame{border:10px solid #f8f5ed;background:#173a31;box-shadow:0 25px 85px #19292036;border-radius:24px;overflow:hidden;aspect-ratio:9/16}
+canvas{display:block;width:100%;height:100%;background:#15392f}
+.reel-footer{display:flex;justify-content:space-between;margin-top:11px;font-size:11px;letter-spacing:.13em;color:var(--muted);font-weight:850}
+small{color:var(--muted)}
+details{border-top:1px solid var(--line);padding-top:18px;margin-top:20px;font-size:13px;color:#52625a}
+details summary{cursor:pointer;font-weight:800;color:var(--ink)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.reel-column{grid-row:1}.reel-shell{width:min(100%,325px);position:static}.reel-frame{border-width:7px}.player{margin-top:22px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header><a class="brand" href="../../index.html">DERAILED.</a><span class="serial">EXPERIMENT / STORY REEL LAB 001</span></header>
+<main class="layout">
+ <div>
+  <p class="eyebrow">Motion experiment · 9:16 · 15 seconds</p>
+  <h1>A giant elk.<br><em>A small identity crisis.</em></h1>
+  <p class="lead">A miniature trailer for <a href="../../stories/elk-identity-crisis/index.html">The Great Elk Identity Crisis</a>. One resting Roosevelt elk, a geographical naming disaster, and a very important white bum.</p>
+  <div class="player" aria-label="Animation controls">
+   <h2>Motion workbench</h2>
+   <div class="controls">
+    <button class="btn primary" id="play" type="button">▶ Play</button>
+    <button class="btn" id="restart" type="button">↺ Restart</button>
+    <button class="btn" id="loop" type="button" aria-pressed="false">Loop: off</button>
+    <button class="btn" id="export" type="button">↓ Export WebM</button>
+   </div>
+   <label for="scrub" class="serial" style="display:block;margin-top:20px">Timeline scrubber</label>
+   <input class="scrub" id="scrub" type="range" min="0" max="15" step=".01" value="0" aria-label="Scrub animation timeline">
+   <div class="time"><output id="time" for="scrub">00:00.0</output><span>00:15.0 · SILENT VIDEO</span></div>
+   <div class="timeline-labels"><span>01 ENCOUNTER</span><span>02 NAMES</span><span>03 PLACES</span><span>04 WHITE BUM</span><span>05 TITLE</span></div>
+   <p id="status" class="status" role="status" aria-live="polite">Press Play, or drag the timeline to inspect individual frames.</p>
+  </div>
+  <div class="lesson">
+   <p class="eyebrow">Learn by changing things</p>
+   <h2>Five techniques in one tiny reel</h2>
+   <ul>
+    <li><strong>Canvas 2D:</strong> draw a whole scene using JavaScript, not DOM screenshots.</li>
+    <li><strong>Easing functions:</strong> make the text enter with intention.</li>
+    <li><strong>Deterministic timeline:</strong> `render(t)` draws any frame at any timestamp.</li>
+    <li><strong>Image cropping:</strong> reuse the original painting with `drawImage()` and a Ken Burns zoom.</li>
+    <li><strong>MediaRecorder:</strong> capture the canvas into a downloadable, silent WebM file.</li>
+   </ul>
+   <p>The painting is loaded from <code>../../stories/elk-identity-crisis/elk-painting.png</code>. No build tools, frameworks, or paid libraries required. All typography is drawn directly on the canvas.</p>
+  </div>
+  <details><summary>Export notes and limits</summary><p>The WebM export records in real time, without sound. Browser support varies; Chrome or Firefox generally works best. MP4 export and music are intentionally out of scope for this first experiment. Export uses the frame size defined by the canvas (720 × 1280). For best results, serve the page using Quarto preview or a local HTTP server.</p></details>
+ </div>
+ <div class="reel-column">
+  <div class="reel-shell"><div class="reel-frame"><canvas id="reel" width="720" height="1280" role="img" aria-label="Vertical animated elk story trailer, with a painting, typography, and a comedic white rump reveal"></canvas></div><div class="reel-footer"><span>DERAILED. / MOVING FIELD NOTE</span><span>720 × 1280</span></div></div>
+ </div>
+</main>
+<script>
+'use strict';
+/*
+ STORY REEL LAB — EDITOR'S MAP
+  0.0–3.2  Encounter / painted elk
+  3.2–6.2  Translation trouble
+  6.2–9.4  Canada vs Britain vs Japan
+  9.4–12.2 White rump
+ 12.2–15.0 Title card
+ Everything is drawn by render(t), where t is seconds. That makes scrubbing
+ and video export share exactly the same rendering path.
+*/
+const WIDTH=720, HEIGHT=1280, DURATION=15;
+const canvas=document.querySelector('#reel'),ctx=canvas.getContext('2d',{alpha:false});
+const playButton=document.querySelector('#play'),scrub=document.querySelector('#scrub');
+const loopButton=document.querySelector('#loop'),exportButton=document.querySelector('#export');
+const status=document.querySelector('#status'),timeLabel=document.querySelector('#time');
+const C={paper:'#f2e8d7',ink:'#17382f',green:'#1c4639',green2:'#355f4b',rust:'#d47a56',gold:'#e8c378',cream:'#fff8eb'};
+const painting=new Image();
+painting.src='../../stories/elk-identity-crisis/elk-painting.png';
+painting.onload=()=>render(currentTime);
+painting.onerror=()=>{status.textContent='Painting not found yet. Commit elk-painting.png under stories/elk-identity-crisis/.';render(currentTime)};
+let currentTime=0,playing=false,looping=false,anchor=0,raf=0,recorder=null,recording=false;
+const clamp=(n,a=0,b=1)=>Math.max(a,Math.min(b,n));
+const mix=(a,b,t)=>a+(b-a)*t;
+const ease=x=>{x=clamp(x);return 1-Math.pow(1-x,3)};
+const smooth=x=>{x=clamp(x);return x*x*(3-2*x)};
+const opacity=(t,start,end)=>smooth((t-start)/.45)*(1-smooth((t-(end-.45))/.45));
+function rect(x,y,w,h,fill){ctx.fillStyle=fill;ctx.fillRect(x,y,w,h)}
+function circle(x,y,r,fill){ctx.fillStyle=fill;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+function text(s,x,y,{size=44,color=C.cream,weight=700,font='system-ui',align='left',alpha=1,tracking=0}={}){
+ ctx.save();ctx.globalAlpha=alpha;ctx.fillStyle=color;ctx.textAlign=align;ctx.textBaseline='alphabetic';
+ ctx.font=weight+' '+size+'px '+font;
+ if(tracking&&'letterSpacing' in ctx)ctx.letterSpacing=tracking+'px';
+ ctx.fillText(s,x,y);ctx.restore();
+}
+function serif(s,x,y,opts={}){text(s,x,y,{font:'Georgia, serif',weight:700,...opts})}
+function lines(items,x,y,leading,opts={}){items.forEach((s,i)=>serif(s,x,y+i*leading,opts))}
+function imageCover(img,x,y,w,h,scale=1,shiftX=0,shiftY=0){
+ if(!img.complete||!img.naturalWidth)return false;
+ const iw=img.naturalWidth,ih=img.naturalHeight;
+ const cropW=Math.min(iw,iw/scale),cropH=Math.min(ih,ih/scale);
+ const viewRatio=w/h,sourceRatio=cropW/cropH;
+ let sw=cropW,sh=cropH;
+ if(sourceRatio>viewRatio)sw=sh*viewRatio;else sh=sw/viewRatio;
+ const sx=clamp((iw-sw)/2+shiftX,0,iw-sw),sy=clamp((ih-sh)/2+shiftY,0,ih-sh);
+ ctx.drawImage(img,sx,sy,sw,sh,x,y,w,h);return true;
+}
+function corner(){rect(46,52,92,5,C.gold);text('DERAILED.',46,97,{size:25,weight:900,color:C.cream,tracking:2});text('FIELD NOTE / 001',674,94,{size:16,color:C.cream,weight:700,align:'right',tracking:1})}
+function footer(label){rect(46,1199,628,2,'#d3dcc350');text(label,46,1240,{size:20,color:'#e0dfc9',weight:700,tracking:2});text('01 / 05',675,1240,{size:20,color:C.gold,align:'right'})}
+function paintBase(t){
+ rect(0,0,WIDTH,HEIGHT,C.green);
+ if(!imageCover(painting,0,0,WIDTH,HEIGHT,1+clamp(t/3.2)*.11)){
+   ctx.save();circle(360,460,310,'#5c856c');circle(290,510,125,C.rust);circle(420,480,115,C.rust);ctx.restore();
+ }
+ const grad=ctx.createLinearGradient(0,350,0,1280);grad.addColorStop(0,'#112f2400');grad.addColorStop(.55,'#112f24a8');grad.addColorStop(1,'#112f24f9');rect(0,0,WIDTH,HEIGHT,grad);
+}
+function scene1(t){ctx.save();ctx.globalAlpha=opacity(t,0,3.2);paintBase(t);corner();
+ const p=ease((t-.22)/.8);ctx.save();ctx.translate(0,(1-p)*55);
+ text('ONE VERY LARGE',48,860,{size:25,weight:900,color:C.gold,tracking:3,alpha:p});
+ lines(['NEIGHBOUR.','ONE VERY','QUIET NAP.'],47,958,92,{size:77,color:C.cream,alpha:p});
+ ctx.restore();footer('VANCOUVER ISLAND · A TRUE ENCOUNTER');ctx.restore()}
+function scene2(t){ctx.save();ctx.globalAlpha=opacity(t,3.2,6.2);rect(0,0,WIDTH,HEIGHT,C.paper);
+ circle(625,260,330,'#e9d4b7');circle(53,1030,340,'#dfb998');
+ text('THEN THE QUESTION:',50,170,{size:24,weight:900,color:C.rust,tracking:3});
+ const p=ease((t-3.45)/.75);ctx.save();ctx.translate(0,(1-p)*100);
+ lines(['ELK?', 'MOOSE?', 'WAPITI?'],46,375,180,{size:132,color:C.ink,alpha:p});
+ ctx.restore();
+ rect(50,1045,620,3,C.ink);serif('Same family. Different names.',50,1113,{size:40,color:C.ink});
+ text('THE GREAT IDENTITY CRISIS',50,1200,{size:20,color:C.rust,weight:900,tracking:2});
+ ctx.restore()}
+function scene3(t){ctx.save();ctx.globalAlpha=opacity(t,6.2,9.4);rect(0,0,WIDTH,HEIGHT,C.green);
+ corner();text('THE ATLANTIC MAKES IT WEIRD',48,210,{size:26,color:C.gold,weight:900,tracking:2});
+ const rows=[['🇨🇦','ELK','wapiti'],['🇬🇧','WAPITI','“elk” can mean moose'],['🇯🇵','ワピチ','the same animal']];
+ rows.forEach((r,i)=>{const p=ease((t-6.4-i*.4)/.5);const y=320+i*244;ctx.save();ctx.globalAlpha=p;ctx.translate((1-p)*55,0);
+ rect(47,y,625,205,i%2===0?'#f5eddb':'#d8e0cc');
+ text(r[0],72,y+90,{size:58,color:C.ink});
+ serif(r[1],171,y+92,{size:r[1].length>6?65:84,color:C.ink});
+ text(r[2],173,y+147,{size:25,color:'#4e6758',weight:600});ctx.restore()});
+ footer('THE ANIMAL NEVER CHANGED');ctx.restore()}
+function scene4(t){ctx.save();ctx.globalAlpha=opacity(t,9.4,12.2);rect(0,0,WIDTH,HEIGHT,C.gold);
+ // Decorative rump-shaped illustration is intentionally abstract: don't depict a moose.
+ circle(360,610,294,'#926b4c');ctx.save();ctx.translate(360,610);ctx.scale(1,1.12);
+ circle(0,38,mix(30,175,ease((t-9.95)/.7)),C.cream);
+ ctx.restore();
+ text('WAPITI =',54,180,{size:37,color:C.ink,weight:900,tracking:4});
+ const p=ease((t-9.65)/.65);ctx.save();ctx.translate(0,(1-p)*70);
+ lines(['WHITE', 'BUM?!'],50,910,150,{size:142,color:C.ink,alpha:p});
+ ctx.restore();
+ text('THE SHA WNEE NAME REFERS TO THE PALE RUMP'.replace('SHA WNEE','SHAWNEE'),52,1165,{size:18,color:C.ink,weight:850,tracking:1});
+ ctx.restore()}
+function scene5(t){ctx.save();ctx.globalAlpha=smooth((t-12.2)/.48);rect(0,0,WIDTH,HEIGHT,C.paper);
+ circle(615,70,285,'#d6c5a6');circle(-70,1150,300,'#c6d3b7');
+ text('DERAILED. PRESENTS',48,220,{size:27,color:C.rust,weight:900,tracking:3});
+ const p=ease((t-12.35)/.85);ctx.save();ctx.translate(0,(1-p)*70);
+ lines(['THE GREAT','ELK','IDENTITY','CRISIS.'],48,387,154,{size:102,color:C.ink,alpha:p});
+ ctx.restore();rect(48,1004,624,3,C.ink);
+ serif('One thing led to another.',48,1080,{size:36,color:C.rust});
+ text('READ THE FULL INTERACTIVE STORY',48,1185,{size:23,color:C.ink,weight:850,tracking:1});
+ ctx.restore()}
+function render(t){
+ t=clamp(t,0,DURATION);currentTime=t;
+ rect(0,0,WIDTH,HEIGHT,C.green);
+ if(t<3.2)scene1(t);
+ if(t>=2.75&&t<6.2)scene2(t);
+ if(t>=5.75&&t<9.4)scene3(t);
+ if(t>=8.95&&t<12.2)scene4(t);
+ if(t>=11.9)scene5(t);
+ scrub.value=t;timeLabel.textContent='00:'+String(Math.floor(t)).padStart(2,'0')+'.'+Math.floor((t%1)*10);
+}
+function setPlaying(v){playing=v;playButton.textContent=v?'Ⅱ Pause':'▶ Play';if(!v)cancelAnimationFrame(raf)}
+function tick(now){
+ if(!playing)return;
+ const elapsed=(now-anchor)/1000;
+ if(elapsed>=DURATION){
+  render(DURATION);
+  if(recording){endExport();return}
+  if(looping){anchor=now;render(0)}else{setPlaying(false);return}
+ }else render(elapsed);
+ raf=requestAnimationFrame(tick);
+}
+function play(){
+ if(playing){if(!recording)setPlaying(false);return}
+ if(currentTime>=DURATION)render(0);
+ anchor=performance.now()-currentTime*1000;
+ setPlaying(true);raf=requestAnimationFrame(tick);
+}
+playButton.addEventListener('click',play);
+document.querySelector('#restart').addEventListener('click',()=>{if(recording)return;setPlaying(false);render(0);play()});
+scrub.addEventListener('input',e=>{if(recording)return;setPlaying(false);render(+e.target.value)});
+loopButton.addEventListener('click',()=>{looping=!looping;loopButton.setAttribute('aria-pressed',String(looping));loopButton.textContent='Loop: '+(looping?'on':'off')});
+const supportsExport=!!(window.MediaRecorder&&canvas.captureStream);
+if(!supportsExport){exportButton.disabled=true;exportButton.title='Canvas capture is unsupported in this browser'}
+function endExport(){setPlaying(false);recording=false;if(recorder&&recorder.state!=='inactive')recorder.stop();playButton.disabled=false;exportButton.disabled=false;document.querySelector('#restart').disabled=false;status.textContent='Encoding your 15-second WebM…'}
+exportButton.addEventListener('click',()=>{
+ if(recording||!supportsExport)return;
+ const mime=['video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm'].find(s=>MediaRecorder.isTypeSupported(s));
+ if(!mime){status.textContent='WebM export is not supported by this browser. Use screen capture instead.';return}
+ setPlaying(false);render(0);
+ const stream=canvas.captureStream(30),chunks=[];
+ try{recorder=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:4500000})}
+ catch(error){status.textContent='Could not start video export: '+error.message;return}
+ recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data)};
+ recorder.onerror=()=>{status.textContent='Recording failed. Try Chrome or Firefox.';recording=false;setPlaying(false)};
+ recorder.onstop=()=>{
+  stream.getTracks().forEach(track=>track.stop());
+  if(!chunks.length){status.textContent='No frames captured; try a different browser.';return}
+  const blob=new Blob(chunks,{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download='derailed-elk-identity-crisis-reel.webm';a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);status.textContent='WebM downloaded. Ready for your next creative detour.';
+ };
+ recording=true;playButton.disabled=true;document.querySelector('#restart').disabled=true;exportButton.disabled=true;
+ status.textContent='Recording silently at 9:16. Keep this tab visible until it finishes.';
+ anchor=performance.now();recorder.start(500);setPlaying(true);raf=requestAnimationFrame(tick);
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing&&!recording){setPlaying(false);status.textContent='Paused because the tab was hidden.'}});
+render(0);
+</script>
+</body></html>
