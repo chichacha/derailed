@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="An interactive typography playground for learning hierarchy, spacing, rhythm, scale and motion by playing.">
+<title>Typography Lab — DERAILED.</title>
+<style>
+:root{color-scheme:light;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f5f2ec;color:#28252c;--ink:#28252c;--muted:#746d75;--pink:#b34f78;--paper:#fffdf8}
+*{box-sizing:border-box}body{margin:0}button,input,textarea,select{font:inherit}button{cursor:pointer}a{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #dd779f;outline-offset:3px}
+header{background:#29232c;color:#fef8ee;padding:25px clamp(20px,5vw,80px) 48px}.back{font-size:12px;font-weight:800;color:#f0acc8;text-decoration:none}
+.head{max-width:1450px;margin:45px auto 0;display:flex;align-items:flex-end;justify-content:space-between;gap:25px}.eyebrow{color:#b15479;letter-spacing:.19em;font-weight:900;font-size:10px;text-transform:uppercase}header .eyebrow{color:#f4a7c6}
+h1{font-size:clamp(60px,9vw,128px);letter-spacing:-.09em;line-height:.88;margin:13px 0 20px;font-weight:850}h1 em{font-style:normal;color:#eaa1c0}header p{max-width:610px;color:#d5cbd2;line-height:1.6}
+.head-mark{font-family:Georgia,serif;font-size:clamp(100px,15vw,230px);font-style:italic;line-height:.75;color:#e4be71;transform:rotate(-12deg);user-select:none}
+main{max-width:1590px;margin:auto;padding:35px clamp(18px,4vw,65px) 80px}
+.intro{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:25px}.intro p{color:var(--muted);max-width:650px;font-size:13px;line-height:1.6}.intro h2{font-size:28px;letter-spacing:-.05em;margin:7px 0}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 335px;gap:24px;align-items:start}.canvas-wrap{min-width:0}
+.toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+button{border:1px solid #ddd4d2;border-radius:7px;background:white;color:#403942;padding:10px 12px;font-size:12px;font-weight:750}button:hover{border-color:#b7718b}button.active,button[aria-pressed=true]{background:#29232c;color:#fff;border-color:#29232c}
+button.primary{background:#a54c72;color:#fff;border-color:#a54c72}.status{font-size:11px;color:#766e77;margin-left:auto}
+.canvas{--font:Georgia,serif;--size:88px;--weight:600;--tracking:-.06em;--leading:1.04;--align:left;--fg:#28252c;--bg:#fffdf8;--accent:#bd6483;--max:720px;min-height:440px;background:var(--bg);color:var(--fg);border:1px solid #e3dbd6;border-radius:14px;overflow:hidden;padding:clamp(22px,6vw,74px);position:relative;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s}
+.canvas[data-composition=poster]{align-items:flex-end;justify-content:flex-start}
+.canvas[data-composition=editorial]{align-items:center;justify-content:flex-start}
+.canvas[data-composition=stack]{align-items:center;justify-content:center}
+.canvas-content{width:100%;max-width:var(--max);text-align:var(--align);position:relative;z-index:1}
+.overline{display:block;font:800 10px system-ui,sans-serif;letter-spacing:.21em;text-transform:uppercase;color:var(--accent);margin-bottom:23px}
+.sample{font-family:var(--font);font-size:var(--size);font-weight:var(--weight);letter-spacing:var(--tracking);line-height:var(--leading);margin:0;overflow-wrap:anywhere;hyphens:auto;font-optical-sizing:auto;font-kerning:normal;min-height:1.1em}
+.sample:focus{outline:2px dashed var(--accent);outline-offset:6px}
+.subline{margin:25px 0 0;max-width:400px;font-family:system-ui,sans-serif;font-size:13px;line-height:1.7;letter-spacing:0;color:var(--fg);opacity:.75}
+.canvas[data-composition=poster]:before{content:"";position:absolute;right:-50px;top:-100px;width:clamp(170px,27vw,360px);height:clamp(170px,27vw,360px);border:38px solid var(--accent);border-radius:100%;opacity:.25}
+.canvas[data-composition=stack] .sample{max-width:8ch;margin-inline:auto}
+.canvas[data-motion=breath] .sample{animation:breathe 3.3s ease-in-out infinite alternate;transform-origin:center}
+.canvas[data-motion=slide] .sample{animation:arrive 3.6s ease-in-out infinite}
+.canvas[data-motion=wave] .sample{animation:tilt 4s ease-in-out infinite}
+@keyframes breathe{from{transform:scale(.93);opacity:.8}to{transform:scale(1.04);opacity:1}}
+@keyframes arrive{0%,10%{transform:translateY(22px);opacity:0}30%,80%{transform:translateY(0);opacity:1}100%{transform:translateY(-15px);opacity:0}}
+@keyframes tilt{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@media(prefers-reduced-motion:reduce){.canvas .sample{animation:none!important}.canvas{transition:none}}
+.lesson{display:grid;grid-template-columns:1fr minmax(180px,.85fr);gap:18px;align-items:start;background:#fff;border:1px solid #e6ded9;border-radius:12px;padding:19px;margin-top:16px}
+.lesson h3{font-size:20px;letter-spacing:-.04em;margin:6px 0}.lesson p{color:#726a72;font-size:12px;line-height:1.65;margin:7px 0}.lesson strong{color:#a54c72}
+.terms{display:flex;gap:7px;flex-wrap:wrap}.terms span{background:#f4eaf0;color:#8d4265;border-radius:100px;padding:7px 9px;font-size:10px;font-weight:800}
+.controls{position:sticky;top:12px;background:#fff;border-radius:14px;border:1px solid #e5deda;overflow:hidden}
+.controls section{padding:22px;border-bottom:1px solid #eee7e3}.controls section:last-child{border:0}.controls h2{font-size:22px;line-height:1.1;letter-spacing:-.05em;margin:9px 0 15px}
+label{display:block;font-size:11px;font-weight:800;margin:15px 0 6px;color:#675c66}input:not([type=range]):not([type=color]),select,textarea{display:block;width:100%;background:#fbf9f5;border:1px solid #dcd5d2;border-radius:7px;padding:10px;color:#2d2730;font-size:12px}textarea{resize:vertical}input[type=range]{width:100%;accent-color:#aa597b}output{float:right;color:#a44b73}
+.quick{display:flex;flex-wrap:wrap;gap:6px}.quick button{font-size:11px;padding:8px 10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.two>div{min-width:0}.two label{margin-top:10px}
+.note{color:#857c84;font-size:11px;line-height:1.55;margin:11px 0 0}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.actions button{padding:10px 4px}
+.palette{display:flex;gap:7px}.palette button{width:29px;height:29px;border:2px solid #fff;border-radius:100%;padding:0;box-shadow:0 0 0 1px #d1c7c3}.palette button[aria-pressed=true]{box-shadow:0 0 0 2px #a84b74}
+.presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.presets button{text-align:left;min-height:64px;font-size:12px}.presets small{display:block;margin-top:4px;font-size:10px;color:#8a7b83;font-weight:500}.presets button.active small{color:#dacbd5}
+footer{max-width:1590px;margin:auto;padding:20px clamp(18px,4vw,65px) 60px;border-top:1px solid #e6ded9;color:#807781;font-size:12px}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.controls{position:static;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.controls section{border-right:1px solid #eee7e3}.controls section:nth-child(2n){border-right:0}}
+@media(max-width:600px){.head-mark{display:none}.canvas{min-height:365px;padding:27px 23px}.controls{display:block}.controls section{border-right:0}.lesson{grid-template-columns:1fr}.status{margin-left:0}}
+</style>
+</head>
+<body>
+<header><a class="back" href="../index.html">← DERAILED. / EXPERIMENTS</a>
+<div class="head"><div><span class="eyebrow">EXPERIMENT 002 / VISUAL LANGUAGE</span><h1>Typography<br><em>Lab.</em></h1>
+<p>Letters aren't just information. They're shape, rhythm, motion and personality. Change one rule. See what happens.</p></div><div class="head-mark" aria-hidden="true">Aa</div></div></header>
+<main>
+<div class="intro"><div><span class="eyebrow">THE PLAYGROUND</span><h2>Make words move people.</h2><p>Choose a mood, remix the proportions, and make your own typographic composition. This is an experiment, not a type-design exam.</p></div><button id="randomize" type="button" class="primary">✳ Surprise me</button></div>
+<div class="layout"><div class="canvas-wrap">
+<div class="toolbar"><button id="modeEditorial" data-composition="editorial" aria-pressed="true">Editorial</button><button id="modePoster" data-composition="poster" aria-pressed="false">Poster</button><button id="modeStack" data-composition="stack" aria-pressed="false">Stack</button><span class="status" id="status">Start with the words.</span></div>
+<div id="canvas" class="canvas" data-composition="editorial" data-motion="none">
+<div class="canvas-content"><span id="overline" class="overline">DERAILED / TYPE STUDY 001</span>
+<h2 id="sample" class="sample" contenteditable="true" role="textbox" aria-label="Edit the headline" aria-multiline="true" spellcheck="false">Curiosity has no roadmap.</h2>
+<p id="subline" class="subline">The shape of the sentence changes the meaning before you've read a single word.</p></div></div>
+<div class="lesson"><div><span class="eyebrow">TODAY'S LITTLE LESSON</span><h3 id="lessonTitle">Hierarchy makes a promise.</h3><p id="lessonText">Size and weight tell readers what to look at first. Try making the heading quieter or louder without changing the words.</p></div><div><span class="eyebrow">LOOK FOR</span><div class="terms" id="terms"><span>Scale</span><span>Contrast</span><span>Reading order</span></div><p id="challenge" class="note"><strong>Try this:</strong> reduce the heading size until the subline begins to compete for attention.</p><button id="nextLesson" type="button">↻ Next design lesson</button></div></div>
+</div>
+<aside class="controls">
+<section><span class="eyebrow">01 / START WITH A VOICE</span><h2>Choose a personality.</h2><div id="presets" class="presets"></div><p class="note">These are starting points. The interesting results often happen between presets.</p></section>
+<section><span class="eyebrow">02 / TYPE ANATOMY</span><h2>Change the proportions.</h2>
+<label for="font">Typeface family</label><select id="font">
+<option value="serif">Editorial serif · Georgia</option><option value="sans">Clear sans · system UI</option><option value="mono">Technical mono · monospace</option><option value="display">Display serif · Times</option><option value="rounded">Friendly sans · Trebuchet</option>
+</select>
+<div class="two"><div><label for="size">Size <output id="sizeOut">88 px</output></label><input id="size" type="range" min="28" max="160" step="2" value="88"></div><div><label for="weight">Weight <output id="weightOut">600</output></label><input id="weight" type="range" min="300" max="900" step="100" value="600"></div></div>
+<label for="tracking">Letter spacing <output id="trackingOut">-0.06 em</output></label><input id="tracking" type="range" min="-0.12" max="0.25" step=".01" value="-0.06">
+<label for="leading">Line height <output id="leadingOut">1.04</output></label><input id="leading" type="range" min=".75" max="1.9" step=".05" value="1.04">
+<label for="width">Text measure <output id="widthOut">720 px</output></label><input id="width" type="range" min="240" max="940" step="20" value="720">
+<div class="two"><div><label for="align">Alignment</label><select id="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></div>
+<div><label for="motion">Motion</label><select id="motion"><option value="none">Still</option><option value="breath">Breathe</option><option value="slide">Arrive / leave</option><option value="wave">Sway</option></select></div></div>
+<p class="note">Some system fonts have only a few real weights. The browser may synthesize intermediate values.</p>
+</section>
+<section><span class="eyebrow">03 / COLOUR & WORDS</span><h2>Change the setting.</h2>
+<div id="colors" class="quick"><button type="button" data-theme="paper">Paper / ink</button><button type="button" data-theme="night">Night / cream</button><button type="button" data-theme="berry">Berry / ice</button><button type="button" data-theme="sunny">Sunny / blue</button></div>
+<label for="headlineInput">Headline</label><textarea id="headlineInput" rows="2" maxlength="160">Curiosity has no roadmap.</textarea>
+<label for="captionInput">Supporting text</label><textarea id="captionInput" rows="3" maxlength="200">The shape of the sentence changes the meaning before you've read a single word.</textarea>
+</section>
+<section><span class="eyebrow">04 / TAKE YOUR WORK</span><h2>Keep a type study.</h2>
+<div class="actions"><button id="exportJSON" type="button">↓ Design JSON</button><button id="importJSON" type="button">↑ Open JSON</button><button id="downloadSVG" type="button">↓ SVG poster</button><button id="copyCSS" type="button">Copy CSS</button></div>
+<input type="file" id="file" accept=".json,application/json" hidden><p class="note">Pure HTML/CSS/JS with system fonts. SVG export includes the text and style attributes but relies on available fonts and may render differently on another device.</p>
+<p class="note" role="status" aria-live="polite" id="notice"></p>
+</section>
+</aside></div></main>
+<footer>DERAILED. · One thing led to another. · Learn the rules. Bend the rules. Keep the good accidents.</footer>
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const FONTS={serif:'Georgia, "Times New Roman", serif',sans:'system-ui, -apple-system, "Segoe UI", sans-serif',mono:'ui-monospace, SFMono-Regular, Consolas, monospace',display:'"Times New Roman", Georgia, serif',rounded:'"Trebuchet MS", Verdana, sans-serif'};
+const THEMES={
+ paper:{fg:'#28252C',bg:'#FFFDF8',accent:'#BD6483'},
+ night:{fg:'#F4E9D7',bg:'#242432',accent:'#E9B86E'},
+ berry:{fg:'#880D1E',bg:'#FCEBF2',accent:'#DD2D4A'},
+ sunny:{fg:'#153958',bg:'#FBE681',accent:'#E77657'}
+};
+const PRESETS=[
+ {id:'editorial',name:'Editorial',hint:'A confident serif',font:'serif',size:88,weight:600,tracking:-.06,leading:1.04,width:720,align:'left',composition:'editorial',motion:'none',theme:'paper'},
+ {id:'poster',name:'The Poster',hint:'Loud and tightly set',font:'sans',size:118,weight:900,tracking:-.09,leading:.89,width:660,align:'left',composition:'poster',motion:'none',theme:'berry'},
+ {id:'quiet',name:'Quiet Note',hint:'Room to breathe',font:'display',size:58,weight:400,tracking:.035,leading:1.33,width:650,align:'center',composition:'editorial',motion:'none',theme:'paper'},
+ {id:'terminal',name:'The Terminal',hint:'Precise and mechanical',font:'mono',size:56,weight:500,tracking:-.035,leading:1.2,width:760,align:'left',composition:'stack',motion:'none',theme:'night'},
+ {id:'playful',name:'Playful',hint:'Warm and eccentric',font:'rounded',size:92,weight:700,tracking:-.05,leading:1.05,width:680,align:'center',composition:'stack',motion:'wave',theme:'sunny'},
+ {id:'cinema',name:'Opening Credits',hint:'A graceful entrance',font:'serif',size:78,weight:400,tracking:.01,leading:1.12,width:760,align:'center',composition:'editorial',motion:'slide',theme:'night'}
+];
+const LESSONS=[
+ {title:'Hierarchy makes a promise.',text:'Size and weight tell readers what to look at first. Try making the heading quieter or louder without changing the words.',terms:['Scale','Contrast','Reading order'],challenge:'Reduce the headline size until the supporting text begins to compete.'},
+ {title:'Space has a voice.',text:'Tracking is the distance between letters. Wide spacing can feel ceremonial; tight spacing often feels dense, urgent or modern.',terms:['Tracking','Texture','Density'],challenge:'Try +0.12 em tracking with a serif, then -0.08 em with a bold sans.'},
+ {title:'Line breaks are choreography.',text:'Measure and line-height determine where the eye pauses. A headline with three short lines feels different from the same sentence on one line.',terms:['Measure','Line height','Rhythm'],challenge:'Switch to Stack, change the width, then pull line-height toward 0.9.'},
+ {title:'Typography creates a character.',text:'Typefaces carry cultural associations. Compare expressive serifs, plain system sans and monospaced lettering without changing a word.',terms:['Typeface','Tone','Context'],challenge:'Switch all five font families at a fixed size and notice the personality changes.'},
+ {title:'Motion changes the sentence.',text:'A moving title can communicate energy or calm. Timing and restraint matter more than how much it moves.',terms:['Timing','Ease','Attention'],challenge:'Compare Breathe and Arrive/leave, then turn motion off. Which one deserves attention?'},
+ {title:'A composition needs silence.',text:'Whitespace gives important elements room. Empty areas are not wasted; they direct the eye and create emphasis.',terms:['Whitespace','Balance','Focus'],challenge:'Use a quiet font, centre alignment and a narrow measure. Keep the empty space.'}
+];
+const DEFAULT={...PRESETS[0],headline:'Curiosity has no roadmap.',caption:"The shape of the sentence changes the meaning before you've read a single word."};
+let state={...DEFAULT},lessonIndex=0;
+const fields=['size','weight','tracking','leading','width','font','align','motion'];
+function clamp(v,min,max){return Math.min(max,Math.max(min,v))}
+function safeText(v,max=200){return String(v==null?'':v).slice(0,max)}
+function announce(msg){$('notice').textContent=msg}
+function render(){
+ const c=$('canvas'),t=THEMES[state.theme]||THEMES.paper;
+ c.style.setProperty('--font',FONTS[state.font]||FONTS.serif);
+ c.style.setProperty('--size',state.size+'px');c.style.setProperty('--weight',state.weight);
+ c.style.setProperty('--tracking',state.tracking+'em');c.style.setProperty('--leading',state.leading);
+ c.style.setProperty('--max',state.width+'px');c.style.setProperty('--align',state.align);
+ c.style.setProperty('--fg',t.fg);c.style.setProperty('--bg',t.bg);c.style.setProperty('--accent',t.accent);
+ c.dataset.composition=state.composition;c.dataset.motion=state.motion;
+ if($('sample').textContent!==state.headline)$('sample').textContent=state.headline;
+ if($('subline').textContent!==state.caption)$('subline').textContent=state.caption;
+ $('headlineInput').value=state.headline;$('captionInput').value=state.caption;
+ for(const f of fields)$(f).value=state[f];
+ $('sizeOut').textContent=state.size+' px';$('weightOut').textContent=state.weight;
+ $('trackingOut').textContent=Number(state.tracking).toFixed(2)+' em';
+ $('leadingOut').textContent=Number(state.leading).toFixed(2);
+ $('widthOut').textContent=state.width+' px';
+ for(const b of document.querySelectorAll('[data-composition]')){
+  if(b.tagName!=='BUTTON')continue;
+  b.setAttribute('aria-pressed',String(b.dataset.composition===state.composition));
+ }
+ for(const b of document.querySelectorAll('[data-theme]'))
+  b.setAttribute('aria-pressed',String(b.dataset.theme===state.theme));
+ for(const b of document.querySelectorAll('[data-preset]')){
+   b.classList.toggle('active',b.dataset.preset===state.id);
+   b.setAttribute('aria-pressed',String(b.dataset.preset===state.id));
+ }
+ $('status').textContent=state.font.toUpperCase()+' · '+state.size+'PX · '+state.composition.toUpperCase();
+}
+function setPart(k,v){state[k]=v;state.id='custom';render()}
+function setPreset(p){state={...p,headline:state.headline,caption:state.caption};render()}
+function preparePresets(){
+ const root=$('presets');
+ for(const p of PRESETS){
+  const btn=document.createElement('button');btn.type='button';btn.dataset.preset=p.id;
+  const title=document.createElement('strong');title.textContent=p.name;
+  const hint=document.createElement('small');hint.textContent=p.hint;
+  btn.append(title,hint);btn.addEventListener('click',()=>setPreset(p));root.append(btn);
+ }
+}
+function showLesson(){
+ const x=LESSONS[lessonIndex];$('lessonTitle').textContent=x.title;$('lessonText').textContent=x.text;
+ const terms=$('terms');terms.replaceChildren();
+ for(const s of x.terms){const span=document.createElement('span');span.textContent=s;terms.append(span)}
+ $('challenge').textContent='Try this: '+x.challenge;
+}
+function serialize(){return {version:1,kind:'derailed.typography-lab',...state}}
+function download(filename,text,mime){
+ const url=URL.createObjectURL(new Blob([text],{type:mime}));
+ const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function css(){
+ const t=THEMES[state.theme];
+ return '.type-study {\n  font-family: '+FONTS[state.font]+';\n  font-size: '+state.size+'px;\n  font-weight: '+state.weight+';\n  letter-spacing: '+state.tracking+'em;\n  line-height: '+state.leading+';\n  max-width: '+state.width+'px;\n  text-align: '+state.align+';\n  color: '+t.fg+';\n  background: '+t.bg+';\n}';
+}
+function escaped(v){return String(v).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[ch]))}
+function svg(){
+ const t=THEMES[state.theme],width=1200,height=800;
+ const lines=state.headline.split(/\n/).flatMap(line=>line.length>32?line.match(/.{1,32}(?:\s|$)|.{1,32}/g)||[line]:[line]).slice(0,8);
+ const fontsize=Math.min(state.size*1.55,170),linePx=fontsize*state.leading;
+ const aligned=state.align==='center'?'middle':state.align==='right'?'end':'start';
+ const xpos=state.align==='center'?600:state.align==='right'?1100:100;
+ const total=lines.length*linePx,top=Math.max(185,440-total/2);
+ const textlines=lines.map((line,i)=>'<text x="'+xpos+'" y="'+(top+i*linePx)+'" text-anchor="'+aligned+'">'+escaped(line.trim())+'</text>').join('\n');
+ return '<svg xmlns="http://www.w3.org/2000/svg" width="'+width+'" height="'+height+'" viewBox="0 0 1200 800"><rect width="1200" height="800" fill="'+t.bg+'"/><text x="100" y="90" font-family="Arial,sans-serif" font-size="20" letter-spacing="4" fill="'+t.accent+'">DERAILED / TYPOGRAPHY LAB</text><g font-family="'+escaped(FONTS[state.font])+'" font-weight="'+state.weight+'" font-size="'+fontsize+'" letter-spacing="'+(state.tracking*fontsize)+'" fill="'+t.fg+'">'+textlines+'</g><text x="100" y="737" font-family="Arial,sans-serif" font-size="22" fill="'+t.fg+'">'+escaped(state.caption.slice(0,85))+'</text></svg>';
+}
+function checked(parsed){
+ if(!parsed||parsed.kind!=='derailed.typography-lab')throw Error('Not a Typography Lab design JSON');
+ const next={...DEFAULT};
+ for(const k of ['headline','caption'])next[k]=safeText(parsed[k],k==='headline'?160:200);
+ for(const k of ['font','align','motion','theme','composition']){
+  if(typeof parsed[k]==='string')next[k]=parsed[k];
+ }
+ const choices={font:Object.keys(FONTS),align:['left','center','right'],motion:['none','breath','slide','wave'],theme:Object.keys(THEMES),composition:['editorial','poster','stack']};
+ for(const k of Object.keys(choices))if(!choices[k].includes(next[k]))throw Error('Invalid '+k);
+ for(const [k,min,max] of [['size',28,160],['weight',300,900],['tracking',-.12,.25],['leading',.75,1.9],['width',240,940]]){
+  const n=Number(parsed[k]);if(!Number.isFinite(n))throw Error('Invalid '+k);next[k]=clamp(n,min,max);
+ }
+ next.id='custom';return next;
+}
+function events(){
+ for(const k of fields){
+  $(k).addEventListener(k==='font'||k==='align'||k==='motion'?'change':'input',()=>{
+   const v=['font','align','motion'].includes(k)?$(k).value:Number($(k).value);setPart(k,v);
+  });
+ }
+ document.querySelectorAll('button[data-composition]').forEach(b=>b.addEventListener('click',()=>setPart('composition',b.dataset.composition)));
+ document.querySelectorAll('button[data-theme]').forEach(b=>b.addEventListener('click',()=>setPart('theme',b.dataset.theme)));
+ $('headlineInput').addEventListener('input',()=>{state.headline=$('headlineInput').value;$('sample').textContent=state.headline});
+ $('captionInput').addEventListener('input',()=>{state.caption=$('captionInput').value;$('subline').textContent=state.caption});
+ $('sample').addEventListener('input',()=>{state.headline=safeText($('sample').textContent,160);$('headlineInput').value=state.headline});
+ $('nextLesson').addEventListener('click',()=>{lessonIndex=(lessonIndex+1)%LESSONS.length;showLesson()});
+ $('randomize').addEventListener('click',()=>{
+   const p=PRESETS[Math.floor(Math.random()*PRESETS.length)];setPreset(p);
+   state.size=clamp(p.size+(Math.floor(Math.random()*9)-4)*4,28,160);
+   state.tracking=clamp(Number((p.tracking+(Math.floor(Math.random()*7)-3)*.01).toFixed(2)),-.12,.25);
+   state.id='custom';render();announce('A new typographic accident. Keep what you like.');
+ });
+ $('exportJSON').addEventListener('click',()=>download('typography-study.json',JSON.stringify(serialize(),null,2)+'\n','application/json'));
+ $('downloadSVG').addEventListener('click',()=>download('typography-study.svg',svg(),'image/svg+xml'));
+ $('importJSON').addEventListener('click',()=>$('file').click());
+ $('file').addEventListener('change',async()=>{
+  const file=$('file').files?.[0];if(!file)return;
+  try{if(file.size>100000)throw Error('File too large');state=checked(JSON.parse(await file.text()));render();announce('Type study imported.')}
+  catch(e){announce('Import failed: '+e.message)}$('file').value='';
+ });
+ $('copyCSS').addEventListener('click',async()=>{
+  try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(css());
+   else{const t=document.createElement('textarea');t.value=css();document.body.append(t);t.select();if(!document.execCommand('copy'))throw Error('Clipboard unavailable');t.remove();}
+   announce('CSS copied.')}
+  catch(e){announce('Copy unavailable. Try a secure browser context.')}
+ });
+}
+preparePresets();events();render();showLesson();
+})();
+</script>
+</body></html>
