@@ -24,16 +24,21 @@ Clicking a mesh in the 3D viewer, or choosing a shape in the colour key, opens *
 
 Graphics use *equal X and Y scale*, anchored to each piece's bounding-box centre on a fixed six-square canvas. This avoids stretching dots into ovals or changing stripe proportions on long pieces such as I or Y. Only the broad front/back caps receive this graphic UV mapping; the bevels and walls keep their solid material colour. This is a UV fix, not a change to printable geometry.
 
-## True cube mode and future 3D packing
+## One flexible geometry model: from slab to cube
 
-In **01 Shape → Piece geometry**, choose one of two modes:
+In **01 Shape**, the piece geometry is controlled by a single **Extrusion depth** slider, from **0.08× to 2×** relative to the width of one square. Press **1× Cube proportions** to set depth to exactly one unit without changing the surface style.
 
-- **Soft slab (default):** retained design-object mode with variable extrusion depth, rounded contours, bevels, and optional piece gaps.
-- **True cubes (1 × 1 × 1):** the five joined unit squares become five full unit cubes. The piece is extruded to exactly one unit in Z, with zero bevel, zero rounding, and zero internal gap. These constraints override (but do not erase) the slab sliders; the slab controls reappear when switching back.
+**Corner softness** (2D silhouette rounding), **Edge bevel** (3D edge rounding), and **Piece gap** (spacing between whole pieces) are independent controls. There is no longer a separate `Soft slab` vs `True cubes` mode.
 
-All twelve pieces therefore contain **60 unit cubes**, making **5 × 6 × 2** and **4 × 5 × 3** valid *target volumes* for future three-dimensional packing. The current Together arrangement is still the original **6 × 10 × 1** tiling, while Exploded is a layered visual display. **No 3D packing solver is implemented yet**, so the controls do not currently arrange the pieces into a 5 × 6 × 2 or 4 × 5 × 3 box.
+- **Thin soft slab:** 0.26× depth, nonzero corner softness and edge bevel.
+- **Soft cube proportions:** 1× depth, nonzero corner softness and edge bevel.
+- **Mathematically exact cube-edged pentomino:** 1× depth, **0 corner softness, 0 bevel, 0 piece gap**. Each five-square piece is then the union of exactly five 1 × 1 × 1 cubes.
 
-STL export uses the same exact cube-mode geometry and the configured millimetres-per-cube edge length. Since a tiled board would touch and potentially fuse neighbouring pieces in a slicer, the **full-set cube STL** instead arranges whole, unchanged solids as **12 separate 4 × 3 print islands** with gaps. The layout may exceed a smaller printer bed; export one piece at a time for print tests. The selected-piece STL begins at the origin.
+The twelve pieces contain a total of **60 unit cubes** in the exact-edge configuration, making **5 × 6 × 2** and **4 × 5 × 3** natural target volumes for a future packing solver. Together still shows the original **6 × 10 × 1** tiling; Exploded shows a layered Z-axis study. **This lab does not yet solve 3D packing configurations.**
+
+The STL export uses the same depth, softness, bevel and gap values as the visual geometry and the configured **millimetres per unit square**. With small or zero piece gaps, a 12-piece STL set switches to separated 4 × 3 print islands, preventing independent solids from touching or fusing during export. A selected-piece STL starts at the origin. Check printer tolerances and manifoldness in a slicer.
+
+Saved design JSON remains `derailed.pentomino-glb/1`, and includes the new `bevel` value. Old JSON files using `geometryMode: "cube"` are migrated to 1× depth with zero corner, bevel, and gap when imported; old slab-mode files use the previous default bevel.
 
 ## Original Gomasu character edition
 
@@ -45,7 +50,7 @@ Each piece receives the exact colour of its character (e.g. X `#F0B6DF`, I `#FDC
 
 - **Together:** valid 6 × 10 pentomino tiling with independently adjustable spacing.
 - **Exploded:** every shape's geometric centre aligns to x = 0, y = 0; their z positions form an adjustable vertical stack.
-- **Shape:** depth and rounded corners with a gently bevelled 3D edge.
+- **Shape:** flexible extrusion depth (0.08×–2×), 1× Cube proportions preset, independently adjustable corner softness, bevel and piece gap.
 - **Colour:** the original DERAILED 5-feature + 2-neutral palette presets, plus twelve original Gomasu character colours.
 - **Finishes:** matte + subtle satin pairs (default), matte + gloss, all matte, ceramic, or satin metal.
 - **Graphics:** optional continuous stripes, dots, grids, arcs, splits, blocks, and four *original-lab-inspired* motif families. These are new procedural graphics inspired by the lab, **not** exact reproductions of Gomasu's posture-aware Character DNA.
