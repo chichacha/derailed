@@ -16,7 +16,7 @@ h1{font-size:clamp(42px,6.5vw,88px);line-height:.94;letter-spacing:-.075em;margi
 .viewer-help{position:absolute;bottom:17px;left:20px;right:20px;pointer-events:none;display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#d5d7dd}
 aside{background:#22252d;border:1px solid #ffffff20;border-radius:18px;padding:23px;display:flex;flex-direction:column;gap:19px}
 h2{font-size:12px;letter-spacing:.14em;margin:0;color:#f49cbb;text-transform:uppercase}
-.group{display:flex;flex-direction:column;gap:9px}.group label{font-size:12px;color:#d0d0d7;display:flex;justify-content:space-between}
+.group{display:flex;flex-direction:column;gap:9px}.group[hidden]{display:none}.group label{font-size:12px;color:#d0d0d7;display:flex;justify-content:space-between}
 select,button,input[type=range]{width:100%}select,button{border:1px solid #ffffff28;border-radius:8px;background:#323640;color:#f7f1ea;padding:11px 12px;font:inherit;font-size:13px}
 button{cursor:pointer;font-weight:700}button:hover{background:#474c5a}button.primary{background:#f49cbb;color:#261c2c;border-color:#f49cbb}button.primary:hover{background:#ffd0e0}
 input{accent-color:#f49cbb}.swatches{display:flex;gap:5px}.swatches span{height:25px;flex:1;border-radius:5px;border:1px solid #ffffff20}
@@ -34,14 +34,17 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 <header><a class="brand" href="../index.html">← DERAILED. / EXPERIMENTS</a><span class="tag">PENTOMINO LAB / 3D DETOUR</span></header>
 <main><p class="tag">12 SHAPES · 60 SQUARES · ONE MORE DIMENSION</p>
 <h1>From flat to <em>form.</em></h1>
-<p class="intro">The same twelve pentominoes, now with depth, light and material. Rotate the scene, switch a palette, rearrange the pieces and take home a real binary GLB model.</p>
+<p class="intro">The same twelve pentominoes, now with rounded corners, soft bevels and material. Explore a gently spaced tiling or a twelve-layer Z-axis stack, then export a real binary GLB model.</p>
 <div class="layout"><section class="viewer" aria-label="Interactive Three.js 3D pentomino viewer">
 <div id="canvas"></div><div class="viewer-label">PENTOMINO OBJECT STUDY / THREE.JS</div>
 <div class="viewer-help"><span>DRAG · ORBIT &nbsp; / &nbsp; SCROLL · ZOOM</span><span>12 MESHES / PBR MATERIALS</span></div></section>
 <aside><h2>01 / Shape & composition</h2>
-<div class="group"><label for="arrangement">Arrangement</label><select id="arrangement"><option value="tiling">Together / 6 × 10 tiling</option><option value="exploded">Exploded / separated object study</option></select></div>
+<div class="group"><label for="arrangement">Arrangement</label><select id="arrangement"><option value="tiling">Together / 6 × 10 tiling</option><option value="exploded">Exploded / aligned Z-axis stack</option></select></div>
 <div class="group"><label for="solution">Tiling <output id="solutionLabel">01 / 16</output></label><input id="solution" type="range" min="0" max="15" value="0"></div>
 <div class="group"><label for="depth">Extrusion depth <output id="depthLabel">0.26</output></label><input id="depth" type="range" min=".08" max=".65" step=".01" value=".26"></div>
+<div class="group"><label for="corner">Corner softness <output id="cornerLabel">0.12</output></label><input id="corner" type="range" min="0" max=".24" step=".01" value=".12"></div>
+<div class="group" id="togetherSpacing"><label for="gap">Piece gap <output id="gapLabel">0.18</output></label><input id="gap" type="range" min=".12" max=".35" step=".01" value=".18"></div>
+<div class="group" id="layerSpacing" hidden><label for="layerPitch">Z-axis layer spacing <output id="layerPitchLabel">1.25</output></label><input id="layerPitch" type="range" min=".9" max="2.4" step=".05" value="1.25"></div>
 <h2>02 / Material</h2><div class="group"><label for="palette">Original lab palette</label><select id="palette"></select><div class="swatches" id="swatches"></div></div>
 <div class="group"><label for="finish">Surface finish</label><select id="finish"><option value="matte" selected>Matte · velvety</option><option value="ceramic">Glazed ceramic</option><option value="metal">Satin metal</option></select></div>
 <div class="btnrow"><button id="turntable">Pause rotation</button><button id="reset">Reset camera</button></div>
@@ -84,22 +87,54 @@ function edgesOf(cells){
  if(guard>=30)throw Error('Contour did not close');
  return outline;
 }
-function shapeFor(cells){
- const outline=edgesOf(cells),shape=new THREE.Shape();
- outline.forEach(([x,y],i)=>i?shape.lineTo(x,-y):shape.moveTo(x,-y));shape.closePath();return shape;
+// Construct one continuous whole-piece silhouette. Insetting the outline gives
+// adjacent pieces a true physical gap; individual squares stay joined together.
+function shapeFor(cells,gap,rounding){
+ const pts=edgesOf(cells),area=pts.reduce((sum,p,i)=>sum+p[0]*pts[(i+1)%pts.length][1]-pts[(i+1)%pts.length][0]*p[1],0);
+ const side=area>=0?1:-1,inset=gap/2;
+ const inner=pts.map((p,i)=>{
+  const prev=pts[(i+pts.length-1)%pts.length],next=pts[(i+1)%pts.length];
+  const a=[p[0]-prev[0],p[1]-prev[1]],b=[next[0]-p[0],next[1]-p[1]];
+  const n1=[-a[1]*side,a[0]*side],n2=[-b[1]*side,b[0]*side];
+  const turn=a[0]*b[1]-a[1]*b[0];
+  return Math.abs(turn)<.001?[p[0]+n1[0]*inset,p[1]+n1[1]*inset]:
+   [p[0]+(n1[0]+n2[0])*inset,p[1]+(n1[1]+n2[1])*inset];
+ });
+ const shape=new THREE.Shape();
+ for(let i=0;i<inner.length;i++){
+  const p=inner[i],prev=inner[(i+inner.length-1)%inner.length],next=inner[(i+1)%inner.length];
+  const a=[p[0]-prev[0],p[1]-prev[1]],b=[next[0]-p[0],next[1]-p[1]];
+  const la=Math.hypot(...a),lb=Math.hypot(...b),turn=a[0]*b[1]-a[1]*b[0];
+  const radius=Math.abs(turn)>.0001?Math.min(rounding,la*.4,lb*.4):0;
+  const start=radius?[p[0]-a[0]*radius/la,p[1]-a[1]*radius/la]:p;
+  if(i===0)shape.moveTo(start[0],-start[1]);else shape.lineTo(start[0],-start[1]);
+  if(radius)shape.quadraticCurveTo(p[0],-p[1],p[0]+b[0]*radius/lb,-p[1]-b[1]*radius/lb);
+ }
+ shape.closePath();return shape;
 }
 function fitCamera(){
- // Fit each arrangement independently, including narrower/mobile viewports.
+ // Fit the actual 3D bounds, including the height of the new Z-axis stack.
  camera.aspect=Math.max(host.clientWidth,1)/Math.max(host.clientHeight,1);
  camera.updateProjectionMatrix();
+ const box=new THREE.Box3().setFromObject(group),centre=box.getCenter(new THREE.Vector3());
  const exploded=$('arrangement').value==='exploded';
- const width=exploded?26:11,height=exploded?19:7.5;
- const aspect=Math.max(camera.aspect,.45);
- const span=Math.max(height,width/aspect);
- const distance=span/(2*Math.tan(THREE.MathUtils.degToRad(camera.fov/2)))*1.32;
- controls.target.set(0,0,0);
- camera.position.copy(new THREE.Vector3(.48,-.72,1.55).normalize().multiplyScalar(distance));
- camera.lookAt(controls.target);controls.update();
+ const direction=(exploded?new THREE.Vector3(1.65,-2.3,.9):new THREE.Vector3(.48,-.72,1.55)).normalize();
+ camera.up.set(0,exploded?0:1,exploded?1:0);
+ controls.target.copy(centre);
+ camera.position.copy(centre).addScaledVector(direction,50);
+ camera.lookAt(centre);camera.updateMatrixWorld();
+ const right=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1);
+ let halfWidth=0,halfHeight=0,front=0;
+ for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){
+  const v=new THREE.Vector3(x,y,z).sub(centre);
+  halfWidth=Math.max(halfWidth,Math.abs(v.dot(right)));
+  halfHeight=Math.max(halfHeight,Math.abs(v.dot(up)));
+  front=Math.max(front,v.dot(direction));
+ }
+ const vertical=Math.tan(THREE.MathUtils.degToRad(camera.fov/2)),horizontal=vertical*camera.aspect;
+ const distance=1.3*Math.max(halfWidth/horizontal,halfHeight/vertical)+front;
+ camera.position.copy(centre).addScaledVector(direction,Math.max(distance,5));
+ camera.lookAt(centre);controls.update();
 }
 function renderPieces(){
  for(const m of meshes){group.remove(m);m.geometry.dispose();m.material.dispose()}meshes=[];
@@ -107,23 +142,22 @@ function renderPieces(){
  const settings=finish==='ceramic'?{roughness:.22,metalness:0}:finish==='metal'?{roughness:.31,metalness:.65}:{roughness:1,metalness:0};
  const exploded=$('arrangement').value==='exploded';
  for(const [i,tile] of T.solutions[Number($('solution').value)].entries()){
-  const shape=shapeFor(tile.cells);
-  const geom=new THREE.ExtrudeGeometry(shape,{depth,steps:1,bevelEnabled:true,bevelThickness:.045,bevelSize:.045,bevelSegments:3,curveSegments:3});
+  const shape=shapeFor(tile.cells,exploded?0:Number($('gap').value),Number($('corner').value));
+  const bevelThickness=Math.min(.055,depth*.27);
+  const geom=new THREE.ExtrudeGeometry(shape,{depth,steps:1,bevelEnabled:true,bevelThickness,bevelSize:.048,bevelSegments:5,curveSegments:6});
   geom.computeVertexNormals();
   const material=new THREE.MeshStandardMaterial({color:colors[(i*7+Math.floor(i/5))%5],...settings});
   const mesh=new THREE.Mesh(geom,material);mesh.name='Pentomino '+tile.name;
   mesh.userData={letter:tile.name,palette:palette.name};
   if(exploded){
-   // Extruded vertices still use the 10×6 tiling's absolute coordinates.
-   // Re-centre EACH mesh before laying out the twelve separate objects.
+   // Centre each mesh's local geometry: every pivot is EXACTLY x=0, y=0.
+   // Only Z differs; no offsets or X/Y tilts that could conjoin layers.
    geom.computeBoundingBox();
    const centre=new THREE.Vector3();geom.boundingBox.getCenter(centre);
-   geom.translate(-centre.x,-centre.y,-depth/2);
-   // A regular 4×3 display grid has >= 1 unit clearance even for the I (5-cell) piece.
-   // Z variation adds depth without asking stacked or intersecting shapes to coexist.
-   const col=i%4,row=Math.floor(i/4),pitch=6.5;
-   mesh.position.set((col-1.5)*pitch,(1-row)*pitch,0.16+0.14*((i*5)%7));
-   mesh.rotation.set(.035*Math.sin(i*2),.035*Math.cos(i*1.3),.035*Math.sin(i*3.4));
+   geom.translate(-centre.x,-centre.y,-centre.z);
+   const pitch=Math.max(Number($('layerPitch').value),depth+2*bevelThickness+.22);
+   mesh.position.set(0,0,(i-(T.letters.length-1)/2)*pitch);
+   mesh.rotation.z=(i%3-1)*.08;
   }else{
    mesh.position.set(-5,3,-depth/2);
   }
@@ -131,12 +165,16 @@ function renderPieces(){
  }
  $('solutionLabel').textContent=String(Number($('solution').value)+1).padStart(2,'0')+' / '+T.solutions.length;
  $('depthLabel').textContent=depth.toFixed(2);
+ for(const id of ['corner','gap','layerPitch'])$(id+'Label').textContent=Number($(id).value).toFixed(2);
+ $('togetherSpacing').hidden=exploded;
+ $('layerSpacing').hidden=!exploded;
  $('swatches').replaceChildren(...C.colours(palette).map(hex=>{const el=document.createElement('span');el.style.background=hex;el.title=hex;return el}));
  $('status').textContent='Ready · '+meshes.length+' separate material-bearing meshes';
 }
 for(const [id,p] of Object.entries(C.presets)){const option=document.createElement('option');option.value=id;option.textContent=p.name;$('palette').append(option)}
 $('palette').value='berry';
-for(const id of ['palette','solution','depth','finish'])$(id).addEventListener('input',renderPieces);
+for(const id of ['palette','solution','depth','finish','corner','gap','layerPitch'])$(id).addEventListener('input',renderPieces);
+$('layerPitch').addEventListener('change',fitCamera);
 $('arrangement').addEventListener('change',()=>{group.rotation.z=0;renderPieces();fitCamera()});
 $('turntable').onclick=()=>{spinning=!spinning;$('turntable').textContent=spinning?'Pause rotation':'Resume rotation'};
 $('reset').onclick=()=>{group.rotation.z=0;fitCamera()};
