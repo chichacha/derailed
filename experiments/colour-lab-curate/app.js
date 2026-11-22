@@ -200,7 +200,7 @@ function wire(){
  $('duplicate').addEventListener('click',makeVersion);
  $('delete').addEventListener('click',deleteVersion);
  $('favoriteSelected').addEventListener('click',()=>star(current().id));
- $('detailSwatches').addEventListener('input',ev=>{
+ $('detailSwatches').addEventListener('change',ev=>{
    if(ev.target.dataset.color!==undefined)updateHex(Number(ev.target.dataset.color),ev.target.value);
  });
  $('detailSwatches').addEventListener('change',ev=>{
