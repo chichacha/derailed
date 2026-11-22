@@ -34,6 +34,8 @@ h2{font-size:12px;letter-spacing:.14em;margin:0;color:#f49cbb;text-transform:upp
 select,button,input[type=range]{width:100%}select,button{border:1px solid #ffffff28;border-radius:8px;background:#323640;color:#f7f1ea;padding:11px 12px;font:inherit;font-size:13px}
 button{cursor:pointer;font-weight:700}button:hover{background:#474c5a}button.primary{background:#f49cbb;color:#261c2c;border-color:#f49cbb}button.primary:hover{background:#ffd0e0}
 input{accent-color:#f49cbb}.swatches{display:flex;gap:5px}.swatches span{height:25px;flex:1;border-radius:5px;border:1px solid #ffffff20}
+.swatches.gomasu-edition{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
+.swatches.gomasu-edition span{display:grid;place-items:center;height:32px;font-size:11px;font-weight:800;color:#25313a;text-shadow:0 1px #ffffff70}
 .material-key{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
 .material-item{display:flex;align-items:center;gap:6px;min-width:0;padding:7px 6px;background:#ffffff09;border:1px solid #ffffff18;border-radius:8px}
 .material-dot{width:14px;height:14px;flex:none;border-radius:4px;border:1px solid #ffffff65}
@@ -52,6 +54,7 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 </style>
 <script defer src="../shared/colour-system.js"></script>
 <script defer src="../pentomino-lab/data/tilings.js"></script>
+<script defer src="../pentomino-lab/data/gomasu.js"></script>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"}}</script>
 </head><body>
 <header><a class="brand" href="../index.html">← DERAILED. / EXPERIMENTS</a><span class="tag">PENTOMINO LAB / 3D DETOUR</span></header>
@@ -75,9 +78,10 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 <div class="group" id="cornerControl"><label for="corner">Corner softness <output id="cornerLabel">0.12</output></label><input id="corner" type="range" min="0" max=".24" step=".01" value=".12"></div>
 <div class="group" id="togetherSpacing"><label for="gap">Piece gap <output id="gapLabel">0.18</output></label><input id="gap" type="range" min=".12" max=".35" step=".01" value=".18"></div>
 <div class="group" id="layerSpacing" hidden><label for="layerPitch">Z-axis layer spacing <output id="layerPitchLabel">1.25</output></label><input id="layerPitch" type="range" min=".9" max="2.4" step=".05" value="1.25"></div></section>
-<section class="studio-panel" role="tabpanel" id="panel-material" aria-labelledby="tab-material" tabindex="0" hidden><h2>02 / Colour & surface</h2><div class="group"><label for="palette">Original lab palette</label><select id="palette"></select><div class="swatches" id="swatches"></div></div>
+<section class="studio-panel" role="tabpanel" id="panel-material" aria-labelledby="tab-material" tabindex="0" hidden><h2>02 / Colour & surface</h2><div class="group"><label for="palette">Colour collection</label><select id="palette"></select><div class="swatches" id="swatches"></div>
+<p class="note" id="paletteExplainer">Five features + two neutrals, shared with the 2D lab.</p></div>
 <div class="group"><label for="finish">Surface finishes</label><select id="finish"><option value="paired-satin" selected>Matte + satin pairs</option><option value="paired">Matte + glossy pairs</option><option value="matte">All matte</option><option value="ceramic">All glazed ceramic</option><option value="metal">All satin metal</option></select></div>
-<div class="group"><label>12 piece identities <span>5 colour pairs + 2 neutrals</span></label><div id="materialKey" class="material-key" aria-label="Colour and finish assigned to each pentomino"></div></div>
+<div class="group"><label>12 piece identities <span id="materialDescription">5 colour pairs + 2 neutrals</span></label><div id="materialKey" class="material-key" aria-label="Colour and finish assigned to each pentomino"></div></div>
 <div class="group"><label for="pattern">Surface graphics</label><select id="pattern">
 <option value="none" selected>None / clean colour</option><option value="classic">Original-lab-inspired motifs</option>
 <option value="stripes">Continuous stripes</option><option value="dots">Subtle dots</option><option value="grid">Fine grid</option>
@@ -111,7 +115,14 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 import {STLExporter} from 'three/addons/exporters/STLExporter.js';
-const T=window.PentominoTilings,C=window.DERAILEDColour;
+const T=window.PentominoTilings,C=window.DERAILEDColour,G=window.GomasuPostures;
+if(!T||!C||!G)throw Error('Missing original DERAILED colour, tiling, or Gomasu data');
+const GOMASU_EDITION='gomasu-original';
+const characters=new Map(G.characters.map(item=>[item.shape,item]));
+function selectedPalette(){
+ const id=$('palette').value;
+ return id===GOMASU_EDITION?{name:'Gomasu Originals',edition:GOMASU_EDITION}:C.load(id);
+}
 const $=id=>document.getElementById(id), letters=[...T.letters];
 // Curated morphological families: swirls, long stems, compact, stepped, angular.
 const PAIRS=[['F','Z'],['L','Y'],['P','U'],['N','W'],['T','V']];
@@ -124,6 +135,12 @@ function materialIdentity(letter,palette,mode){
  const baseFinish=mode==='paired-satin'?(isSecond?'satin':'matte'):
   mode==='paired'?(isSecond?'glossy':'matte'):mode;
  const override=pieceOverrides[letter]||{};
+ if(palette.edition===GOMASU_EDITION){
+  const colourKey=override.gomasuLetter||letter;
+  const character=characters.get(colourKey);
+  return {color:character.color,colourKey,token:colourKey+' · '+character.title_en,
+   finish:override.finish||baseFinish,pattern:override.pattern??$('pattern').value};
+ }
  const colourIndex=override.colourIndex??base.colourIndex;
  const color=C.colours(palette)[colourIndex];
  const token=colourIndex<5?'Feature '+(colourIndex+1):colourIndex===5?'Background':'Foreground';
@@ -143,7 +160,7 @@ function renderMaterialKey(palette,mode){
   item.type='button';item.className='material-item'+(name===selectedPiece?' active':'');
   item.title=name+' · '+identity.token+' · '+identity.finish+(identity.pattern==='none'?'':' · '+identity.pattern);
   item.setAttribute('aria-label','Design pentomino '+name);
-  item.onclick=()=>{selectedPiece=name;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor();activateTab('piece')};
+  item.onclick=()=>{selectedPiece=name;renderMaterialKey(selectedPalette(),$('finish').value);syncPieceEditor();activateTab('piece')};
   const dot=document.createElement('span');dot.className='material-dot';dot.style.background=identity.color;
   const info=document.createElement('div');info.className='material-meta';
   const strong=document.createElement('strong');strong.textContent=name;
@@ -153,8 +170,14 @@ function renderMaterialKey(palette,mode){
 }
 function syncPieceEditor(){
  $('pieceSelect').value=selectedPiece;
- const item=materialIdentity(selectedPiece,C.load($('palette').value),$('finish').value);
- $('pieceColour').value=String(item.colourIndex);
+ const palette=selectedPalette(),item=materialIdentity(selectedPiece,palette,$('finish').value);
+ const options=palette.edition===GOMASU_EDITION?
+  letters.map(letter=>({value:letter,label:letter+' · '+characters.get(letter).title_en})):
+  ['Feature 1','Feature 2','Feature 3','Feature 4','Feature 5','Background · light','Foreground · dark']
+   .map((label,i)=>({value:String(i),label}));
+ const control=$('pieceColour');
+ control.replaceChildren(...options.map(item=>{const opt=document.createElement('option');opt.value=item.value;opt.textContent=item.label;return opt}));
+ control.value=palette.edition===GOMASU_EDITION?item.colourKey:String(item.colourIndex);
  $('pieceFinish').value=item.finish;
  $('piecePattern').value=item.pattern;
 }
@@ -374,6 +397,10 @@ function importDesignJson(data){
    if(!Number.isInteger(override.colourIndex)||override.colourIndex<0||override.colourIndex>6)throw Error('Invalid colour for '+letter);
    item.colourIndex=override.colourIndex;
   }
+  if(override.gomasuLetter!==undefined){
+   if(typeof override.gomasuLetter!=='string'||!characters.has(override.gomasuLetter))throw Error('Invalid Gomasu colour for '+letter);
+   item.gomasuLetter=override.gomasuLetter;
+  }
   for(const id of ['finish','pattern'])if(override[id]!==undefined){
    if(![...$(id==='finish'?'pieceFinish':'piecePattern').options].some(o=>o.value===override[id]))throw Error('Invalid '+id+' for '+letter);
    item[id]=override[id];
@@ -411,7 +438,7 @@ function fitCamera(){
 function renderPieces(){
  for(const m of meshes){group.remove(m);disposeMesh(m)}meshes=[];
  const shapeSettings=geometrySettings(),depth=shapeSettings.depth,bevelThickness=shapeSettings.bevelThickness;
- const palette=C.load($('palette').value),mode=$('finish').value;
+ const palette=selectedPalette(),mode=$('finish').value;
  const exploded=$('arrangement').value==='exploded';
  for(const [i,tile] of T.solutions[Number($('solution').value)].entries()){
   const shape=shapeFor(tile.cells,exploded?0:shapeSettings.gap,shapeSettings.corner);
@@ -444,20 +471,36 @@ function renderPieces(){
  $('depthLabel').textContent=depth.toFixed(2);
  for(const id of ['corner','gap','layerPitch'])$(id+'Label').textContent=Number($(id).value).toFixed(2);
  syncGeometryControls();
- $('swatches').replaceChildren(...C.colours(palette).map((hex,i)=>{const el=document.createElement('span');el.style.background=hex;el.title=(i<5?'Feature '+(i+1):i===5?'Background · X':'Foreground · I')+' · '+hex;return el}));
+ const isGomasu=palette.edition===GOMASU_EDITION,swatches=$('swatches');
+ swatches.classList.toggle('gomasu-edition',isGomasu);
+ if(isGomasu){
+  swatches.replaceChildren(...letters.map(letter=>{
+   const character=characters.get(letter),el=document.createElement('span');
+   el.style.background=character.color;el.title=letter+' · '+character.title_en+' · '+character.name_ja+' · '+character.color;
+   el.textContent=letter;return el;
+  }));
+ }else{
+  swatches.replaceChildren(...C.colours(palette).map((hex,i)=>{const el=document.createElement('span');
+   el.style.background=hex;el.title=(i<5?'Feature '+(i+1):i===5?'Background · X':'Foreground · I')+' · '+hex;return el}));
+ }
+ $('materialDescription').textContent=isGomasu?'12 original character colours':'5 colour pairs + 2 neutrals';
+ $('paletteExplainer').textContent=isGomasu?
+  'Gomasu Original Edition: all twelve character colours, read directly from the original character data. Material finishes remain adjustable.':
+  'Five features + two neutrals, shared with the original 2D lab.';
  renderMaterialKey(palette,mode);
  syncPieceEditor();
  $('status').textContent='Ready · '+meshes.length+' pieces · '+(mode==='paired'?'matte + glossy':mode==='paired-satin'?'matte + satin':mode);
 }
 for(const [id,p] of Object.entries(C.presets)){const option=document.createElement('option');option.value=id;option.textContent=p.name;$('palette').append(option)}
+const special=document.createElement('option');special.value=GOMASU_EDITION;special.textContent='✳ Gomasu Originals · 12 characters';$('palette').add(special);
 $('palette').value='berry';
 for(const name of letters){const opt=document.createElement('option');opt.value=name;opt.textContent=name;$('pieceSelect').add(opt)}
-for(const [i,name] of ['Feature 1','Feature 2','Feature 3','Feature 4','Feature 5','Background · light','Foreground · dark'].entries()){
- const opt=document.createElement('option');opt.value=String(i);opt.textContent=name;$('pieceColour').add(opt);
-}
 for(const item of $('pattern').options){const opt=document.createElement('option');opt.value=item.value;opt.textContent=item.textContent;$('piecePattern').add(opt)}
-$('pieceSelect').addEventListener('change',()=>{selectedPiece=$('pieceSelect').value;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor()});
-$('pieceColour').addEventListener('change',()=>overrideSelected('colourIndex',Number($('pieceColour').value)));
+$('pieceSelect').addEventListener('change',()=>{selectedPiece=$('pieceSelect').value;renderMaterialKey(selectedPalette(),$('finish').value);syncPieceEditor()});
+$('pieceColour').addEventListener('change',()=>{
+ if($('palette').value===GOMASU_EDITION)overrideSelected('gomasuLetter',$('pieceColour').value);
+ else overrideSelected('colourIndex',Number($('pieceColour').value));
+});
 $('pieceFinish').addEventListener('change',()=>overrideSelected('finish',$('pieceFinish').value));
 $('piecePattern').addEventListener('change',()=>overrideSelected('pattern',$('piecePattern').value));
 $('resetDesign').addEventListener('click',()=>{pieceOverrides=Object.create(null);$('finish').value='paired-satin';$('pattern').value='none';renderPieces()});
@@ -503,7 +546,7 @@ renderer.domElement.addEventListener('click',event=>{
  pointer.set((event.clientX-bounds.left)/bounds.width*2-1,-(event.clientY-bounds.top)/bounds.height*2+1);
  raycaster.setFromCamera(pointer,camera);
  const hit=raycaster.intersectObjects(meshes,false)[0];
- if(hit){selectedPiece=hit.object.userData.letter;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor();activateTab('piece')}
+ if(hit){selectedPiece=hit.object.userData.letter;renderMaterialKey(selectedPalette(),$('finish').value);syncPieceEditor();activateTab('piece')}
 });
 $('export').onclick=async()=>{
  const btn=$('export');btn.disabled=true;$('status').textContent='Building binary glTF…';
