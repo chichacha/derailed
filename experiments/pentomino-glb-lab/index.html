@@ -26,6 +26,9 @@ input{accent-color:#f49cbb}.swatches{display:flex;gap:5px}.swatches span{height:
 .material-meta{display:flex;flex-direction:column;min-width:0}
 .material-meta strong{font-size:12px;line-height:1.2}
 .material-meta small{font-size:10px;color:#aab2bf;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.material-item{cursor:pointer;appearance:none;color:inherit;font:inherit;text-align:left}
+.material-item:hover,.material-item.active{border-color:#f49cbb8a;background:#ffffff14}
+.material-item.active strong{color:#f49cbb}
 .btnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .note{font-size:12px;line-height:1.65;color:#abb0ba;margin:0}
 .status{min-height:2em;font-size:12px;color:#cbeef3}
@@ -52,11 +55,22 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 <div class="group" id="togetherSpacing"><label for="gap">Piece gap <output id="gapLabel">0.18</output></label><input id="gap" type="range" min=".12" max=".35" step=".01" value=".18"></div>
 <div class="group" id="layerSpacing" hidden><label for="layerPitch">Z-axis layer spacing <output id="layerPitchLabel">1.25</output></label><input id="layerPitch" type="range" min=".9" max="2.4" step=".05" value="1.25"></div>
 <h2>02 / Material</h2><div class="group"><label for="palette">Original lab palette</label><select id="palette"></select><div class="swatches" id="swatches"></div></div>
-<div class="group"><label for="finish">Surface finishes</label><select id="finish"><option value="paired" selected>Matte + glossy pairs</option><option value="paired-metal">Matte + satin pairs</option><option value="matte">All matte</option><option value="ceramic">All glazed ceramic</option><option value="metal">All satin metal</option></select></div>
+<div class="group"><label for="finish">Surface finishes</label><select id="finish"><option value="paired-satin" selected>Matte + satin pairs</option><option value="paired">Matte + glossy pairs</option><option value="matte">All matte</option><option value="ceramic">All glazed ceramic</option><option value="metal">All satin metal</option></select></div>
 <div class="group"><label>12 piece identities <span>5 colour pairs + 2 neutrals</span></label><div id="materialKey" class="material-key" aria-label="Colour and finish assigned to each pentomino"></div></div>
+<div class="group"><label for="pattern">Surface graphics</label><select id="pattern">
+<option value="none" selected>None / clean colour</option><option value="classic">Original-lab-inspired motifs</option>
+<option value="stripes">Continuous stripes</option><option value="dots">Subtle dots</option><option value="grid">Fine grid</option>
+<option value="arc">Oversized circle</option><option value="split">Diagonal split</option><option value="blocks">Bold blocks</option>
+</select><p class="note">Graphics are textures on the broad faces, included in GLB, not physically embossed.</p></div>
+<h2>03 / Design a piece</h2>
+<div class="group"><label for="pieceSelect">Select pentomino</label><select id="pieceSelect"></select></div>
+<div class="group"><label for="pieceColour">Colour token</label><select id="pieceColour"></select></div>
+<div class="group"><label for="pieceFinish">Piece finish</label><select id="pieceFinish"><option value="matte">Soft matte</option><option value="satin">Subtle satin</option><option value="glossy">Glossy</option><option value="ceramic">Ceramic</option><option value="metal">Metal</option></select></div>
+<div class="group"><label for="piecePattern">Piece graphic</label><select id="piecePattern"></select></div>
+<button id="resetDesign">↺ Restore curated pairings</button>
 <div class="btnrow"><button id="turntable">Pause rotation</button><button id="reset">Reset camera</button></div>
-<h2>03 / Take it with you</h2><button class="primary" id="export">↓ Export coloured .GLB</button>
-<p class="note">I uses the dark foreground neutral; X uses the light background neutral. Each feature colour appears twice: one matte and one glossy (or satin). The GLB retains all twelve separate meshes and their materials.</p>
+<h2>04 / Export your design</h2><button class="primary" id="export">↓ Export coloured .GLB</button>
+<p class="note">Curated pairs: F/Z (fluid), L/Y (long), P/U (compact), N/W (stepped), T/V (angular). I uses foreground; X uses background. Colour, finish and graphic edits are per-piece overrides.</p>
 <div class="status" id="status" role="status" aria-live="polite">Loading 3D engine…</div>
 <p class="note"><a href="../pentomino-lab/index.html">Back to the original 2D Pentomino Lab ↗</a></p>
 </aside></div>
@@ -68,34 +82,54 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
 const T=window.PentominoTilings,C=window.DERAILEDColour;
 const $=id=>document.getElementById(id), letters=[...T.letters];
-const featureLetters=letters.filter(name=>name!=='I'&&name!=='X');
-// Exactly 12 identities: 2 neutral pieces + five feature colours used twice each.
+// Curated morphological families: swirls, long stems, compact, stepped, angular.
+const PAIRS=[['F','Z'],['L','Y'],['P','U'],['N','W'],['T','V']];
+const assignments=new Map();
+PAIRS.forEach(([a,b],index)=>{assignments.set(a,{colourIndex:index,finish:'matte'});assignments.set(b,{colourIndex:index,finish:'satin'})});
+let selectedPiece='F',pieceOverrides=Object.create(null);
 function materialIdentity(letter,palette,mode){
- const isNeutral=letter==='I'||letter==='X';
- const rank=featureLetters.indexOf(letter),featureIndex=Math.floor(rank/2),second=rank%2===1;
- const color=isNeutral?(letter==='I'?palette.dark:palette.light):palette.features[featureIndex];
- const token=isNeutral?(letter==='I'?'Foreground':'Background'):'Feature '+(featureIndex+1);
- const finish=mode==='paired'?(isNeutral||!second?'matte':'glossy'):
-  mode==='paired-metal'?(isNeutral||!second?'matte':'satin'):mode;
- return {color,token,finish};
+ const base=letter==='I'?{colourIndex:6,finish:'matte'}:letter==='X'?{colourIndex:5,finish:'matte'}:assignments.get(letter);
+ const isSecond=base.finish==='satin';
+ const baseFinish=mode==='paired-satin'?(isSecond?'satin':'matte'):
+  mode==='paired'?(isSecond?'glossy':'matte'):mode;
+ const override=pieceOverrides[letter]||{};
+ const colourIndex=override.colourIndex??base.colourIndex;
+ const color=C.colours(palette)[colourIndex];
+ const token=colourIndex<5?'Feature '+(colourIndex+1):colourIndex===5?'Background':'Foreground';
+ return {color,colourIndex,token,finish:override.finish||baseFinish,pattern:override.pattern??$('pattern').value};
 }
 function finishSettings(finish){
  return finish==='glossy'?{roughness:.14,metalness:0}:
   finish==='ceramic'?{roughness:.22,metalness:0}:
-  finish==='satin'||finish==='metal'?{roughness:.31,metalness:.65}:
+  finish==='satin'?{roughness:.57,metalness:.06}:
+  finish==='metal'?{roughness:.31,metalness:.65}:
   {roughness:1,metalness:0};
 }
 function renderMaterialKey(palette,mode){
  const key=$('materialKey');key.replaceChildren();
  for(const name of letters){
-  const identity=materialIdentity(name,palette,mode),item=document.createElement('div');
-  item.className='material-item';item.title=name+' · '+identity.token+' · '+identity.finish;
+  const identity=materialIdentity(name,palette,mode),item=document.createElement('button');
+  item.type='button';item.className='material-item'+(name===selectedPiece?' active':'');
+  item.title=name+' · '+identity.token+' · '+identity.finish+(identity.pattern==='none'?'':' · '+identity.pattern);
+  item.setAttribute('aria-label','Design pentomino '+name);
+  item.onclick=()=>{selectedPiece=name;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor()};
   const dot=document.createElement('span');dot.className='material-dot';dot.style.background=identity.color;
   const info=document.createElement('div');info.className='material-meta';
   const strong=document.createElement('strong');strong.textContent=name;
   const small=document.createElement('small');small.textContent=identity.finish;
   info.append(strong,small);item.append(dot,info);key.append(item);
  }
+}
+function syncPieceEditor(){
+ $('pieceSelect').value=selectedPiece;
+ const item=materialIdentity(selectedPiece,C.load($('palette').value),$('finish').value);
+ $('pieceColour').value=String(item.colourIndex);
+ $('pieceFinish').value=item.finish;
+ $('piecePattern').value=item.pattern;
+}
+function overrideSelected(field,value){
+ (pieceOverrides[selectedPiece]||=(Object.create(null)))[field]=value;
+ renderPieces();
 }
 const host=$('canvas'),scene=new THREE.Scene(),group=new THREE.Group();scene.add(group);
 const camera=new THREE.PerspectiveCamera(39,1,.05,150);camera.position.set(10,-12,15);
@@ -185,7 +219,7 @@ function renderPieces(){
   const material=new THREE.MeshStandardMaterial({color:identity.color,...finishSettings(identity.finish)});
   material.name=tile.name+' · '+identity.token+' · '+identity.finish;
   const mesh=new THREE.Mesh(geom,material);mesh.name='Pentomino '+tile.name;
-  mesh.userData={letter:tile.name,palette:palette.name,paletteToken:identity.token,surfaceFinish:identity.finish};
+  mesh.userData={letter:tile.name,palette:palette.name,paletteToken:identity.token,surfaceFinish:identity.finish,pattern:identity.pattern};
   if(exploded){
    // Centre each mesh's local geometry: every pivot is EXACTLY x=0, y=0.
    // Only Z differs; no offsets or X/Y tilts that could conjoin layers.
@@ -207,11 +241,22 @@ function renderPieces(){
  $('layerSpacing').hidden=!exploded;
  $('swatches').replaceChildren(...C.colours(palette).map((hex,i)=>{const el=document.createElement('span');el.style.background=hex;el.title=(i<5?'Feature '+(i+1):i===5?'Background · X':'Foreground · I')+' · '+hex;return el}));
  renderMaterialKey(palette,mode);
- $('status').textContent='Ready · '+meshes.length+' unique piece identities · '+(mode==='paired'?'matte + glossy':mode==='paired-metal'?'matte + satin':mode);
+ syncPieceEditor();
+ $('status').textContent='Ready · '+meshes.length+' pieces · '+(mode==='paired'?'matte + glossy':mode==='paired-satin'?'matte + satin':mode);
 }
 for(const [id,p] of Object.entries(C.presets)){const option=document.createElement('option');option.value=id;option.textContent=p.name;$('palette').append(option)}
 $('palette').value='berry';
-for(const id of ['palette','solution','depth','finish','corner','gap','layerPitch'])$(id).addEventListener('input',renderPieces);
+for(const name of letters){const opt=document.createElement('option');opt.value=name;opt.textContent=name;$('pieceSelect').add(opt)}
+for(const [i,name] of ['Feature 1','Feature 2','Feature 3','Feature 4','Feature 5','Background · light','Foreground · dark'].entries()){
+ const opt=document.createElement('option');opt.value=String(i);opt.textContent=name;$('pieceColour').add(opt);
+}
+for(const item of $('pattern').options){const opt=document.createElement('option');opt.value=item.value;opt.textContent=item.textContent;$('piecePattern').add(opt)}
+$('pieceSelect').addEventListener('change',()=>{selectedPiece=$('pieceSelect').value;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor()});
+$('pieceColour').addEventListener('change',()=>overrideSelected('colourIndex',Number($('pieceColour').value)));
+$('pieceFinish').addEventListener('change',()=>overrideSelected('finish',$('pieceFinish').value));
+$('piecePattern').addEventListener('change',()=>overrideSelected('pattern',$('piecePattern').value));
+$('resetDesign').addEventListener('click',()=>{pieceOverrides=Object.create(null);$('finish').value='paired-satin';$('pattern').value='none';renderPieces()});
+for(const id of ['palette','solution','depth','finish','corner','gap','layerPitch','pattern'])$(id).addEventListener('input',renderPieces);
 $('layerPitch').addEventListener('change',fitCamera);
 $('arrangement').addEventListener('change',()=>{group.rotation.z=0;renderPieces();fitCamera()});
 $('turntable').onclick=()=>{spinning=!spinning;$('turntable').textContent=spinning?'Pause rotation':'Resume rotation'};
