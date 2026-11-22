@@ -11,7 +11,7 @@ Open `index.html` directly in a browser—no build step, no CDN, no dependencies
 3. **IntersectionObserver**: tweak `threshold: .12` to see how scroll-triggered reveal timing changes. Compare with scroll listeners.
 4. **requestAnimationFrame**: inspect the progress bar's passive scroll listener and how it batches visual updates.
 5. **Data-driven interaction**: edit the `names` JavaScript object; the CA / UK / JP controls render the same interface from three small data records.
-6. **SVG state**: the white-rump button toggles opacity of a named SVG path; a good starting point for more anatomy annotations.
+6. **Photographic reveal with CSS clip-path**: the button changes `aria-expanded` and toggles the `.uncovered` class, sliding away an overlay to reveal a Wikimedia Commons photo of an elk information sign. Try changing the `clip-path` to create a vertical or diagonal curtain.
 7. **Accessibility**: test tab/Enter controls, `aria-pressed`, text replacement, and your OS 'reduce motion' setting.
 
 ## Image files (put both beside index.html)
@@ -36,6 +36,7 @@ The hero uses `object-fit: cover` with `object-position: 50% 47%`; adjust those 
 - `object-fit` / `object-position` for responsive cropping.
 - CSS Grid for the split hero; one-column layout in the mobile media query.
 - A subtle CSS entrance animation guarded by `prefers-reduced-motion`.
+- Chapter 03 uses an externally hosted Wikimedia Commons image; the source is credited in its caption (Bob Wick / BLM Oregon & Washington, CC BY 2.0). The image is a photo **of a sign illustrating an elk**, not a photograph of a live elk. A local copy can replace its URL later.
 - Image load error handling (a useful general pattern for local static sites).
 
 ## Editorial / factual guardrails
