@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "description": "Unofficial artist-curated interpretations inspired by SEY coffee archival packaging, plus DERAILED palette sketches. These are not official sampled brand colours.",
+  "description": "Unofficial artist-curated SEY-inspired palettes, cinematic and design-system homages, vintage print colours, and DERAILED originals. No collection is an official colour specification.",
   "source": "https://www.seycoffee.com/collections/archived-coffees",
   "palettes": [
     {
@@ -221,6 +221,292 @@
         "graphic",
         "editorial",
         "vibrant"
+      ]
+    },
+    {
+      "id": "cinema-grand-hotel",
+      "name": "Grand Hotel",
+      "category": "Cinematic palettes",
+      "collection": "Wes Anderson-inspired",
+      "note": "Powdered pink, mustard velvet and a faded teal lobby.",
+      "features": [
+        "#DA9BA0",
+        "#EAC66A",
+        "#83ACA1",
+        "#AFA4BF",
+        "#89565D"
+      ],
+      "light": "#FCF5E9",
+      "dark": "#453B46",
+      "tags": [
+        "cinematic",
+        "pastel",
+        "nostalgic"
+      ]
+    },
+    {
+      "id": "cinema-coastal-summer",
+      "name": "Coastal Summer",
+      "category": "Cinematic palettes",
+      "collection": "Wes Anderson-inspired",
+      "note": "Sun-faded seaside blue with warm apricot and coral.",
+      "features": [
+        "#76A9B7",
+        "#ECD48E",
+        "#EBA88C",
+        "#D36E67",
+        "#566E79"
+      ],
+      "light": "#FBF4E4",
+      "dark": "#304B59",
+      "tags": [
+        "cinematic",
+        "coastal",
+        "warm"
+      ]
+    },
+    {
+      "id": "cinema-storybook-train",
+      "name": "Storybook Train",
+      "category": "Cinematic palettes",
+      "collection": "Wes Anderson-inspired",
+      "note": "Railway green, oxblood, ticket ochre and compartment pink.",
+      "features": [
+        "#3F6659",
+        "#A24E57",
+        "#E2B75C",
+        "#DFA8A2",
+        "#96A59A"
+      ],
+      "light": "#F8F0DF",
+      "dark": "#2D3F3A",
+      "tags": [
+        "cinematic",
+        "retro",
+        "earthy"
+      ]
+    },
+    {
+      "id": "material-primary-playground",
+      "name": "Primary Playground",
+      "category": "Design systems",
+      "collection": "Classic Material-inspired",
+      "note": "A vivid five-colour UI playground inspired by classic Material hues.",
+      "features": [
+        "#F44336",
+        "#FFC107",
+        "#4CAF50",
+        "#2196F3",
+        "#9C27B0"
+      ],
+      "light": "#FAFAFA",
+      "dark": "#212121",
+      "tags": [
+        "primary",
+        "ui",
+        "vibrant"
+      ]
+    },
+    {
+      "id": "material-paper-sunrise",
+      "name": "Paper Sunrise",
+      "category": "Design systems",
+      "collection": "Classic Material-inspired",
+      "note": "Warm Material-like brights balanced with paper and graphite.",
+      "features": [
+        "#FF7043",
+        "#FFCA28",
+        "#26A69A",
+        "#42A5F5",
+        "#AB47BC"
+      ],
+      "light": "#FAFAF5",
+      "dark": "#263238",
+      "tags": [
+        "ui",
+        "bright",
+        "warm"
+      ]
+    },
+    {
+      "id": "material-muted-surface",
+      "name": "Muted Material",
+      "category": "Design systems",
+      "collection": "Classic Material-inspired",
+      "note": "Softer accent tones with a calm, information-friendly surface.",
+      "features": [
+        "#D76A66",
+        "#D0AA4A",
+        "#7FAD80",
+        "#679FBD",
+        "#9C87C0"
+      ],
+      "light": "#F7F8F6",
+      "dark": "#26323D",
+      "tags": [
+        "ui",
+        "muted",
+        "soft"
+      ]
+    },
+    {
+      "id": "posters-railway-coast",
+      "name": "Railway to the Coast",
+      "category": "Print & posters",
+      "collection": "Vintage Travel Posters",
+      "note": "Screen-printed navy and mustard with faded sea glass.",
+      "features": [
+        "#243D56",
+        "#E7B94E",
+        "#81A5A0",
+        "#D6785A",
+        "#EBD6B0"
+      ],
+      "light": "#F7F0DE",
+      "dark": "#263C49",
+      "tags": [
+        "retro",
+        "travel",
+        "coastal"
+      ]
+    },
+    {
+      "id": "posters-desert-motel",
+      "name": "Desert Motel",
+      "category": "Print & posters",
+      "collection": "Vintage Travel Posters",
+      "note": "Terracotta, dusty turquoise, sunset peach and sand.",
+      "features": [
+        "#B44F3C",
+        "#E0A15B",
+        "#4A928E",
+        "#F0C6A4",
+        "#74596D"
+      ],
+      "light": "#FCF2DF",
+      "dark": "#483B40",
+      "tags": [
+        "retro",
+        "warm",
+        "poster"
+      ]
+    },
+    {
+      "id": "posters-alpine-express",
+      "name": "Alpine Express",
+      "category": "Print & posters",
+      "collection": "Vintage Travel Posters",
+      "note": "Forest green, alpine sky and sunlit yellow on old paper.",
+      "features": [
+        "#2D625C",
+        "#7BA9B8",
+        "#EBC35D",
+        "#CF775E",
+        "#9B9B81"
+      ],
+      "light": "#F7F2E3",
+      "dark": "#2A3E3D",
+      "tags": [
+        "retro",
+        "mountains",
+        "travel"
+      ]
+    },
+    {
+      "id": "data-quiet-signal",
+      "name": "Quiet Signal",
+      "category": "Design systems",
+      "collection": "Editorial Data",
+      "note": "Confident blue-green ink plus a spare warning coral.",
+      "features": [
+        "#243F50",
+        "#567E86",
+        "#8DB7AD",
+        "#D4BA7A",
+        "#D36E61"
+      ],
+      "light": "#FAF9F3",
+      "dark": "#202F39",
+      "tags": [
+        "data",
+        "diagram",
+        "muted"
+      ]
+    },
+    {
+      "id": "data-bold-evidence",
+      "name": "Bold Evidence",
+      "category": "Design systems",
+      "collection": "Editorial Data",
+      "note": "Strong visual separation for charts and annotations.",
+      "features": [
+        "#142F4D",
+        "#E1A633",
+        "#2E9989",
+        "#E56C58",
+        "#8B74AB"
+      ],
+      "light": "#FBF8F0",
+      "dark": "#242933",
+      "tags": [
+        "data",
+        "graphic",
+        "contrast"
+      ]
+    },
+    {
+      "id": "data-field-journal",
+      "name": "Field Journal",
+      "category": "Design systems",
+      "collection": "Editorial Data",
+      "note": "An understated field-report palette with botanical markers.",
+      "features": [
+        "#315D52",
+        "#6C9B89",
+        "#BBAD77",
+        "#D18F83",
+        "#7D82A1"
+      ],
+      "light": "#F6F4EB",
+      "dark": "#293B36",
+      "tags": [
+        "data",
+        "report",
+        "editorial"
+      ]
+    }
+  ],
+  "collections": [
+    {
+      "category": "Coffee & studio",
+      "names": [
+        "SEY-inspired",
+        "DERAILED picks"
+      ]
+    },
+    {
+      "category": "Cinematic palettes",
+      "names": [
+        "Wes Anderson-inspired"
+      ]
+    },
+    {
+      "category": "Design systems",
+      "names": [
+        "Classic Material-inspired",
+        "Editorial Data"
+      ]
+    },
+    {
+      "category": "Print & posters",
+      "names": [
+        "Vintage Travel Posters"
+      ]
+    },
+    {
+      "category": "Your collection",
+      "names": [
+        "My palettes"
       ]
     }
   ]
