@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#19191e">
+  <meta name="description" content="Twelve pentominoes. Sixty squares. Five colours and two neutrals. A tiny extensible generative design laboratory.">
+  <title>Pentomino Lab — DERAILED.</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <div><a class="brand" href="../../index.html">← DERAILED.</a><span class="eyebrow">EXPERIMENT 001 / GENERATIVE DESIGN</span>
+      <h1>Pentomino <em>Pattern Lab.</em></h1>
+      <p>12 shapes · 60 squares · one very unreasonable design obsession.</p></div>
+    <div class="stamp">BEAUTIFULLY<br>CONSTRAINED <span>✳</span></div>
+  </header>
+  <div style="max-width:1580px;margin:16px auto 0;padding:0 clamp(18px,4vw,64px)">
+    <a href="cast-of-twelve.html" style="display:inline-block;color:#f49cbb;text-decoration:none;font-size:13px;font-weight:750;border-bottom:1px solid #f49cbb;padding-bottom:3px">✳ Meet the Cast of Twelve — character identities →</a> <a href="posture-studio.html" style="display:inline-block;margin-left:18px;color:#cbeef3;text-decoration:none;font-size:13px;font-weight:750;border-bottom:1px solid #cbeef3;padding-bottom:3px">↻ Explore all 63 Gomasu postures →</a>
+  </div>
+  <main class="layout">
+    <section class="workspace" aria-label="Artwork studio">
+      <div class="toolbar">
+        <button class="primary" id="newTiling">↻ New tiling</button>
+        <button id="remix">✳ Remix patterns</button>
+        <button id="shuffle">◈ Reassign colours</button>
+        <span class="status" id="tilingLabel">Tiling 01 / 16</span>
+      </div>
+      <div class="artwork-frame"><div id="board" aria-label="Interactive 6 by 10 pentomino artwork"></div></div>
+      <p class="underboard"><span>Click a piece to inspect its Gomasu posture and design. Patterns rotate and reflect with their character.</span><span id="pieceStats">12 pieces / 60 cells</span></p>
+      <div class="rules"><span>● Five feature colours</span><span>● Two neutral tokens</span><span>● One dominant colour per shape</span></div>
+      <div class="exportbar">
+        <button id="exportSvg">↓ SVG artwork</button><button id="exportPng">↓ PNG artwork</button>
+        <button id="exportDesign">↓ Design JSON</button><button id="importDesign">↑ Open design JSON</button>
+        <input id="designFile" type="file" accept=".json,application/json" hidden>
+      </div>
+    </section>
+    <aside class="panel" aria-label="Design controls">
+      <section>
+        <div class="sectiontitle"><h2>01 / Colour system</h2><span>5 + 2 neutrals</span></div>
+        <label for="preset">Palette preset</label><select id="preset"></select>
+        <div class="palette-grid" id="paletteSwatches"></div>
+        <label for="background">Canvas background</label>
+        <select id="background"><option value="5">Light neutral</option><option value="6">Dark neutral</option>
+          <option value="0">Feature 1</option><option value="1">Feature 2</option><option value="2">Feature 3</option><option value="3">Feature 4</option><option value="4">Feature 5</option>
+        </select>
+        <div class="btnpair"><button id="exportPalette">↓ Palette JSON</button><button id="exportCss">↓ CSS tokens</button></div>
+        <p class="hint">Edit any swatch. The seven tokens can be reused in a future Colour Lab or in other DERAILED pages.</p>
+      </section>
+      <section>
+        <div class="sectiontitle"><h2>02 / Graphic language</h2><span>One bold graphic treatment</span></div>
+        <label for="designMode">Design engine</label><select id="designMode"><option value="character" selected>Character DNA · Gomasu postures</option><option value="free">Manual motifs · constrained</option></select>
+        <label for="mood">Composition mood</label><select id="mood">
+          <option value="quiet">Quiet / mostly solid</option><option value="graphic" selected>Graphic / balanced</option>
+          <option value="playful">Playful / decorated</option><option value="maximal">Maximal / more decoration</option>
+        </select>
+        <label for="family">Composition family</label><select id="family">
+          <option value="curves" selected>Circle cutout · large accent circle</option><option value="linear">Stripes · repeat across piece</option>
+          <option value="splits">Clean split · two-tone</option><option value="blocks">Colour blocks · bold rectangles</option></select>
+        <div id="stripeControls" class="family-controls" hidden>
+          <label for="stripeDirection">Stripe direction</label>
+          <select id="stripeDirection">
+            <option value="horizontal">Horizontal stripes</option>
+            <option value="vertical">Vertical stripes</option>
+            <option value="diagonal" selected>Diagonal stripes</option>
+          </select>
+        </div>
+        <div id="splitControls" class="family-controls" hidden>
+          <label for="splitDirection">Split direction</label>
+          <select id="splitDirection">
+            <option value="vertical" selected>Vertical half</option>
+            <option value="horizontal">Horizontal half</option>
+            <option value="diagonal">Diagonal half</option>
+          </select>
+        </div>
+        <label for="pairing">Accent pairing</label><select id="pairing">
+          <option value="neutral" selected>Neutrals only · restrained</option><option value="mixed">Feature or neutral</option><option value="feature">Feature colours only</option></select>
+        <label for="density">Decorated pieces <output id="densityValue">45%</output></label>
+        <input id="density" type="range" min="0" max="100" step="5" value="45">
+        <label for="gap">Spacing <output id="gapValue">2</output></label>
+        <input id="gap" type="range" min="0" max="12" step="1" value="2">
+        <label for="radius">Corner radius <output id="radiusValue">3</output></label>
+        <input id="radius" type="range" min="0" max="24" step="1" value="3">
+        <label for="scale">Motif scale <output id="scaleValue">100%</output></label>
+        <input id="scale" type="range" min="55" max="150" step="5" value="100">
+      </section>
+      <section>
+        <div class="sectiontitle"><h2>03 / Shape inspector</h2><span id="selectedLabel">F</span></div>
+        <div class="piece-chips" id="pieceChips"></div>
+        <p class="posture-readout" id="postureInfo" aria-live="polite"></p>
+        <p class="hint" id="dnaTrait"></p>
+        <button class="wide" id="toggleDecoration">Turn decoration off</button>
+        <div id="motifInspectorRow"><label for="pieceMotif">Manual pattern</label><select id="pieceMotif"></select></div>
+        <div class="btnpair">
+          <div><label for="pieceMain">Dominant</label><select id="pieceMain"></select></div>
+          <div><label for="pieceAccent">Accent</label><select id="pieceAccent"></select></div>
+        </div>
+        <button class="wide" id="rotateMotif">↻ Rotate motif direction</button>
+        <p class="hint">Each shape follows a Gomasu posture ID; an unchanging shape can still wear different colours. X alone uses all five feature colours.</p>
+      </section>
+      <p class="credit">GOMASU × DERAILED. / One thing led to another.</p>
+    </aside>
+  </main>
+  <footer>Made to be remixed. <a href="README.md">How it works</a> · <a href="https://github.com/chichacha/derailed">Source on GitHub</a></footer>
+  <script defer src="../shared/colour-system.js"></script>
+  <script defer src="data/tilings.js"></script>
+  <script defer src="data/gomasu.js"></script>
+  <script defer src="js/character-dna.js"></script>
+  <script defer src="js/app.js"></script>
+</body>
+</html>

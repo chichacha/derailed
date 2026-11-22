@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#17171d">
+<title>The Cast of Twelve · Pentomino Lab · DERAILED.</title>
+<meta name="description" content="A playful design rulebook for twelve pentomino characters. Meet X 真ん中おじさん, the five-colour hero.">
+<style>
+:root{font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#f7f1ed;background:#191920}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+
+body{margin:0}
+main{max-width:1250px;padding:26px clamp(18px,4.5vw,68px) 70px;margin:auto}
+a{color:#f1a4be;text-underline-offset:3px}
+nav{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:60px;font-size:13px}
+nav a{text-decoration:none;font-weight:750}
+.eyebrow{font-size:10px;color:#f49cbb;letter-spacing:.2em;font-weight:800;text-transform:uppercase}
+h1{letter-spacing:-.075em;font-size:clamp(46px,7.6vw,90px);line-height:.99;margin:13px 0 22px}
+h1 em{font-style:normal;color:#f49cbb}
+.lead{font-size:clamp(16px,2vw,20px);line-height:1.5;color:#d8d2d7;max-width:760px}
+.intro{max-width:800px;margin-bottom:42px}
+.controls{display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap;margin:20px 0}
+button,select{border:1px solid #615d69;color:#fdf9f7;background:#35323d;padding:11px 14px;border-radius:9px;font:inherit;min-height:41px}
+button{cursor:pointer;font-size:12px;font-weight:750}
+button:hover{background:#514653}
+button:focus-visible,select:focus-visible{outline:2px solid #f49cbb;outline-offset:3px}
+button.primary{background:#f26a8d;color:#2b1822;border-color:#f26a8d}
+label{font-size:12px;color:#e2d8de;display:flex;gap:8px;align-items:center}
+#paletteSelect{min-width:160px}
+.sectionhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:40px 0 14px}
+h2{font-size:22px;letter-spacing:-.045em;margin:0}
+.sectionhead small,.muted{font-size:12px;color:#b5abb3}
+.hero{display:grid;grid-template-columns:minmax(250px,1fr) minmax(280px,1fr);border:1px solid #55505a;border-radius:20px;overflow:hidden;background:#27252e}
+.xstage{min-height:340px;background:var(--light,#FAF7F1);display:flex;justify-content:center;align-items:center;padding:30px;position:relative}
+.xstage svg{width:100%;max-width:380px;max-height:360px}
+.xhint{position:absolute;bottom:14px;color:#54434a;font-size:11px;text-align:center;left:0;right:0}
+.herocopy{padding:clamp(24px,4vw,43px);display:flex;flex-direction:column;justify-content:center}
+.herocopy h3{font-size:clamp(28px,3vw,42px);letter-spacing:-.055em;margin:8px 0 4px}
+.herocopy .jp{font-size:18px;color:#f7adbf}
+.herocopy p{color:#c9c0c7;line-height:1.65}
+.rulebox{border-left:3px solid #f26a8d;padding:10px 16px;margin:12px 0 20px;background:#ffffff0a}
+.rulebox strong{display:block;font-size:13px}
+.rulebox span{font-size:12px;color:#c8bdc6}
+.hero-actions{display:flex;gap:9px;flex-wrap:wrap}
+.palette-line{display:flex;gap:6px;margin:14px 0}
+.palette-line span{height:14px;flex:1;max-width:36px;border-radius:3px}
+.cast{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
+.card{border:1px solid #44424c;border-radius:15px;background:#25242d;overflow:hidden}
+.card-art{height:174px;display:flex;align-items:center;justify-content:center;background:#efebe5}
+.card-art svg{width:100%;height:145px}
+.card-copy{padding:16px 17px 19px}
+.card-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-title strong{font-size:24px}
+.card-title span{font-size:11px;color:#f5acbd;text-align:right}
+.card h3{margin:0 0 6px;font-size:16px;letter-spacing:-.035em}
+.card p{color:#c2b9c3;font-size:12px;margin:0 0 12px;line-height:1.55}
+.card .pose-meta{font-size:11px;color:#f3b1c3;letter-spacing:.03em;margin:11px 0}
+.card button{padding:7px 12px;min-height:31px}
+button[disabled]{opacity:.5;cursor:default}
+.controls select{min-width:150px}
+
+.motif{font-size:10px;color:#f9b5c8;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.note{border:1px solid #504b54;border-radius:12px;padding:20px 23px;margin-top:26px;background:#26242c}
+.note h2{font-size:16px}
+.note p{font-size:13px;color:#c9c0c7;max-width:900px;line-height:1.75}
+footer{margin-top:55px;color:#aaa0aa;font-size:11px;letter-spacing:.07em}
+@media(max-width:960px){.cast{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.hero{grid-template-columns:1fr}.cast{grid-template-columns:repeat(2,minmax(0,1fr))}.xstage{min-height:270px}.herocopy{padding:25px}nav{margin-bottom:38px}}
+@media(max-width:420px){.cast{grid-template-columns:1fr}.card-art{height:185px}}
+</style>
+</head>
+<body>
+<main>
+<nav><a href="../../index.html">← DERAILED.</a><a href="index.html">↗ Pattern Lab</a><a href="posture-studio.html">↻ The 63-posture studio</a><a href="https://chichacha.github.io/psychic-pento-guacamole/characters/">Gomasu Village ↗</a></nav>
+<header class="intro">
+<div class="eyebrow">PENTOMINO LAB / DESIGN RULE SHEET 001</div>
+<h1>The Cast <em>of Twelve.</em></h1>
+<p class="lead">Twelve Gomasu residents and sixty-three mathematically distinct orientations. One restrained graphic family, twelve individual design identities. The shapes never stop being themselves.</p>
+<div class="controls">
+<label>Colour world <select id="paletteSelect" aria-label="Colour palette"></select></label>
+<label>Graphic language <select id="styleFamily" aria-label="Graphic family">
+<option value="curves" selected>Large circle cutout</option><option value="linear">Continuous stripes</option><option value="splits">Clean two-tone split</option><option value="blocks">Broad colour block</option>
+</select></label>
+<label id="castStripes" hidden>Stripe direction <select id="stripeDirection"><option value="horizontal">Horizontal</option><option value="vertical">Vertical</option><option value="diagonal" selected>Diagonal</option></select></label>
+<label id="castSplits" hidden>Split direction <select id="splitDirection"><option value="vertical" selected>Vertical</option><option value="horizontal">Horizontal</option><option value="diagonal">Diagonal</option></select></label>
+<button id="cycleCast">↻ Next postures</button><button id="downloadSheet">↓ Export character sheet SVG</button>
+</div>
+</header>
+<div class="sectionhead"><h2>Meet the hero: X</h2><small>FIVE SQUARES · FIVE FEATURE COLOURS</small></div>
+<section class="hero" aria-label="X character five colour editor">
+<div class="xstage" id="xStage"><div id="xArtwork" aria-label="Five-colour X pentomino"></div>
+<div class="xhint">Tap a square to cycle its colour · all five stay unique</div></div>
+<div class="herocopy"><div class="eyebrow">SPECIAL DESIGN PERMISSION</div>
+<h3>The Center Uncle <span aria-hidden="true">✳</span></h3><div class="jp" lang="ja">真ん中おじさん</div>
+<p>X has only one free geometric orientation. Its perfectly symmetric silhouette makes it the ideal anchor for this tiny cast.</p>
+<div class="rulebox"><strong>Rule X01 — One colour per square.</strong>
+<span>Use all five feature colours exactly once. The centre is the anchor; four colourful arms surround it. No other piece receives all five colours.</span></div>
+<div class="palette-line" id="heroPalette" aria-label="The five feature colours"></div>
+<div class="hero-actions"><button class="primary" id="shuffleX">✳ Shuffle X colours</button><button id="resetX">Reset arrangement</button><button id="downloadX">↓ Export X SVG</button></div>
+</div></section>
+<div class="sectionhead"><h2>The supporting cast</h2><small>11 CHARACTERS · POSTURES FROM GOMASU DATA</small></div>
+<div id="cast" class="cast" aria-live="polite"></div>
+<section class="note"><h2>A design grammar, not a prison.</h2>
+<p>Every composition uses one visual family — linear, curved, split, or blocky. Character-specific accents follow the same five square identities through rotation and reflection. Each card cycles through its actual Gomasu posture IDs, including front and back where distinct. X remains the five-colour exception. These are editable concept sketches, not fabrication-ready cutting paths.</p>
+<p>Mathematics and character names: <a href="https://chichacha.github.io/psychic-pento-guacamole/characters/">Gomasu Village</a>. Explore each orientation in the <a href="posture-studio.html">Posture Studio</a>.</p></section>
+<footer>GOMASU × DERAILED. · A wonderfully unnecessary cast of characters. · DESIGN RULE SHEET v0.2</footer>
+</main>
+<script defer src="../shared/colour-system.js"></script>
+<script defer src="data/gomasu.js"></script>
+<script defer src="js/character-dna.js"></script>
+<script defer src="js/portrait.js"></script>
+<script defer src="js/cast.js"></script>
+</body></html>
