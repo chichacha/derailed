@@ -1,50 +1,50 @@
-# Story Reel Lab — The Great Elk Identity Crisis
+# DERAILED Motion Playground — local-first reel maker
 
-A tiny **15-second, 9:16 vertical trailer** built entirely in HTML Canvas 2D and vanilla JavaScript. It's a moving companion to `stories/elk-identity-crisis/index.html`, not a replacement for the long-form story.
+A reusable, standalone HTML/CSS/JavaScript workbench for making **vertical motion-typography reels** from your own photographs. No images need to be committed to GitHub. No server, uploads, accounts, framework, CDN or build step.
 
-## How to run
+## Try it
 
-Open `experiments/story-reel-lab/index.html` in the browser (or with a local server / Quarto preview). The reel reads the existing painted illustration from `../../stories/elk-identity-crisis/elk-painting.png`, so no images are duplicated.
+Open `experiments/story-reel-lab/index.html` in Chrome or Firefox (or serve using Quarto/local preview).
 
-Controls: **Play / Pause**, **Restart**, **Loop**, **timeline scrub**, and **Export WebM**. It exports a silent `720 × 1280` WebM by recording the animated canvas. Export needs browser support for `canvas.captureStream` and `MediaRecorder` (Chrome or Firefox is a good starting point). Keep the tab visible during the 15-second real-time capture. If your browser doesn't support WebM export, use a screen recorder or browser recording software.
+1. Choose an image from your computer with **Choose a local photo**. JPG/PNG is a good starting point. A built-in abstract placeholder is available if you don't want to use a photo.
+2. Edit the opening headline, second beat, and signature.
+3. Change font style, motion style, theme, crop focus, zoom, and duration.
+4. Preview with **Play / Pause**, **Restart**, or the timestamp scrubber.
+5. Click **Export WebM**. The browser records a silent 9:16 video (720 × 1280) at up to 30 fps in real time. Keep the page visible during recording.
+6. Convert the WebM to MP4 using local FFmpeg or your own converter when ready for Instagram.
 
-This is not an MP4 and does not include audio. A later FFmpeg or Remotion workflow can convert/edit for platforms that prefer MP4.
+Example conversion (run from a terminal with FFmpeg installed):
 
-## What to learn
+```bash
+ffmpeg -i derailed-motion-playground.webm -c:v libx264 -pix_fmt yuv420p -r 30 -crf 20 -movflags +faststart derailed-motion-playground.mp4
+```
 
-1. **Timeline as a pure function:** `render(t)` draws the animation at a given second. A slider and a recording engine can share the exact same scenes.
-2. **Easing:** `ease()`, `smooth()`, and `opacity()` coordinate how text and scenes enter or exit. Try a bouncy easing function.
-3. **Canvas typography:** `text()`, `serif()`, and `lines()` draw editorial lettering. Try larger type and more negative space.
-4. **Ken Burns crop:** `imageCover()` clips a growing crop out of the original painting.
-5. **Capturing to video:** `canvas.captureStream(30)` + `MediaRecorder` creates a recording.
-6. **Accessibility:** Play/Pause controls, slider, live status, and reduced-motion-aware styling. Note: the actual moving reel is intentionally a motion experiment; there is no alternative still video export yet.
+For exact 1080 × 1920 social export, add `-vf scale=1080:1920` before the output filename. This upscales the original 720 × 1280 canvas; future versions may render natively at a higher resolution.
 
-## Timeline
+## Privacy model
 
-| Seconds | Story beat |
-|---|---|
-| 0.0–3.2 | A giant elk takes a nap |
-| 3.2–6.2 | ELK? MOOSE? WAPITI? |
-| 6.2–9.4 | The naming problem in Canada, Britain, Japan |
-| 9.4–12.2 | Wapiti and the white rump |
-| 12.2–15.0 | Title card and visit-the-story prompt |
+The image is loaded with `<input type="file">` and a temporary browser `URL.createObjectURL(file)`. There are **no upload requests**, local storage, image persistence, remote scripts, or third-party SDKs. Selecting an image does **not** add it to the Git repository or GitHub Pages. Browser refresh clears the selected image.
 
-The pale rump illustration is an **abstract animated shape**, not the Wikimedia Commons photograph used by the long-form webpage; that avoids cross-origin canvas export restrictions and license/credit issues for this initial reel.
+**Note:** Local privacy is a property of the app as currently written. Anyone editing the code could change its behaviour. Review before using modified versions or sensitive images. External online conversion services are outside this tool's privacy boundary; use local FFmpeg if you want private conversion.
 
-## Technical caveats
+## Learning exercises
 
-- Canvas text depends on installed fonts; the page uses system sans-serif and Georgia.
-- Timing reflects animation playback; WebM encoding can be less smooth if the browser struggles to draw 720p frames in real time.
-- The recording is silent and uses browser-dependent WebM codecs.
-- The reel intentionally uses the painted hero only; the original user photograph is not included.
-- The page is under `experiments/`, which is already included in Quarto `project.resources`. Run `quarto render`, then commit the generated `docs/experiments/story-reel-lab/` output to publish.
-- The experiments index links to the source page; Quarto copies the index into `docs/` when rendered.
+- **Canvas design:** `render(t)` draws any frame at a chosen timestamp, so preview and export share one timeline.
+- **CSS tokens and palettes:** Edit the `themes` dictionary; compare how ink and warm neutrals support type.
+- **Easing:** Modify `ease()`, `smooth()`, `alphaWindow()` to change anticipation and pacing.
+- **Kinetic typography:** Compare `rise`, `slide`, `scale`, and `fade` modes in `typeBlock()`.
+- **Photography:** Explore `drawImage()` crop, focal position and the Ken Burns zoom.
+- **Browser recording:** Inspect `canvas.captureStream(30)` + `MediaRecorder`.
 
-## Creative exercises
+## Current limitations
 
-- Swap scene 2 and scene 3. Does the punchline work better?
-- Change scene 4 from gold to forest green. Does the white rump still pop?
-- Try 8 seconds instead of 15. Where can you remove words?
-- Create a 16:9 adaptation by changing `WIDTH`, `HEIGHT` and re-positioning scene elements.
+- No audio, video input, image layering, keyframe editor, font upload, saved projects or MP4 export inside the app.
+- WebM export is browser-dependent, silent and real-time. Safari/iPhone support varies; desktop Chrome/Firefox are safer starting points.
+- Canvas uses 720 × 1280 resolution and system fonts. Extra-long captions may be clipped; use concise headlines.
+- No visual browser QA has been performed in this GitHub commit. Check preview and exported WebM before publishing or sharing.
 
-DERAILED. — One thing led to another.
+## Publishing
+
+The source lives in `experiments/story-reel-lab/`; `experiments/` is already in Quarto `project.resources`. Running `quarto render` copies the tool into `docs/experiments/story-reel-lab/`. Only the tool's source code is published—not photos chosen while using it.
+
+One thing led to another.
