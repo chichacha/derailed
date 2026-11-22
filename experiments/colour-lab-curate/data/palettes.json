@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "description": "Unofficial artist-curated interpretations inspired by SEY coffee archival packaging, plus DERAILED palette sketches. These are not official sampled brand colours.",
+  "source": "https://www.seycoffee.com/collections/archived-coffees",
+  "palettes": [
+    {
+      "id": "sey-morning-pour",
+      "name": "Morning Pour",
+      "collection": "SEY-inspired",
+      "note": "Sunshine, citrus, coffee packaging energy.",
+      "features": [
+        "#FFE469",
+        "#FFD12D",
+        "#F6A029",
+        "#F47E59",
+        "#FFF9EC"
+      ],
+      "light": "#FFFCF1",
+      "dark": "#433022",
+      "tags": [
+        "bright",
+        "warm",
+        "sunny"
+      ]
+    },
+    {
+      "id": "sey-washed-floral",
+      "name": "Washed & Floral",
+      "collection": "SEY-inspired",
+      "note": "Petal pink meets saturated berry.",
+      "features": [
+        "#F6DCE9",
+        "#D36AA7",
+        "#BD268A",
+        "#843A75",
+        "#FFF9FC"
+      ],
+      "light": "#FFFAFD",
+      "dark": "#3E2643",
+      "tags": [
+        "floral",
+        "pink",
+        "vibrant"
+      ]
+    },
+    {
+      "id": "sey-origin-greens",
+      "name": "Origin Greens",
+      "collection": "SEY-inspired",
+      "note": "Bright leafy greens with a little electric kick.",
+      "features": [
+        "#DFF0C4",
+        "#A9D86B",
+        "#64BE75",
+        "#18A67B",
+        "#F8FCF3"
+      ],
+      "light": "#FBFDF7",
+      "dark": "#244638",
+      "tags": [
+        "green",
+        "botanical",
+        "fresh"
+      ]
+    },
+    {
+      "id": "sey-blue-hour",
+      "name": "Blue Hour",
+      "collection": "SEY-inspired",
+      "note": "From misty blue to deep blue.",
+      "features": [
+        "#D8EDF5",
+        "#8CC8E9",
+        "#4DA8D8",
+        "#226695",
+        "#F7FBFF"
+      ],
+      "light": "#F9FCFF",
+      "dark": "#223E58",
+      "tags": [
+        "blue",
+        "cool",
+        "clear"
+      ]
+    },
+    {
+      "id": "sey-late-harvest",
+      "name": "Late Harvest",
+      "collection": "SEY-inspired",
+      "note": "Strawberry, poppy and warm coral.",
+      "features": [
+        "#F5B7A4",
+        "#F28E7D",
+        "#EC634D",
+        "#BD273D",
+        "#FFF6F2"
+      ],
+      "light": "#FFF9F4",
+      "dark": "#522C37",
+      "tags": [
+        "coral",
+        "warm",
+        "red"
+      ]
+    },
+    {
+      "id": "sey-full-archive",
+      "name": "The Full Archive",
+      "collection": "SEY-inspired",
+      "note": "A deliberately lively mix of yellow, green, blue, violet and orange.",
+      "features": [
+        "#FFD831",
+        "#55B66A",
+        "#52A9DA",
+        "#BF318C",
+        "#F36D50"
+      ],
+      "light": "#FFF9EC",
+      "dark": "#302B43",
+      "tags": [
+        "vibrant",
+        "mixed",
+        "editorial"
+      ]
+    },
+    {
+      "id": "curated-coffee-rain",
+      "name": "Coffee After Rain",
+      "collection": "DERAILED picks",
+      "note": "Muted espresso, linen and rainy-window blue-green.",
+      "features": [
+        "#392C29",
+        "#806251",
+        "#C6A889",
+        "#AABBB3",
+        "#D8C8B5"
+      ],
+      "light": "#F6F1E8",
+      "dark": "#2C2527",
+      "tags": [
+        "coffee",
+        "muted",
+        "earthy"
+      ]
+    },
+    {
+      "id": "curated-botanical",
+      "name": "Botanical Archive",
+      "collection": "DERAILED picks",
+      "note": "Pressed flowers and aged paper.",
+      "features": [
+        "#354638",
+        "#79816A",
+        "#BBC4A1",
+        "#C88883",
+        "#DCC6A7"
+      ],
+      "light": "#F9F5EA",
+      "dark": "#26352C",
+      "tags": [
+        "botanical",
+        "earthy",
+        "soft"
+      ]
+    },
+    {
+      "id": "curated-midnight",
+      "name": "Midnight Gelato",
+      "collection": "DERAILED picks",
+      "note": "Dark plum, pastel gelato and a little gold.",
+      "features": [
+        "#382945",
+        "#8D73A6",
+        "#F1AEBD",
+        "#B8D8D0",
+        "#E8C57D"
+      ],
+      "light": "#FDF7F4",
+      "dark": "#29233C",
+      "tags": [
+        "pastel",
+        "playful",
+        "contrast"
+      ]
+    },
+    {
+      "id": "curated-coast",
+      "name": "Coastal Field Notes",
+      "collection": "DERAILED picks",
+      "note": "Sea mist, warm stone and rusty orange.",
+      "features": [
+        "#243F50",
+        "#6D929F",
+        "#B9CED0",
+        "#D9C9AC",
+        "#C47760"
+      ],
+      "light": "#F8F5EB",
+      "dark": "#223946",
+      "tags": [
+        "coastal",
+        "blue",
+        "muted"
+      ]
+    },
+    {
+      "id": "curated-print",
+      "name": "Print Studio",
+      "collection": "DERAILED picks",
+      "note": "Bold printed shapes, faded ink and a little imperfection.",
+      "features": [
+        "#263C58",
+        "#DE574C",
+        "#F2BC63",
+        "#8B9C82",
+        "#D9A7A0"
+      ],
+      "light": "#FCF7EB",
+      "dark": "#28313B",
+      "tags": [
+        "graphic",
+        "editorial",
+        "vibrant"
+      ]
+    }
+  ]
+}
