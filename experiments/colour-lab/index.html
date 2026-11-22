@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A portable colour laboratory. Explore seven-token palettes, experiment with harmony and contrast, then export CSS and JSON.">
+<meta name="theme-color" content="#22212a">
+<title>Colour Lab — DERAILED.</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="masthead">
+  <a class="back" href="../index.html">← DERAILED. / EXPERIMENTS</a>
+  <div class="hero">
+    <div>
+      <span class="eyebrow">EXPERIMENT 002 / COLOUR SYSTEM</span>
+      <h1>Colour <em>Lab.</em></h1>
+      <p class="lede">Five feature colours. Two quiet neutrals. Infinite excuses to avoid choosing just one.</p>
+    </div>
+    <div class="hero-mark" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+</header>
+<main>
+  <div class="layout">
+    <section class="workbench" aria-label="Live colour previews">
+      <div class="section-heading">
+        <div><span class="eyebrow">01 / THE PALETTE</span><h2>Seven colours, one point of view.</h2></div>
+        <button id="shuffle" type="button" class="quiet">↻ Remix palette</button>
+      </div>
+      <div id="swatches" class="swatches" aria-label="Editable colour swatches"></div>
+      <div class="summary" id="summary" aria-live="polite"></div>
+      <div class="section-heading preview-heading">
+        <div><span class="eyebrow">02 / IN CONTEXT</span><h2>Does it actually work?</h2></div>
+        <div class="segmented" role="group" aria-label="Preview theme">
+          <button type="button" id="lightMode" aria-pressed="true">Light</button>
+          <button type="button" id="darkMode" aria-pressed="false">Dark</button>
+        </div>
+      </div>
+      <div class="preview" id="preview" data-mode="light">
+        <div class="preview-nav"><strong>DERAILED<span class="preview-dot">.</span></strong><span>STORIES &nbsp; / &nbsp; EXPERIMENTS</span><span class="preview-nav-mark">✳</span></div>
+        <div class="preview-body">
+          <span class="preview-overline">A COLOURFUL DETOUR / 001</span>
+          <div class="preview-title">An idea<br>takes <i>colour.</i></div>
+          <p>This is where a palette becomes a visual language. Try a few changes and see what holds together.</p>
+          <div class="preview-actions"><span class="preview-primary">Explore the story ↗</span><span class="preview-secondary">Browse the collection</span></div>
+        </div>
+        <div class="preview-showcase">
+          <div class="preview-poster"><span>01</span><div class="poster-orbit"></div><strong>Good things<br>take a turn.</strong></div>
+          <div class="preview-marks"><span></span><span></span><span></span><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="section-heading contrast-heading">
+        <div><span class="eyebrow">03 / LEGIBILITY</span><h2>Contrast check.</h2></div>
+        <span class="hint">WCAG AA · normal text 4.5:1 · large text 3:1</span>
+      </div>
+      <div id="contrast" class="contrast-grid" aria-live="polite"></div>
+      <p class="fine-print">Contrast is a numerical guide, not a guarantee of readable typography. Colour vision, font choice, weight and context still matter.</p>
+    </section>
+    <aside class="controls">
+      <section class="control-group">
+        <span class="eyebrow">01 / START SOMEWHERE</span>
+        <h2>Choose a colour world.</h2>
+        <label for="preset">Base palette</label>
+        <select id="preset"></select>
+        <p class="small">Shared with Pentomino Pattern Lab. Edits here don't change the original presets.</p>
+      </section>
+      <section class="control-group">
+        <span class="eyebrow">02 / MAKE A DETOUR</span>
+        <h2>Invent a variation.</h2>
+        <label for="seed">Starting colour</label>
+        <div class="seed-row"><input type="color" id="seed" value="#8B5E48" aria-label="Starting colour"><input id="seedHex" spellcheck="false" maxlength="7" aria-label="Starting colour hexadecimal value" value="#8B5E48"></div>
+        <label for="harmony">Colour relationship</label>
+        <select id="harmony">
+          <option value="analogous">Analogous / neighbours</option>
+          <option value="complementary">Complementary / opposites</option>
+          <option value="triadic">Triadic / three-way conversation</option>
+          <option value="monochromatic">Monochromatic / one hue</option>
+          <option value="split">Split complementary / almost opposites</option>
+        </select>
+        <label for="vibrancy">Vibrancy <output id="vibrancyValue">64%</output></label>
+        <input type="range" id="vibrancy" min="20" max="95" step="1" value="64">
+        <label for="lightness">Brightness <output id="lightnessValue">52%</output></label>
+        <input type="range" id="lightness" min="25" max="75" step="1" value="52">
+        <button id="generate" type="button" class="primary wide">✳ Generate five colours</button>
+        <p class="small">Generates feature colours only; your light and dark neutrals stay put. Adjust any swatch afterwards.</p>
+      </section>
+      <section class="control-group">
+        <span class="eyebrow">03 / MAKE IT PORTABLE</span>
+        <h2>Keep what you made.</h2>
+        <label for="paletteName">Palette name</label>
+        <input id="paletteName" maxlength="80" value="Untitled detour">
+        <div class="button-grid">
+          <button id="copyCss" type="button" class="quiet">Copy CSS</button>
+          <button id="exportCss" type="button" class="quiet">↓ CSS file</button>
+          <button id="exportJson" type="button" class="quiet">↓ JSON</button>
+          <button id="importJson" type="button" class="quiet">↑ Import JSON</button>
+        </div>
+        <input id="jsonFile" type="file" accept=".json,application/json" hidden>
+        <p class="small">Exported JSON follows the same seven-token schema as Pentomino Lab. Paste the CSS into any small HTML project or Databricks markdown sandbox.</p>
+        <pre id="cssPreview" aria-label="Generated CSS tokens"></pre>
+        <p id="notice" class="notice" role="status" aria-live="polite"></p>
+      </section>
+    </aside>
+  </div>
+</main>
+<footer>DERAILED. / One thing led to another. · <a href="README.md">How this lab works</a> · <a href="../pentomino-lab/index.html">Try the palette in Pentomino Lab ↗</a></footer>
+<script src="../shared/colour-system.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
