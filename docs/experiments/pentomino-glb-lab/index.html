@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pentomino GLB Studio — DERAILED.</title>
+<meta name="description" content="Twelve pentominoes made tangible: explore extruded shapes, shared colour palettes and export real GLB models.">
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#171a21;color:#f7f1ea;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}a{color:inherit}header{padding:22px clamp(20px,4vw,64px);display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid #ffffff24}
+.brand{text-decoration:none;font-size:13px;font-weight:800;letter-spacing:.1em}.tag{font-size:10px;letter-spacing:.18em;color:#f49cbb;font-weight:800}
+main{padding:32px clamp(20px,4vw,64px) 55px;max-width:1700px;margin:auto}
+h1{font-size:clamp(42px,6.5vw,88px);line-height:.94;letter-spacing:-.075em;margin:10px 0 14px}h1 em{font-weight:450;color:#f49cbb}
+.intro{color:#b5bbc2;max-width:650px;line-height:1.6;margin:0 0 24px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:20px;align-items:stretch}
+.viewer{position:relative;height:clamp(540px,73vh,770px);min-height:0;background:radial-gradient(circle at 50% 30%,#363842,#20232b 65%);border:1px solid #ffffff25;border-radius:18px;overflow:hidden}
+#canvas{position:absolute;inset:0}#canvas canvas{width:100%;height:100%;display:block;touch-action:none}
+.viewer-label{position:absolute;left:20px;top:20px;pointer-events:none;font-size:11px;letter-spacing:.15em;color:#d5d7dd}
+.viewer-help{position:absolute;bottom:17px;left:20px;right:20px;pointer-events:none;display:flex;justify-content:space-between;gap:12px;font-size:11px;color:#d5d7dd}
+.panel{background:#22252d;border:1px solid #ffffff20;border-radius:18px;padding:16px;display:flex;flex-direction:column;height:clamp(540px,73vh,770px);min-height:0;gap:14px;overflow:hidden}
+.studio-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;flex:none}
+.studio-tabs button{width:100%;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 1px;border:1px solid transparent;background:transparent;color:#b9bdc7;border-radius:8px;font-size:11px;line-height:1.3;font-weight:750}
+.studio-tabs button:hover{background:#ffffff0b}
+.studio-tabs button[aria-selected="true"]{border-color:#f49cbb90;background:#f49cbb18;color:#ffe0ea}
+.tab-no{color:#f49cbb;font-size:10px;letter-spacing:.09em}
+.studio-tab-scroll{overflow-y:auto;overflow-x:hidden;min-height:0;flex:1;padding:6px 6px 10px 2px;scrollbar-width:thin;scrollbar-color:#606777 transparent}
+.studio-panel{display:flex;flex-direction:column;gap:17px;min-width:0}
+.studio-panel[hidden]{display:none}
+.studio-panel h2{margin:0 0 1px}
+.panel-footer{border-top:1px solid #ffffff1c;padding-top:12px;display:flex;flex-direction:column;gap:8px;flex:none}
+.panel-footer .status{font-size:11px;min-height:1.25em;line-height:1.4}
+.panel-footer .lab-link{font-size:11px;color:#bdc5d1;text-decoration:none}
+.panel-footer .lab-link:hover{text-decoration:underline}
+.camera-actions button{padding:8px 5px;font-size:11px}
+button.preset{padding:8px 10px;font-size:12px;background:#45404b;border-color:#f49cbb61;color:#ffe1eb;text-align:left}
+h2{font-size:12px;letter-spacing:.14em;margin:0;color:#f49cbb;text-transform:uppercase}
+.group{display:flex;flex-direction:column;gap:9px}.group[hidden]{display:none}.group label{font-size:12px;color:#d0d0d7;display:flex;justify-content:space-between}
+select,button,input[type=range]{width:100%}select,button{border:1px solid #ffffff28;border-radius:8px;background:#323640;color:#f7f1ea;padding:11px 12px;font:inherit;font-size:13px}
+button{cursor:pointer;font-weight:700}button:hover{background:#474c5a}button.primary{background:#f49cbb;color:#261c2c;border-color:#f49cbb}button.primary:hover{background:#ffd0e0}
+input{accent-color:#f49cbb}.swatches{display:flex;gap:5px}.swatches span{height:25px;flex:1;border-radius:5px;border:1px solid #ffffff20}
+.swatches.gomasu-edition{display:grid;grid-template-columns:repeat(6,minmax(0,1fr))}
+.swatches.gomasu-edition span{display:grid;place-items:center;height:32px;font-size:11px;font-weight:800;color:#25313a;text-shadow:0 1px #ffffff70}
+.material-key{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.material-item{display:flex;align-items:center;gap:6px;min-width:0;padding:7px 6px;background:#ffffff09;border:1px solid #ffffff18;border-radius:8px}
+.material-dot{width:14px;height:14px;flex:none;border-radius:4px;border:1px solid #ffffff65}
+.material-meta{display:flex;flex-direction:column;min-width:0}
+.material-meta strong{font-size:12px;line-height:1.2}
+.material-meta small{font-size:10px;color:#aab2bf;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.material-item{cursor:pointer;appearance:none;color:inherit;font:inherit;text-align:left}
+.material-item:hover,.material-item.active{border-color:#f49cbb8a;background:#ffffff14}
+.material-item.active strong{color:#f49cbb}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.note{font-size:12px;line-height:1.65;color:#abb0ba;margin:0}
+.status{min-height:2em;font-size:12px;color:#cbeef3}
+footer{padding:10px 0;color:#9095a0;font-size:12px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.viewer{height:clamp(420px,65vh,650px)}.panel{height:480px}.group{min-width:0}}
+@media(max-width:540px){.panel{height:480px}.viewer{height:clamp(360px,54vh,500px)}.viewer-help{display:block}.viewer-help span{display:block;margin-top:4px}}
+</style>
+<script defer src="../shared/colour-system.js"></script>
+<script defer src="../pentomino-lab/data/tilings.js"></script>
+<script defer src="../pentomino-lab/data/gomasu.js"></script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.161.0/examples/jsm/"}}</script>
+</head><body>
+<header><a class="brand" href="../index.html">← DERAILED. / EXPERIMENTS</a><span class="tag">PENTOMINO LAB / 3D DETOUR</span></header>
+<main><p class="tag">12 SHAPES · 60 SQUARES · ONE MORE DIMENSION</p>
+<h1>From flat to <em>form.</em></h1>
+<p class="intro">Twelve pentominoes. Seven palette colours. Twelve material identities. Explore softly bevelled shapes in a spaced tiling or a Z-axis stack, then export a real GLB model.</p>
+<div class="layout"><section class="viewer" aria-label="Interactive Three.js 3D pentomino viewer">
+<div id="canvas"></div><div class="viewer-label">PENTOMINO OBJECT STUDY / THREE.JS</div>
+<div class="viewer-help"><span>DRAG · ORBIT &nbsp; / &nbsp; SCROLL · ZOOM</span><span>12 MESHES / PBR MATERIALS</span></div></section>
+<aside class="panel" aria-label="Pentomino Studio controls">
+<nav class="studio-tabs" role="tablist" aria-label="Studio sections"><button type="button" id="tab-shape" role="tab" aria-controls="panel-shape" aria-selected="true" tabindex="0" data-tab="shape"><span class="tab-no">01</span><span>Shape</span></button>
+<button type="button" id="tab-material" role="tab" aria-controls="panel-material" aria-selected="false" tabindex="-1" data-tab="material"><span class="tab-no">02</span><span>Colour</span></button>
+<button type="button" id="tab-piece" role="tab" aria-controls="panel-piece" aria-selected="false" tabindex="-1" data-tab="piece"><span class="tab-no">03</span><span>Piece</span></button>
+<button type="button" id="tab-save" role="tab" aria-controls="panel-save" aria-selected="false" tabindex="-1" data-tab="save"><span class="tab-no">04</span><span>Save</span></button>
+<button type="button" id="tab-print" role="tab" aria-controls="panel-print" aria-selected="false" tabindex="-1" data-tab="print"><span class="tab-no">05</span><span>Print</span></button></nav>
+<div class="studio-tab-scroll"><section class="studio-panel" role="tabpanel" id="panel-shape" aria-labelledby="tab-shape" tabindex="0"><h2>01 / Shape & composition</h2><div class="group"><label for="arrangement">Arrangement</label><select id="arrangement"><option value="tiling">Together / 6 × 10 tiling</option><option value="exploded">Exploded / aligned Z-axis stack</option></select></div>
+<div class="group"><label for="solution">Tiling <output id="solutionLabel">01 / 16</output></label><input id="solution" type="range" min="0" max="15" value="0"></div>
+<div class="group"><label for="depth">Extrusion depth <output id="depthLabel">0.26×</output></label><input id="depth" type="range" min=".08" max="2" step=".01" value=".26">
+<button type="button" id="cubeProportions" class="preset">◇ 1× Cube proportions</button>
+<p class="note">1× means each unit square is one unit deep. Keep the soft corners and bevels, or set them to zero for mathematically exact cubic edges.</p></div>
+<div class="group"><label for="corner">Corner softness <output id="cornerLabel">0.12</output></label><input id="corner" type="range" min="0" max=".24" step=".01" value=".12"></div>
+<div class="group"><label for="bevel">Edge bevel <output id="bevelLabel">0.050</output></label><input id="bevel" type="range" min="0" max=".1" step=".005" value=".05"></div>
+<div class="group" id="togetherSpacing"><label for="gap">Piece gap <output id="gapLabel">0.18</output></label><input id="gap" type="range" min="0" max=".35" step=".01" value=".18"></div>
+<div class="group" id="layerSpacing" hidden><label for="layerPitch">Z-axis layer spacing <output id="layerPitchLabel">1.25</output></label><input id="layerPitch" type="range" min=".9" max="2.4" step=".05" value="1.25"></div></section>
+<section class="studio-panel" role="tabpanel" id="panel-material" aria-labelledby="tab-material" tabindex="0" hidden><h2>02 / Colour & surface</h2><div class="group"><label for="palette">Colour collection</label><select id="palette"></select><div class="swatches" id="swatches"></div>
+<p class="note" id="paletteExplainer">Five features + two neutrals, shared with the 2D lab.</p></div>
+<div class="group"><label for="finish">Surface finishes</label><select id="finish"><option value="paired-satin" selected>Matte + satin pairs</option><option value="paired">Matte + glossy pairs</option><option value="matte">All matte</option><option value="ceramic">All glazed ceramic</option><option value="metal">All satin metal</option></select></div>
+<div class="group"><label>12 piece identities <span id="materialDescription">5 colour pairs + 2 neutrals</span></label><div id="materialKey" class="material-key" aria-label="Colour and finish assigned to each pentomino"></div></div>
+<div class="group"><label for="pattern">Surface graphics</label><select id="pattern">
+<option value="none" selected>None / clean colour</option><option value="classic">Original-lab-inspired motifs</option>
+<option value="stripes">Continuous stripes</option><option value="dots">Subtle dots</option><option value="grid">Fine grid</option>
+<option value="arc">Oversized circle</option><option value="split">Diagonal split</option><option value="blocks">Bold blocks</option>
+</select><p class="note">Graphics are textures on the broad faces, included in GLB, not physically embossed.</p></div></section>
+<section class="studio-panel" role="tabpanel" id="panel-piece" aria-labelledby="tab-piece" tabindex="0" hidden><h2>03 / Design a piece</h2><div class="group"><label for="pieceSelect">Select pentomino</label><select id="pieceSelect"></select></div>
+<div class="group"><label for="pieceColour">Colour token</label><select id="pieceColour"></select></div>
+<div class="group"><label for="pieceFinish">Piece finish</label><select id="pieceFinish"><option value="matte">Soft matte</option><option value="satin">Subtle satin</option><option value="glossy">Glossy</option><option value="ceramic">Ceramic</option><option value="metal">Metal</option></select></div>
+<div class="group"><label for="piecePattern">Piece graphic</label><select id="piecePattern"></select></div>
+<button id="resetDesign">↺ Restore curated pairings</button>
+</section>
+<section class="studio-panel" role="tabpanel" id="panel-save" aria-labelledby="tab-save" tabindex="0" hidden><h2>04 / Keep your creation</h2><button class="primary" id="export">↓ Export coloured .GLB</button>
+<div class="btnrow"><button id="saveDesign">↓ Design JSON</button><button id="importDesign">↑ Open design JSON</button></div>
+<input id="designFile" type="file" accept=".json,application/json" hidden>
+<p class="note">GLB keeps colour, textures and material sheen. Design JSON lets you reopen your editable selections.</p></section>
+<section class="studio-panel" role="tabpanel" id="panel-print" aria-labelledby="tab-print" tabindex="0" hidden><h2>05 / Make it physical</h2><div class="group"><label for="cellMm">Unit square edge <output id="cellMmLabel">20 mm</output></label>
+<input id="cellMm" type="range" min="10" max="35" step="1" value="20">
+<p class="note" id="printDimensions">Set approx. 200 × 120 mm · 7.4 mm thick</p></div>
+<div class="btnrow"><button id="exportStl">↓ Full set STL</button><button id="exportPieceStl">↓ Selected piece STL</button></div>
+<p class="note">STL is geometry only: it does not print colours, satin finishes or graphic textures. Pieces export flat on a build plate regardless of the 3D preview arrangement. STL coordinates use millimetres (the file itself has no unit metadata). Verify scale, watertightness and printer tolerances with a slicer or print shop.</p>
+<p class="note">Curated pairs: F/Z (fluid), L/Y (long), P/U (compact), N/W (stepped), T/V (angular). I uses foreground; X uses background.</p></section></div>
+<div class="panel-footer">
+<div class="btnrow camera-actions"><button id="turntable">Pause rotation</button><button id="reset">Reset camera</button></div>
+<div class="status" id="status" role="status" aria-live="polite">Loading 3D engine…</div>
+<a class="lab-link" href="../pentomino-lab/index.html">← Original 2D Pentomino Lab</a>
+</div></aside></div>
+<footer>DERAILED. × GOMASU · Data and palettes reused from Pentomino Pattern Lab · Three.js / glTF 2.0</footer>
+</main>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+import {STLExporter} from 'three/addons/exporters/STLExporter.js';
+const T=window.PentominoTilings,C=window.DERAILEDColour,G=window.GomasuPostures;
+if(!T||!C||!G)throw Error('Missing original DERAILED colour, tiling, or Gomasu data');
+const GOMASU_EDITION='gomasu-original';
+const characters=new Map(G.characters.map(item=>[item.shape,item]));
+function selectedPalette(){
+ const id=$('palette').value;
+ return id===GOMASU_EDITION?{name:'Gomasu Originals',edition:GOMASU_EDITION}:C.load(id);
+}
+const $=id=>document.getElementById(id), letters=[...T.letters];
+// Curated morphological families: swirls, long stems, compact, stepped, angular.
+const PAIRS=[['F','Z'],['L','Y'],['P','U'],['N','W'],['T','V']];
+const assignments=new Map();
+PAIRS.forEach(([a,b],index)=>{assignments.set(a,{colourIndex:index,finish:'matte'});assignments.set(b,{colourIndex:index,finish:'satin'})});
+let selectedPiece='F',pieceOverrides=Object.create(null);
+function materialIdentity(letter,palette,mode){
+ const base=letter==='I'?{colourIndex:6,finish:'matte'}:letter==='X'?{colourIndex:5,finish:'matte'}:assignments.get(letter);
+ const isSecond=base.finish==='satin';
+ const baseFinish=mode==='paired-satin'?(isSecond?'satin':'matte'):
+  mode==='paired'?(isSecond?'glossy':'matte'):mode;
+ const override=pieceOverrides[letter]||{};
+ if(palette.edition===GOMASU_EDITION){
+  const colourKey=override.gomasuLetter||letter;
+  const character=characters.get(colourKey);
+  return {color:character.color,colourKey,token:colourKey+' · '+character.title_en,
+   finish:override.finish||baseFinish,pattern:override.pattern??$('pattern').value};
+ }
+ const colourIndex=override.colourIndex??base.colourIndex;
+ const color=C.colours(palette)[colourIndex];
+ const token=colourIndex<5?'Feature '+(colourIndex+1):colourIndex===5?'Background':'Foreground';
+ return {color,colourIndex,token,finish:override.finish||baseFinish,pattern:override.pattern??$('pattern').value};
+}
+function finishSettings(finish){
+ return finish==='glossy'?{roughness:.14,metalness:0}:
+  finish==='ceramic'?{roughness:.22,metalness:0}:
+  finish==='satin'?{roughness:.57,metalness:.06}:
+  finish==='metal'?{roughness:.31,metalness:.65}:
+  {roughness:1,metalness:0};
+}
+function renderMaterialKey(palette,mode){
+ const key=$('materialKey');key.replaceChildren();
+ for(const name of letters){
+  const identity=materialIdentity(name,palette,mode),item=document.createElement('button');
+  item.type='button';item.className='material-item'+(name===selectedPiece?' active':'');
+  item.title=name+' · '+identity.token+' · '+identity.finish+(identity.pattern==='none'?'':' · '+identity.pattern);
+  item.setAttribute('aria-label','Design pentomino '+name);
+  item.onclick=()=>{selectedPiece=name;renderMaterialKey(selectedPalette(),$('finish').value);syncPieceEditor();activateTab('piece')};
+  const dot=document.createElement('span');dot.className='material-dot';dot.style.background=identity.color;
+  const info=document.createElement('div');info.className='material-meta';
+  const strong=document.createElement('strong');strong.textContent=name;
+  const small=document.createElement('small');small.textContent=identity.finish;
+  info.append(strong,small);item.append(dot,info);key.append(item);
+ }
+}
+function syncPieceEditor(){
+ $('pieceSelect').value=selectedPiece;
+ const palette=selectedPalette(),item=materialIdentity(selectedPiece,palette,$('finish').value);
+ const options=palette.edition===GOMASU_EDITION?
+  letters.map(letter=>({value:letter,label:letter+' · '+characters.get(letter).title_en})):
+  ['Feature 1','Feature 2','Feature 3','Feature 4','Feature 5','Background · light','Foreground · dark']
+   .map((label,i)=>({value:String(i),label}));
+ const control=$('pieceColour');
+ control.replaceChildren(...options.map(item=>{const opt=document.createElement('option');opt.value=item.value;opt.textContent=item.label;return opt}));
+ control.value=palette.edition===GOMASU_EDITION?item.colourKey:String(item.colourIndex);
+ $('pieceFinish').value=item.finish;
+ $('piecePattern').value=item.pattern;
+}
+function overrideSelected(field,value){
+ (pieceOverrides[selectedPiece]||=(Object.create(null)))[field]=value;
+ renderPieces();
+}
+function activateTab(name,focus=false){
+ const tabs=[...document.querySelectorAll('.studio-tabs [role="tab"]')];
+ for(const tab of tabs){
+  const active=tab.dataset.tab===name;
+  tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;
+  document.getElementById(tab.getAttribute('aria-controls')).hidden=!active;
+  if(active&&focus)tab.focus();
+ }
+ document.querySelector('.studio-tab-scroll').scrollTop=0;
+}
+const studioTabs=[...document.querySelectorAll('.studio-tabs [role="tab"]')];
+studioTabs.forEach((tab,index)=>{
+ tab.addEventListener('click',()=>activateTab(tab.dataset.tab));
+ tab.addEventListener('keydown',event=>{
+  if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+  event.preventDefault();
+  const next=event.key==='Home'?0:event.key==='End'?studioTabs.length-1:(index+(event.key==='ArrowLeft'?-1:1)+studioTabs.length)%studioTabs.length;
+  activateTab(studioTabs[next].dataset.tab,true);
+ });
+});
+const host=$('canvas'),scene=new THREE.Scene(),group=new THREE.Group();scene.add(group);
+const camera=new THREE.PerspectiveCamera(39,1,.05,150);camera.position.set(10,-12,15);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.55;
+host.append(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;controls.dampingFactor=.07;controls.target.set(0,0,0);
+scene.add(new THREE.HemisphereLight(0xffffff,0x536077,2.6));
+const key=new THREE.DirectionalLight(0xffffff,3.1);key.position.set(-4,-6,13);scene.add(key);
+const fill=new THREE.DirectionalLight(0xbccfff,1.8);fill.position.set(6,5,8);scene.add(fill);
+const background=new THREE.Color('#22252d');scene.background=background;
+let spinning=true, meshes=[];
+function geometrySettings(){
+ // Cube proportions are controlled by depth alone. Edge treatment is independent.
+ const depth=Number($('depth').value),bevelSize=Number($('bevel').value);
+ const bevelThickness=bevelSize===0?0:Math.min(bevelSize,depth*.27);
+ return {depth,bevelSize,bevelThickness,gap:Number($('gap').value),corner:Number($('corner').value),
+ extrude:{depth,steps:1,bevelEnabled:bevelSize>0,bevelThickness,bevelSize,
+ bevelSegments:bevelSize>0?5:1,curveSegments:6}};
+}
+function syncGeometryControls(){
+ $('togetherSpacing').hidden=$('arrangement').value==='exploded';
+ $('layerSpacing').hidden=$('arrangement').value!=='exploded';
+}
+function edgesOf(cells){
+ const s=new Set(cells.map(i=>(i%10)+','+Math.floor(i/10))),edges=[];
+ for(const idx of cells){const x=idx%10,y=Math.floor(idx/10);
+  if(!s.has(x+','+(y-1)))edges.push([[x,y],[x+1,y]]);
+  if(!s.has((x+1)+','+y))edges.push([[x+1,y],[x+1,y+1]]);
+  if(!s.has(x+','+(y+1)))edges.push([[x+1,y+1],[x,y+1]]);
+  if(!s.has((x-1)+','+y))edges.push([[x,y+1],[x,y]]);
+ }
+ const byStart=new Map(edges.map(e=>[e[0].join(','),e[1]])),outline=[edges[0][0]];
+ let current=edges[0][1],guard=0;
+ while(current.join(',')!==outline[0].join(',')&&guard++<30){outline.push(current);current=byStart.get(current.join(','));if(!current)throw Error('Invalid outline');}
+ if(guard>=30)throw Error('Contour did not close');
+ return outline;
+}
+// Construct one continuous whole-piece silhouette. Insetting the outline gives
+// adjacent pieces a true physical gap; individual squares stay joined together.
+function shapeFor(cells,gap,rounding){
+ const pts=edgesOf(cells),area=pts.reduce((sum,p,i)=>sum+p[0]*pts[(i+1)%pts.length][1]-pts[(i+1)%pts.length][0]*p[1],0);
+ const side=area>=0?1:-1,inset=gap/2;
+ const inner=pts.map((p,i)=>{
+  const prev=pts[(i+pts.length-1)%pts.length],next=pts[(i+1)%pts.length];
+  const a=[p[0]-prev[0],p[1]-prev[1]],b=[next[0]-p[0],next[1]-p[1]];
+  const n1=[-a[1]*side,a[0]*side],n2=[-b[1]*side,b[0]*side];
+  const turn=a[0]*b[1]-a[1]*b[0];
+  return Math.abs(turn)<.001?[p[0]+n1[0]*inset,p[1]+n1[1]*inset]:
+   [p[0]+(n1[0]+n2[0])*inset,p[1]+(n1[1]+n2[1])*inset];
+ });
+ const shape=new THREE.Shape();
+ for(let i=0;i<inner.length;i++){
+  const p=inner[i],prev=inner[(i+inner.length-1)%inner.length],next=inner[(i+1)%inner.length];
+  const a=[p[0]-prev[0],p[1]-prev[1]],b=[next[0]-p[0],next[1]-p[1]];
+  const la=Math.hypot(...a),lb=Math.hypot(...b),turn=a[0]*b[1]-a[1]*b[0];
+  const radius=Math.abs(turn)>.0001?Math.min(rounding,la*.4,lb*.4):0;
+  const start=radius?[p[0]-a[0]*radius/la,p[1]-a[1]*radius/la]:p;
+  if(i===0)shape.moveTo(start[0],-start[1]);else shape.lineTo(start[0],-start[1]);
+  if(radius)shape.quadraticCurveTo(p[0],-p[1],p[0]+b[0]*radius/lb,-p[1]-b[1]*radius/lb);
+ }
+ shape.closePath();return shape;
+}
+
+// Patterns are printable *graphics* on the top and bottom broad faces of the GLB.
+// In STL export only actual mesh geometry survives; no ink or texture is encoded.
+function graphicTexture(identity,letter){
+ let pattern=identity.pattern;
+ if(pattern==='none')return null;
+ if(pattern==='classic'){
+  pattern=['arc','stripes','split','blocks'][letters.indexOf(letter)%4];
+ }
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
+ const ctx=canvas.getContext('2d'),size=512;
+ ctx.fillStyle=identity.color;ctx.fillRect(0,0,size,size);
+ const col=new THREE.Color(identity.color);
+ const brightness=.2126*col.r+.7152*col.g+.0722*col.b;
+ const ink=brightness>.37?'rgba(17,23,35,.28)':'rgba(255,255,250,.34)';
+ ctx.strokeStyle=ink;ctx.fillStyle=ink;ctx.lineCap='round';
+ if(pattern==='stripes'){
+  ctx.save();ctx.translate(256,256);ctx.rotate(-Math.PI/4);
+  ctx.lineWidth=27;
+  for(let x=-720;x<720;x+=120){ctx.beginPath();ctx.moveTo(x,-720);ctx.lineTo(x,720);ctx.stroke()}
+  ctx.restore();
+ }else if(pattern==='dots'){
+  for(let y=58;y<size;y+=112)for(let x=58;x<size;x+=112){
+   ctx.beginPath();ctx.arc(x,y,16,0,Math.PI*2);ctx.fill();
+  }
+ }else if(pattern==='grid'){
+  ctx.lineWidth=9;
+  for(let x=0;x<=size;x+=102){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,size);ctx.stroke()}
+  for(let y=0;y<=size;y+=102){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(size,y);ctx.stroke()}
+ }else if(pattern==='arc'){
+  ctx.beginPath();ctx.arc(95,275,205,0,Math.PI*2);ctx.fill();
+  ctx.lineWidth=14;ctx.beginPath();ctx.arc(320,275,170,0,Math.PI*2);ctx.stroke();
+ }else if(pattern==='split'){
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(size,0);ctx.lineTo(0,size);ctx.closePath();ctx.fill();
+ }else if(pattern==='blocks'){
+  ctx.fillRect(0,0,size*.36,size*.73);
+  ctx.fillRect(size*.36,size*.73,size*.64,size*.27);
+ }
+ const texture=new THREE.CanvasTexture(canvas);
+ texture.colorSpace=THREE.SRGBColorSpace;
+ texture.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);
+ texture.needsUpdate=true;
+ return texture;
+}
+// Isotropic world-unit mapping: no stretching on tall or wide pentominoes.
+// ExtrudeGeometry's material-0 groups are the broad caps; preserve side UVs.
+function fitGraphicUV(geometry){
+ geometry.computeBoundingBox();
+ const b=geometry.boundingBox,p=geometry.getAttribute('position'),uv=geometry.getAttribute('uv');
+ const midX=(b.min.x+b.max.x)*.5,midY=(b.min.y+b.max.y)*.5;
+ const size=6; // uniform six-unit square graphic canvas for EVERY piece
+ for(const g of geometry.groups){
+  if(g.materialIndex!==0)continue;
+  const end=Math.min(g.start+g.count,uv.count);
+  for(let i=g.start;i<end;i++){
+   uv.setXY(i,.5+(p.getX(i)-midX)/size,.5+(p.getY(i)-midY)/size);
+  }
+ }
+ uv.needsUpdate=true;
+}
+function disposeMesh(mesh){
+ mesh.geometry.dispose();
+ const materials=Array.isArray(mesh.material)?mesh.material:[mesh.material];
+ for(const material of materials){material.map?.dispose();material.dispose()}
+}
+// Slicer-friendly export: reconstruct from the valid 6×10 tiling and put each
+// independent solid flat on the XY build plate. Never export the floating stack.
+function needsPrintIslands(settings){
+ // Zero or very small gaps would leave full-set solids touching (or overlapping
+ // after a bevel). Keep each piece distinct for slicers regardless of depth.
+ return settings.gap<=2*settings.bevelSize+.01;
+}
+function printableScene(letter=null){
+ const result=new THREE.Scene(),cellMm=Number($('cellMm').value),settings=geometrySettings();
+ const islands=needsPrintIslands(settings);
+ for(const [i,tile] of T.solutions[Number($('solution').value)].entries()){
+  if(letter&&tile.name!==letter)continue;
+  const contour=shapeFor(tile.cells,settings.gap,settings.corner);
+  const geometry=new THREE.ExtrudeGeometry(contour,settings.extrude);
+  geometry.computeBoundingBox();const b=geometry.boundingBox;
+  if(islands){
+   // Individual print islands allow zero-gap exact shapes to remain separate.
+   const col=letter?0:i%4,row=letter?0:Math.floor(i/4);
+   geometry.translate(-b.min.x+col*6,-b.min.y+row*6,-b.min.z);
+  }else{
+   geometry.translate(letter?-b.min.x:0,letter?-b.min.y:6,-b.min.z);
+  }
+  geometry.scale(cellMm,cellMm,cellMm);
+  const mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial());
+  mesh.name='Pentomino '+tile.name;result.add(mesh);
+ }
+ result.updateMatrixWorld(true);return result;
+}
+function download(name,blob){
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),10000);
+}
+function updatePrintSize(){
+ const mm=Number($('cellMm').value),shape=geometrySettings();
+ $('cellMmLabel').textContent=mm+' mm';
+ const thick=((shape.depth+2*shape.bevelThickness)*mm).toFixed(1);
+ $('printDimensions').textContent=needsPrintIslands(shape)?
+  'Full set: separated 4×3 print islands (up to '+(23*mm)+' × '+(17*mm)+' mm) · '+thick+' mm thick':
+  'Full set footprint ≈ '+(10*mm)+' × '+(6*mm)+' mm · '+thick+' mm thick';
+}
+function exportDesignJson(){
+ const ids=['arrangement','palette','solution','depth','corner','bevel','gap','layerPitch','finish','pattern','cellMm'];
+ const settings=Object.fromEntries(ids.map(id=>[id,$(id).value]));
+ const result={schema:'derailed.pentomino-glb/1',settings,pieces:pieceOverrides};
+ download('derailed-pentomino-design.json',new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));
+}
+function importDesignJson(data){
+ if(!data||data.schema!=='derailed.pentomino-glb/1')throw Error('Unknown design schema');
+ if(typeof data.settings!=='object'||!data.settings)throw Error('Missing settings');
+ // Backward-compatible import of earlier designs with a separate Cube mode.
+ const incoming={...data.settings};
+ if(incoming.geometryMode==='cube'){
+  Object.assign(incoming,{depth:'1',corner:'0',bevel:'0',gap:'0'});
+ }
+ if(incoming.bevel===undefined)incoming.bevel='.05';
+ const ids=['arrangement','palette','solution','depth','corner','bevel','gap','layerPitch','finish','pattern','cellMm'];
+ for(const id of ids){
+  const element=$(id),value=String(incoming[id]??'');
+  if(element.tagName==='SELECT'){
+   if(![...element.options].some(opt=>opt.value===value))throw Error('Invalid '+id);
+  }else{
+   const n=Number(value);
+   if(!value||!Number.isFinite(n)||n<Number(element.min)||n>Number(element.max))throw Error('Invalid '+id);
+  }
+ }
+ const next=Object.create(null);
+ for(const [letter,override] of Object.entries(data.pieces||{})){
+  if(!letters.includes(letter)||!override||typeof override!=='object')throw Error('Invalid piece override');
+  const item=Object.create(null);
+  if(override.colourIndex!==undefined){
+   if(!Number.isInteger(override.colourIndex)||override.colourIndex<0||override.colourIndex>6)throw Error('Invalid colour for '+letter);
+   item.colourIndex=override.colourIndex;
+  }
+  if(override.gomasuLetter!==undefined){
+   if(typeof override.gomasuLetter!=='string'||!characters.has(override.gomasuLetter))throw Error('Invalid Gomasu colour for '+letter);
+   item.gomasuLetter=override.gomasuLetter;
+  }
+  for(const id of ['finish','pattern'])if(override[id]!==undefined){
+   if(![...$(id==='finish'?'pieceFinish':'piecePattern').options].some(o=>o.value===override[id]))throw Error('Invalid '+id+' for '+letter);
+   item[id]=override[id];
+  }
+  next[letter]=item;
+ }
+ for(const id of ids)$(id).value=String(incoming[id]);
+ pieceOverrides=next;group.rotation.z=0;
+ renderPieces();fitCamera();updatePrintSize();
+}
+function fitCamera(){
+ // Fit the actual 3D bounds, including the height of the new Z-axis stack.
+ camera.aspect=Math.max(host.clientWidth,1)/Math.max(host.clientHeight,1);
+ camera.updateProjectionMatrix();
+ const box=new THREE.Box3().setFromObject(group),centre=box.getCenter(new THREE.Vector3());
+ const exploded=$('arrangement').value==='exploded';
+ const direction=(exploded?new THREE.Vector3(1.65,-2.3,.9):new THREE.Vector3(.48,-.72,1.55)).normalize();
+ camera.up.set(0,exploded?0:1,exploded?1:0);
+ controls.target.copy(centre);
+ camera.position.copy(centre).addScaledVector(direction,50);
+ camera.lookAt(centre);camera.updateMatrixWorld();
+ const right=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,0),up=new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld,1);
+ let halfWidth=0,halfHeight=0,front=0;
+ for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z]){
+  const v=new THREE.Vector3(x,y,z).sub(centre);
+  halfWidth=Math.max(halfWidth,Math.abs(v.dot(right)));
+  halfHeight=Math.max(halfHeight,Math.abs(v.dot(up)));
+  front=Math.max(front,v.dot(direction));
+ }
+ const vertical=Math.tan(THREE.MathUtils.degToRad(camera.fov/2)),horizontal=vertical*camera.aspect;
+ const distance=1.3*Math.max(halfWidth/horizontal,halfHeight/vertical)+front;
+ camera.position.copy(centre).addScaledVector(direction,Math.max(distance,5));
+ camera.lookAt(centre);controls.update();
+}
+function renderPieces(){
+ for(const m of meshes){group.remove(m);disposeMesh(m)}meshes=[];
+ const shapeSettings=geometrySettings(),depth=shapeSettings.depth,bevelThickness=shapeSettings.bevelThickness;
+ const palette=selectedPalette(),mode=$('finish').value;
+ const exploded=$('arrangement').value==='exploded';
+ for(const [i,tile] of T.solutions[Number($('solution').value)].entries()){
+  const shape=shapeFor(tile.cells,exploded?0:shapeSettings.gap,shapeSettings.corner);
+  const geom=new THREE.ExtrudeGeometry(shape,shapeSettings.extrude);
+  geom.computeVertexNormals();
+  const identity=materialIdentity(tile.name,palette,mode);
+  const texture=graphicTexture(identity,tile.name);
+  if(texture)fitGraphicUV(geom);
+  const plain=new THREE.MeshStandardMaterial({color:identity.color,...finishSettings(identity.finish)});
+  plain.name=tile.name+' · '+identity.token+' · '+identity.finish;
+  const cap=texture?new THREE.MeshStandardMaterial({color:0xffffff,map:texture,...finishSettings(identity.finish)}):plain;
+  if(texture)cap.name=plain.name+' · '+identity.pattern;
+  const mesh=new THREE.Mesh(geom,texture?[cap,plain]:plain);mesh.name='Pentomino '+tile.name;
+  mesh.userData={letter:tile.name,palette:palette.name,paletteToken:identity.token,surfaceFinish:identity.finish,pattern:identity.pattern};
+  if(exploded){
+   // Centre each mesh's local geometry: every pivot is EXACTLY x=0, y=0.
+   // Only Z differs; no offsets or X/Y tilts that could conjoin layers.
+   geom.computeBoundingBox();
+   const centre=new THREE.Vector3();geom.boundingBox.getCenter(centre);
+   geom.translate(-centre.x,-centre.y,-centre.z);
+   const pitch=Math.max(Number($('layerPitch').value),depth+2*bevelThickness+.22);
+   mesh.position.set(0,0,(i-(T.letters.length-1)/2)*pitch);
+   mesh.rotation.set(0,0,0); // aligned axes; Z position is the only exploded transform.
+  }else{
+   mesh.position.set(-5,3,-depth/2);
+  }
+  group.add(mesh);meshes.push(mesh);
+ }
+ $('solutionLabel').textContent=String(Number($('solution').value)+1).padStart(2,'0')+' / '+T.solutions.length;
+ $('depthLabel').textContent=depth.toFixed(2)+'×';
+ $('bevelLabel').textContent=shapeSettings.bevelSize.toFixed(3);
+ for(const id of ['corner','gap','layerPitch'])$(id+'Label').textContent=Number($(id).value).toFixed(2);
+ syncGeometryControls();
+ const isGomasu=palette.edition===GOMASU_EDITION,swatches=$('swatches');
+ swatches.classList.toggle('gomasu-edition',isGomasu);
+ if(isGomasu){
+  swatches.replaceChildren(...letters.map(letter=>{
+   const character=characters.get(letter),el=document.createElement('span');
+   el.style.background=character.color;el.title=letter+' · '+character.title_en+' · '+character.name_ja+' · '+character.color;
+   el.textContent=letter;return el;
+  }));
+ }else{
+  swatches.replaceChildren(...C.colours(palette).map((hex,i)=>{const el=document.createElement('span');
+   el.style.background=hex;el.title=(i<5?'Feature '+(i+1):i===5?'Background · X':'Foreground · I')+' · '+hex;return el}));
+ }
+ $('materialDescription').textContent=isGomasu?'12 original character colours':'5 colour pairs + 2 neutrals';
+ $('paletteExplainer').textContent=isGomasu?
+  'Gomasu Original Edition: all twelve character colours, read directly from the original character data. Material finishes remain adjustable.':
+  'Five features + two neutrals, shared with the original 2D lab.';
+ renderMaterialKey(palette,mode);
+ syncPieceEditor();
+ $('status').textContent='Ready · '+meshes.length+' pieces · '+(mode==='paired'?'matte + glossy':mode==='paired-satin'?'matte + satin':mode);
+}
+for(const [id,p] of Object.entries(C.presets)){const option=document.createElement('option');option.value=id;option.textContent=p.name;$('palette').append(option)}
+const special=document.createElement('option');special.value=GOMASU_EDITION;special.textContent='✳ Gomasu Originals · 12 characters';$('palette').add(special);
+$('palette').value='berry';
+for(const name of letters){const opt=document.createElement('option');opt.value=name;opt.textContent=name;$('pieceSelect').add(opt)}
+for(const item of $('pattern').options){const opt=document.createElement('option');opt.value=item.value;opt.textContent=item.textContent;$('piecePattern').add(opt)}
+$('pieceSelect').addEventListener('change',()=>{selectedPiece=$('pieceSelect').value;renderMaterialKey(selectedPalette(),$('finish').value);syncPieceEditor()});
+$('pieceColour').addEventListener('change',()=>{
+ if($('palette').value===GOMASU_EDITION)overrideSelected('gomasuLetter',$('pieceColour').value);
+ else overrideSelected('colourIndex',Number($('pieceColour').value));
+});
+$('pieceFinish').addEventListener('change',()=>overrideSelected('finish',$('pieceFinish').value));
+$('piecePattern').addEventListener('change',()=>overrideSelected('pattern',$('piecePattern').value));
+$('resetDesign').addEventListener('click',()=>{pieceOverrides=Object.create(null);$('finish').value='paired-satin';$('pattern').value='none';renderPieces()});
+for(const id of ['palette','solution','depth','finish','corner','bevel','gap','layerPitch','pattern'])$(id).addEventListener('input',renderPieces);
+for(const id of ['depth','bevel','gap','cellMm'])$(id).addEventListener('input',updatePrintSize);
+for(const id of ['depth','bevel'])$(id).addEventListener('change',fitCamera);
+$('cubeProportions').addEventListener('click',()=>{
+ $('depth').value='1';
+ renderPieces();updatePrintSize();fitCamera();
+ $('status').textContent='1× cube proportions · soften or sharpen corners and edges as you like';
+});
+$('saveDesign').onclick=exportDesignJson;
+$('importDesign').onclick=()=>$('designFile').click();
+$('designFile').addEventListener('change',async event=>{
+ const file=event.target.files[0];if(!file)return;
+ try{
+  if(file.size>128000)throw Error('File is too large for a design JSON');
+  importDesignJson(JSON.parse(await file.text()));
+  $('status').textContent='Design reopened from JSON';
+ }catch(error){$('status').textContent='Open failed: '+error.message}
+ finally{event.target.value=''}
+});
+async function downloadStl(letter=null){
+ const button=$(letter?'exportPieceStl':'exportStl');button.disabled=true;
+ $('status').textContent='Preparing printable STL geometry…';
+ let printScene;
+ try{
+  printScene=printableScene(letter);
+  const payload=new STLExporter().parse(printScene,{binary:true});
+  const blob=new Blob([payload],{type:'model/stl'});
+  download(letter?'derailed-pentomino-'+letter+'.stl':'derailed-pentomino-12-piece-set.stl',blob);
+  $('status').textContent='STL exported · '+(letter?'piece '+letter:'12 independent solids')+' · coordinates in mm';
+ }catch(error){console.error(error);$('status').textContent='STL export failed: '+error.message}
+ finally{
+  printScene?.traverse(object=>{if(object.isMesh){object.geometry.dispose();object.material.dispose()}});
+  button.disabled=false;
+ }
+}
+$('exportStl').onclick=()=>downloadStl();
+$('exportPieceStl').onclick=()=>downloadStl(selectedPiece);
+$('layerPitch').addEventListener('change',fitCamera);
+$('arrangement').addEventListener('change',()=>{group.rotation.z=0;renderPieces();fitCamera()});
+$('turntable').onclick=()=>{spinning=!spinning;$('turntable').textContent=spinning?'Pause rotation':'Resume rotation'};
+$('reset').onclick=()=>{group.rotation.z=0;fitCamera()};
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+renderer.domElement.addEventListener('click',event=>{
+ const bounds=renderer.domElement.getBoundingClientRect();
+ pointer.set((event.clientX-bounds.left)/bounds.width*2-1,-(event.clientY-bounds.top)/bounds.height*2+1);
+ raycaster.setFromCamera(pointer,camera);
+ const hit=raycaster.intersectObjects(meshes,false)[0];
+ if(hit){selectedPiece=hit.object.userData.letter;renderMaterialKey(selectedPalette(),$('finish').value);syncPieceEditor();activateTab('piece')}
+});
+$('export').onclick=async()=>{
+ const btn=$('export');btn.disabled=true;$('status').textContent='Building binary glTF…';
+ try{
+  const exportScene=new THREE.Scene();const bundle=new THREE.Group();bundle.name='DERAILED Pentominoes';
+  meshes.forEach(m=>bundle.add(m.clone()));exportScene.add(bundle);
+  const exporter=new GLTFExporter();
+  const output=await exporter.parseAsync(exportScene,{binary:true,onlyVisible:true,trs:false});
+  const blob=new Blob([output],{type:'model/gltf-binary'});
+  download('derailed-pentomino-'+$('palette').value+'.glb',blob);
+  $('status').textContent='Exported '+(blob.size/1024).toFixed(0)+' KB GLB · 12 meshes';
+ }catch(error){console.error(error);$('status').textContent='Export failed: '+error.message}
+ finally{btn.disabled=false}
+};
+const resize=new ResizeObserver(()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)});resize.observe(host);
+renderPieces();fitCamera();updatePrintSize();
+let last=performance.now();renderer.setAnimationLoop(now=>{const dt=Math.min((now-last)/1000,.05);last=now;if(spinning&&!controls.state)group.rotation.z+=dt*.085;controls.update();renderer.render(scene,camera)});
+</script></body></html>

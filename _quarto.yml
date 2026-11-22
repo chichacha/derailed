@@ -4,6 +4,7 @@ project:
   resources:
     - stories/coffee-lab/
     - stories/kitchen-series/
+    - stories/elk-identity-crisis/
     - experiments/
 
 website:

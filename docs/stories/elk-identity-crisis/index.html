@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5efe1">
+<title>The Great Elk Identity Crisis — DERAILED.</title>
+<style>
+/* LAB 01: design tokens — change the whole story's palette here */
+:root{--paper:#f5efe1;--ink:#263a32;--moss:#607b61;--deep:#1e4038;--rust:#ba6947;--gold:#e4b45c;--muted:#637068;--line:#c9cfbc;--radius:24px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}a{color:inherit}a:focus-visible,button:focus-visible{outline:3px solid var(--rust);outline-offset:4px}
+.progress{position:fixed;inset:0 auto auto 0;height:5px;width:0;background:var(--rust);z-index:100;transform-origin:left}
+.topbar{position:absolute;z-index:5;top:0;left:0;right:0;display:flex;justify-content:space-between;gap:1rem;padding:1.4rem max(5vw,20px);font-size:.77rem;font-weight:800;letter-spacing:.13em}.topbar a{text-decoration:none}
+.hero{min-height:100svh;display:grid;place-items:center;position:relative;overflow:hidden;background:radial-gradient(ellipse at 55% 45%,#e7e7ce 0%,var(--paper) 68%)}.hero-inner{width:min(1200px,92%);display:grid;grid-template-columns:1fr 1.1fr;align-items:center;gap:1rem;padding:7rem 0 4rem}.eyebrow{font-size:.73rem;letter-spacing:.2em;text-transform:uppercase;font-weight:800;color:var(--rust)}h1,h2,h3{font-family:Georgia,serif;letter-spacing:-.055em;line-height:1.04}h1{font-size:clamp(4rem,9vw,10rem);margin:.25em 0}.hero p,.intro{max-width:35rem;line-height:1.7;font-size:clamp(1.05rem,1.6vw,1.35rem)}.hero .small{font-size:.85rem;color:var(--muted)}.scroll-hint{position:absolute;bottom:1.5rem;left:5%;font-size:.72rem;letter-spacing:.16em}
+.illustration{position:relative;min-height:420px;display:grid;place-items:center}.elk-svg{width:100%;height:auto;overflow:visible;filter:drop-shadow(0 18px 2px rgba(36,58,48,.06))}.elk-svg .antlers{transform-origin:53% 65%;animation:sway 7s ease-in-out infinite alternate}.elk-svg .blink{transform-origin:center;animation:blink 8s infinite}@keyframes sway{50%{transform:rotate(1.2deg)}}@keyframes blink{0%,96%,100%{transform:scaleY(1)}97%,99%{transform:scaleY(.1)}}
+.land{position:absolute;inset:auto 2% 9% 2%;height:11%;background:#b9c7a1;border-radius:50%;filter:blur(16px);z-index:-1}
+section{padding:clamp(4rem,11vw,10rem) max(5vw,20px)}.chapter{max-width:1100px;margin:auto}.chapter-number{font-size:.75rem;font-weight:800;letter-spacing:.18em;color:var(--rust)}h2{font-size:clamp(2.9rem,6.6vw,6.5rem);margin:.3em 0}.copy{font-size:clamp(1.1rem,1.6vw,1.35rem);line-height:1.75;max-width:46rem}.highlight{color:var(--rust);font-style:italic}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}.reveal.visible{opacity:1;transform:none}
+.dark{background:var(--deep);color:var(--paper)}.dark .chapter-number,.dark .eyebrow{color:var(--gold)}.dark .copy{color:#dce4d8}
+.name-lab{margin-top:3rem;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:#fbf7ed;color:var(--ink)}.tabs{display:flex;gap:.5rem;padding:1rem;flex-wrap:wrap;background:#e8eadb}.tabs button{border:1px solid #b9c4b5;border-radius:50px;background:transparent;padding:.7rem 1.2rem;font-weight:750}.tabs button[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:white}.lab-body{display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding:clamp(1.5rem,4vw,3rem);align-items:center}.animal-icon{font-size:clamp(5rem,17vw,12rem);line-height:1;text-align:center}.lab-name{font-family:Georgia,serif;font-size:clamp(3rem,6vw,6rem);letter-spacing:-.05em;margin:0}.lab-explain{line-height:1.6;min-height:4em}.scientific{font-style:italic;color:var(--muted)}.note{font-size:.85rem;color:var(--muted);line-height:1.5}
+.fact-card{background:#e6e9d5;color:var(--ink);padding:clamp(2rem,6vw,5rem);border-radius:var(--radius);margin-top:3rem;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center}.fact-card strong{font-family:Georgia,serif;letter-spacing:-.05em;font-size:clamp(2.8rem,6vw,6rem)}.butt{width:100%;max-width:260px;margin:auto}.spotlight{background:#e4c37f;color:#303d2f;text-align:center;border-radius:50%;aspect-ratio:1;display:grid;place-items:center;padding:2rem}
+.scale-lab{display:flex;align-items:flex-end;gap:3vw;border-bottom:3px solid #c2d2c2;margin:3rem 0 1rem;min-height:310px}.scale-figure{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:1rem;flex:1;text-align:center}.scale-figure .emoji{display:block;filter:grayscale(.2);line-height:1}.scale-figure small{font-size:.8rem}.scale-figure strong{display:block}.scale-figure.deer .emoji{font-size:clamp(5rem,11vw,9rem)}.scale-figure.elk .emoji{font-size:clamp(8rem,17vw,15rem)}.scale-figure.human .emoji{font-size:clamp(5rem,9vw,8rem)}.comparison{font-size:.9rem;color:var(--muted)}
+.timeline{margin-top:3rem;border-left:2px solid var(--line);padding-left:2rem}.event{margin-bottom:2.8rem;position:relative}.event:before{content:"";position:absolute;left:calc(-2rem - 7px);top:.35rem;width:12px;height:12px;border-radius:50%;background:var(--rust)}.event .year{font-size:.75rem;font-weight:900;letter-spacing:.15em;color:var(--rust)}.event h3{font-size:clamp(1.6rem,3vw,2.4rem);margin:.4rem 0}.event p{line-height:1.7;max-width:42rem}
+.end{min-height:70vh;text-align:center;display:grid;place-content:center;background:#dce6d1}.end h2{max-width:800px}.end p{margin:auto auto 2rem;max-width:540px;line-height:1.7}
+footer{padding:3rem max(5vw,20px);background:var(--deep);color:#eef2e7;font-size:.82rem;line-height:1.75}footer a{color:#f1d18d}footer .links{display:flex;flex-wrap:wrap;gap:1.25rem}
+.painted{display:block;max-width:min(100%,600px);margin:1.5rem auto;border-radius:20px;box-shadow:0 15px 40px #122c251b}.painted[hidden]{display:none}
+.toggle-art{margin-top:1rem;padding:.65rem 1rem;border-radius:100px;border:1px solid currentColor;background:transparent;color:inherit}
+@media(max-width:720px){.hero-inner,.lab-body,.fact-card{grid-template-columns:1fr}.hero-inner{padding-top:8rem}.hero h1{font-size:clamp(3.6rem,15vw,6rem)}.illustration{min-height:250px}.fact-card{gap:1rem}.scale-lab{min-height:230px}.topbar{font-size:.65rem}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}.reveal{opacity:1;transform:none}}
+
+/* LAB 02: Editorial art direction with real PNG assets.
+   Add the two images next to index.html, no build tools necessary. */
+.hero{background:#f5efe1}
+.hero:before{content:"";position:absolute;width:76vw;height:76vw;border:1px solid #d9d2bd;border-radius:50%;top:-42vw;right:-25vw;pointer-events:none}
+.hero-inner{width:min(1400px,92%);grid-template-columns:minmax(0, .86fr) minmax(0,1.14fr);gap:clamp(2rem,5vw,6rem);padding:7rem 0 5rem}
+.hero h1{font-size:clamp(3.9rem,7.6vw,8rem);line-height:.98;max-width:10ch}
+.hero-inner>div:first-child{position:relative;z-index:2}
+.hero-art{margin:0;min-width:0}
+.hero-frame{position:relative;min-height:clamp(350px,50vw,670px);background:#dfe5d8;border:12px solid #fcf8ed;border-radius:9px 9px 100px 9px;box-shadow:0 24px 80px #2e40311f;overflow:hidden}
+.hero-painting{display:block;width:100%;height:100%;position:absolute;inset:0;object-fit:cover;object-position:50% 47%}
+.hero-frame:after{content:"";position:absolute;inset:40% 0 0;background:linear-gradient(transparent,#20382950);pointer-events:none}
+.art-stamp{position:absolute;bottom:1.65rem;left:1.8rem;right:1.5rem;color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.16em;z-index:1;text-shadow:0 1px 5px #2038298c}
+.hero-caption,.comparison-caption{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1rem;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:750}
+.image-fallback{position:absolute;inset:0;display:grid;place-content:center;gap:1.2rem;text-align:center;padding:2rem;line-height:1.6;color:#3a5541;background:radial-gradient(circle at 50% 35%,#eaf0e0,#b8cbb4)}
+.hero-painting[hidden],.comparison-image[hidden],.image-fallback[hidden],.comparison-fallback[hidden]{display:none}
+.fallback-mark{font-size:5rem}.image-fallback small{font-weight:400}
+.comparison-figure{margin:3rem 0 0}.comparison-art{background:#e5e7d9;border:1px solid #c6cbbb;min-height:300px;border-radius:22px;overflow:hidden;display:grid;place-items:center}
+.comparison-image{display:block;width:100%;max-height:760px;object-fit:contain}
+.comparison-fallback{width:100%;padding:clamp(2rem,6vw,5rem);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;text-align:center}
+.comparison-big{display:block;font-family:Georgia,serif;font-size:clamp(2.2rem,7vw,6rem);letter-spacing:-.07em}.comparison-small{display:block;font-size:.7rem;letter-spacing:.14em;font-weight:800;margin-top:1rem}.versus{color:var(--rust);font-weight:900}
+.animal-icon{font-family:Georgia,serif;font-size:clamp(2rem,5vw,5rem);letter-spacing:-.07em;text-align:center}.animal-icon-sub{display:block;font:700 .7rem ui-sans-serif,system-ui;letter-spacing:.14em;margin-top:1rem}
+@media(max-width:720px){.hero-inner{grid-template-columns:1fr;gap:1.8rem;padding-top:7rem}.hero h1{font-size:clamp(3.5rem,15vw,6rem)}.hero-frame{min-height:360px;border-width:7px;border-radius:7px 7px 60px 7px}.hero-caption,.comparison-caption{font-size:.6rem}.comparison-fallback{grid-template-columns:1fr}.versus{padding:.5rem}}
+@media(prefers-reduced-motion:no-preference){.hero-painting{animation:painting-arrives 1.2s both ease-out}@keyframes painting-arrives{from{opacity:0;transform:scale(1.045)}to{opacity:1;transform:scale(1)}}}
+
+
+/* LAB 06: image reveal by changing just one class, rather than animating the image itself. */
+.bum-reveal{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.25fr);gap:clamp(2rem,5vw,5rem);align-items:center;margin-top:3.5rem}
+.bum-copy h3{font-size:clamp(3.4rem,6.5vw,7rem);margin:.35em 0;line-height:.95}.bum-copy h3 em{color:var(--rust)}
+.bum-copy>p:not(.copy){font-size:1.05rem;line-height:1.7;max-width:32rem}
+.rump-trigger{background:var(--deep);color:white;border:0;padding:1rem 1.5rem;font-weight:750;transition:transform .2s}.rump-trigger:hover{transform:translateY(-2px)}
+.reveal-caption{font-size:.84rem!important;color:var(--muted)}
+.rump-figure{margin:0;min-width:0}.rump-photo-wrap{aspect-ratio:3/2;overflow:hidden;position:relative;background:#a5b6a2;border:9px solid #fdf9ed;box-shadow:0 18px 60px #192d231c;border-radius:16px}
+.rump-photo-wrap img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.photo-cover{position:absolute;inset:0;background:repeating-linear-gradient(35deg,#284e43 0,#284e43 40px,#2c5849 40px,#2c5849 80px);z-index:2;color:#f8f2e0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.6rem;transition:clip-path .9s cubic-bezier(.2,.8,.2,1);clip-path:inset(0 0 0 0)}
+.cover-label,.cover-note{font-size:.72rem;letter-spacing:.18em;font-weight:850;text-align:center}.cover-question{font:italic clamp(7rem,16vw,15rem) Georgia,serif;line-height:1}
+.rump-figure.uncovered .photo-cover{clip-path:inset(0 0 0 100%)}.reveal-sticker{position:absolute;bottom:1rem;right:1rem;z-index:1;display:grid;place-content:center;text-align:center;border-radius:50%;background:var(--gold);color:var(--ink);font-weight:900;line-height:1.05;letter-spacing:.03em;width:100px;height:100px;transform:rotate(10deg);box-shadow:0 4px 16px #18271966}
+.rump-figure figcaption{font-size:.75rem;line-height:1.6;margin-top:.8rem;color:var(--muted)}.rump-figure figcaption a{color:var(--deep);text-underline-offset:2px}
+@media(max-width:720px){.bum-reveal{grid-template-columns:1fr}.bum-copy h3{font-size:clamp(3.6rem,13vw,6rem)}.rump-photo-wrap{border-width:5px}.reveal-sticker{width:75px;height:75px;font-size:.8rem}}
+@media(prefers-reduced-motion:reduce){.photo-cover{transition:none}}
+
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<nav class="topbar"><a href="../../index.html">DERAILED.</a><span>FIELD NOTE / 001 &nbsp; • &nbsp; WILDLIFE & WORDPLAY</span></nav>
+<header class="hero">
+ <div class="hero-inner">
+  <div><div class="eyebrow">A true story, with a ridiculous detour</div><h1>The great <em>elk</em> identity crisis.</h1><p>I saw a gigantic animal napping in my neighbourhood on Vancouver Island. I wondered what to call it. Things got weird.</p><p class="small">An illustrated field note about deer, geography, presidents, and one very important backside.</p></div>
+  <figure class="hero-art">
+    <div class="hero-frame">
+      <img class="hero-painting" src="./elk-painting.png" alt="Painted illustration of a massive antlered Roosevelt elk resting in a green Pacific Northwest forest" fetchpriority="high" decoding="async">
+      <div class="image-fallback" hidden role="status"><span class="fallback-mark">🦌</span><span>The elk is still napping.<br><small>Add elk-painting.png beside index.html to wake up the painting.</small></span></div>
+      <span class="art-stamp">AN UNEXPECTED ENCOUNTER · VANCOUVER ISLAND</span>
+    </div>
+    <figcaption class="hero-caption"><span>FIG. 01 — THE SUSPECT</span><span>Observed reclining. Identity pending.</span></figcaption>
+  </figure>
+ </div><div class="scroll-hint">SCROLL TO INVESTIGATE ↓</div>
+</header>
+<main>
+<section><div class="chapter reveal"><div class="chapter-number">01 / THE FIRST MISUNDERSTANDING</div><h2>It's a deer.<br><span class="highlight">A very large deer.</span></h2><p class="copy">Roosevelt elk and the much smaller black-tailed deer you see around Vancouver Island are both members of the deer family, <em>Cervidae</em>. So is the moose—although, unlike its relatives, it doesn't live on Vancouver Island! Yet we call a male black-tailed deer a <strong>buck</strong> and a male elk a <strong>bull</strong>. The dictionary has already gone off the rails.</p><figure class="comparison-figure">
+  <div class="comparison-art">
+    <img class="comparison-image" src="./elk-deer-illustration.png" alt="Illustrated comparison of a Roosevelt elk and a smaller Vancouver Island deer" loading="lazy" decoding="async">
+    <div class="comparison-fallback" hidden>
+      <div><span class="comparison-big">ELK</span><span class="comparison-small">BULL · COW · CALF</span></div>
+      <span class="versus">VS.</span>
+      <div><span class="comparison-big">DEER</span><span class="comparison-small">BUCK · DOE · FAWN</span></div>
+    </div>
+  </div>
+  <figcaption class="comparison-caption"><span>FIG. 02 — COUSINS, NOT TWINS</span><span>Same family. Very different silhouettes.</span></figcaption>
+</figure></div></section>
+<section class="dark"><div class="chapter reveal"><div class="chapter-number">02 / THE TRANSLATION PROBLEM</div><h2>Cross an ocean.<br><span class="highlight">Change your name.</span></h2><p class="copy">In North America, “elk” usually means wapiti. In traditional British English, “elk” refers to the animal North Americans call a moose. And yes, British people also say “moose.” Same word, different naming history.</p>
+ <div class="name-lab"><div class="tabs" role="group" aria-label="Choose a naming convention"><button type="button" aria-pressed="true" data-place="ca">🇨🇦 Canada</button><button type="button" aria-pressed="false" data-place="uk">🇬🇧 Britain</button><button type="button" aria-pressed="false" data-place="jp">🇯🇵 Japan</button></div><div class="lab-body"><div><p class="eyebrow" id="region">NORTH AMERICAN ENGLISH</p><p class="lab-name" id="animal-name" aria-live="polite">ELK</p><p class="scientific" id="species">Cervus canadensis</p><p class="lab-explain" id="meaning">The big antlered neighbour in our story is called an elk—or wapiti.</p><p class="note">Switch the place. Watch the label. The animal doesn't change.</p></div><div><div class="animal-icon" aria-hidden="true">WAPITI <span class="animal-icon-sub">CERVUS CANADENSIS</span></div><div class="spotlight"><strong id="gloss">ELK ≠ MOOSE</strong></div></div></div></div>
+ <p class="note" style="color:#cbd9cd">Note: UK “elk” commonly denotes moose in traditional usage; “wapiti” specifically names the North American species. Japanese ワピチ names the wapiti, while ヘラジカ names the moose.</p>
+ </div></section>
+<section><div class="chapter reveal"><div class="chapter-number">03 / THE MOST IMPORTANT ANATOMICAL DETAIL</div><h2>Wapiti means…<br><span class="highlight">white rump.</span></h2><p class="copy">“Wapiti” comes from Shawnee, an Indigenous North American language. It refers to that pale patch around the elk's backside. ワピチ。白いお尻。A glorious name for a glorious animal.</p>
+ <div class="bum-reveal">
+  <div class="bum-copy">
+    <div class="eyebrow">REVEAL NO. 03 / THE GREAT RUMP INVESTIGATION</div>
+    <h3>THE WHITE<br><em>BUM.</em></h3>
+    <p class="copy">Unfortunately, my elk was lying down. His famous backside was not available for inspection.</p>
+    <p>But a field guide in Oregon has a rather spectacular demonstration. Ready to see what <em>wapiti</em> is talking about?</p>
+    <button type="button" class="toggle-art rump-trigger" id="reveal-rump" aria-expanded="false" aria-controls="rump-photo">Reveal the evidence →</button>
+    <p class="reveal-caption" id="rump-status" role="status" aria-live="polite">Exhibit A is classified. For now.</p>
+  </div>
+  <figure class="rump-figure" id="rump-photo">
+    <div class="rump-photo-wrap">
+      <div class="photo-cover" aria-hidden="true"><span class="cover-label">EXHIBIT A</span><span class="cover-question">?</span><span class="cover-note">THE EVIDENCE<br>IS UNDER COVER</span></div>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/60/Dean_Creek_Elk_Viewing_Area_%2817978426109%29.jpg" alt="A photograph of the Roosevelt elk information sign at Dean Creek, Oregon, featuring an illustration of an elk with a clearly pale rump" loading="lazy" decoding="async">
+      <div class="reveal-sticker" aria-hidden="true">WHITE<br>RUMP!</div>
+    </div>
+    <figcaption>Photograph of an interpretive sign at Dean Creek, Oregon—not a live elk. Photo: Bob Wick / BLM Oregon & Washington, 2015. <a href="https://commons.wikimedia.org/wiki/File:Dean_Creek_Elk_Viewing_Area_(17978426109).jpg" target="_blank" rel="noopener noreferrer">Image source</a> · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noopener noreferrer">CC BY 2.0</a>. Shown without alteration; interactive cover added on this page.</figcaption>
+  </figure>
+</div></div></section>
+<section class="dark"><div class="chapter reveal"><div class="chapter-number">04 / AN HONOUR BEFORE THE PRESIDENCY</div><h2>Wait. Which<br><span class="highlight">Roosevelt?</span></h2><p class="copy">Theodore Roosevelt did not have to discover the animal himself. Zoologist C. Hart Merriam described the Olympic Peninsula elk and named it in Roosevelt's honour in 1897—four years before Roosevelt became U.S. president.</p><div class="timeline"><div class="event"><div class="year">1893</div><h3>A conversation about elk</h3><p>Merriam and Roosevelt discuss elk at Chicago's World's Columbian Exposition.</p></div><div class="event"><div class="year">1897</div><h3>An elk gets a presidential-sounding name</h3><p>Merriam describes the Olympic Peninsula elk as distinct and honours Roosevelt in the name. Roosevelt is not yet president.</p></div><div class="event"><div class="year">1909</div><h3>Protecting the animal's home</h3><p>As president, Roosevelt creates Mount Olympus National Monument to protect the elk's habitat; the area later becomes part of Olympic National Park.</p></div></div></div></section>
+<section><div class="chapter reveal"><div class="chapter-number">05 / A TALE OF TWO ELK</div><h2>Same family.<br><span class="highlight">Different neighbourhood.</span></h2><p class="copy">The elk we saw in Jasper many years ago were most likely <strong>Rocky Mountain elk</strong>. But the enormous bull I spotted resting in my Vancouver Island neighbourhood was much more likely a <strong>Roosevelt elk</strong>. Roosevelt elk are especially heavy-bodied and well suited to the rainy Pacific coast. Their Rocky Mountain cousins inhabit a different landscape. Geography helps, but antlers alone aren't a foolproof subspecies test. Apparently I've been meeting different kinds of elk across Canada without realizing who was who.</p><div class="fact-card"><div><div class="eyebrow">PACIFIC COAST</div><h3 style="font-size:clamp(2.4rem,5vw,5rem)">Roosevelt elk</h3><p>Dark coastal forests. Massive body. My very sleepy neighbour.</p></div><div><div class="eyebrow">ROCKY MOUNTAINS</div><h3 style="font-size:clamp(2.4rem,5vw,5rem)">Rocky Mountain elk</h3><p>Mountain valleys and meadows. The likely elk of our Jasper memory.</p></div></div></div></section>
+<section class="end"><div class="chapter reveal"><div class="eyebrow">END OF DETOUR. FOR NOW.</div><h2>I went outside to look at nature. <span class="highlight">I came back with a vocabulary problem.</span></h2><p>An elk. A wapiti. A Roosevelt. A deer. A bull. A white bum. The animal never once got up.</p><p>DERAILED. — One thing led to another.</p><a href="#top" id="again">Start again ↑</a></div></section>
+</main>
+<footer><strong>FIELD NOTES & SOURCES</strong><p>An illustrated, deliberately playful explainer. Names vary by language and region; subspecies designations can be debated. Art is stylized, not a species identification key.</p><div class="links"><a href="https://www.nps.gov/olym/learn/nature/roosevelt-elk.htm">NPS · Roosevelt elk</a><a href="https://www.nps.gov/articles/the-herd-is-here-roosevelt-elk-herd-installation-arrives-at-sagamore-hill.htm">NPS · Merriam & Roosevelt</a><a href="https://publications.gc.ca/site/eng/9.850982/publication.html">Canada · North American elk</a><a href="https://www.oxfordlearnersdictionaries.com/us/definition/english/wapiti">Oxford · Wapiti</a></div><p>Built to learn: IntersectionObserver • scroll progress • CSS variables • editorial image layouts • graceful image loading • SVG anatomy • accessible controls • reduced motion.</p></footer>
+<script>
+/* Image assets are added by the reader. If missing, show a designed fallback. */
+function imageFallback(selector, fallbackSelector){
+  const img=document.querySelector(selector),fallback=document.querySelector(fallbackSelector);
+  if(!img||!fallback)return;
+  const show=()=>{img.hidden=true;fallback.hidden=false};
+  img.addEventListener('error',show,{once:true});
+  if(img.complete&&img.naturalWidth===0)show();
+}
+imageFallback('.hero-painting','.image-fallback');
+imageFallback('.comparison-image','.comparison-fallback');
+/* LAB 03: IntersectionObserver reveals content only when it enters the viewport. */
+const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+/* LAB 04: passive scroll listener, scheduled via requestAnimationFrame. */
+let queued=false;
+function updateProgress(){const max=document.documentElement.scrollHeight-innerHeight;document.querySelector('#progress').style.width=(max>0?scrollY/max*100:0)+'%';queued=false}
+addEventListener('scroll',()=>{if(!queued){queued=true;requestAnimationFrame(updateProgress)}},{passive:true});updateProgress();
+/* LAB 05: one small data object drives all the labels. */
+const names={
+ ca:{region:'NORTH AMERICAN ENGLISH',name:'ELK',species:'Cervus canadensis',meaning:'In Canada, your Vancouver Island visitor is an elk, also called a wapiti.',gloss:'ELK ≠ MOOSE'},
+ uk:{region:'BRITISH ENGLISH',name:'WAPITI',species:'Cervus canadensis',meaning:'To avoid confusion, this North American species is called wapiti. Traditional British “elk” usually means moose.',gloss:'ELK = MOOSE*'},
+ jp:{region:'JAPANESE',name:'ワピチ',species:'Cervus canadensis',meaning:'ワピチ (wapiti) is this species. Moose is ヘラジカ; ordinary deer is シカ.',gloss:'ワピチ ≠ ヘラジカ'}
+};
+document.querySelectorAll('[data-place]').forEach(button=>button.addEventListener('click',()=>{const data=names[button.dataset.place];document.querySelectorAll('[data-place]').forEach(el=>el.setAttribute('aria-pressed',String(el===button)));document.querySelector('#region').textContent=data.region;document.querySelector('#animal-name').textContent=data.name;document.querySelector('#species').textContent=data.species;document.querySelector('#meaning').textContent=data.meaning;document.querySelector('#gloss').textContent=data.gloss;}));
+/* LAB 06: A disclosure button changes a CSS state and exposes real image evidence. */
+document.querySelector('#reveal-rump').addEventListener('click',event=>{
+ const button=event.currentTarget, panel=document.querySelector('#rump-photo');
+ const isOpen=button.getAttribute('aria-expanded')!=='true';
+ button.setAttribute('aria-expanded',String(isOpen));
+ panel.classList.toggle('uncovered',isOpen);
+ button.textContent=isOpen?'Cover the evidence again ←':'Reveal the evidence →';
+ document.querySelector('#rump-status').textContent=isOpen?'Plot twist: it is a photo of an illustrated elk sign. Still a magnificent white bum.':'Exhibit A is classified. For now.';
+});
+document.querySelector('#again').addEventListener('click',e=>{e.preventDefault();scrollTo({top:0,behavior:reduceMotion?'instant':'smooth'});});
+</script>
+</body></html>
