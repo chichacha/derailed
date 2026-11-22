@@ -157,7 +157,7 @@ function renderPieces(){
    geom.translate(-centre.x,-centre.y,-centre.z);
    const pitch=Math.max(Number($('layerPitch').value),depth+2*bevelThickness+.22);
    mesh.position.set(0,0,(i-(T.letters.length-1)/2)*pitch);
-   mesh.rotation.z=(i%3-1)*.08;
+   mesh.rotation.set(0,0,0); // aligned axes; Z position is the only exploded transform.
   }else{
    mesh.position.set(-5,3,-depth/2);
   }
