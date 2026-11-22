@@ -8,8 +8,14 @@ This is a static HTML/CSS/JavaScript companion to [Colour Lab: Generate](../colo
 
 - **SEY-inspired** — six unofficial artist-curated approximations from an earlier DERAILED exploration: *Morning Pour, Washed & Floral, Origin Greens, Blue Hour, Late Harvest, The Full Archive*. These are NOT official SEY Coffee brand palette values, and not sampled measurements of the archived packaging. [Inspiration](https://www.seycoffee.com/collections/archived-coffees).
 - **DERAILED picks** — five suggested palettes: *Coffee After Rain, Botanical Archive, Midnight Gelato, Coastal Field Notes, Print Studio*.
+- **Cinematic palettes / Wes Anderson-inspired** — *Grand Hotel, Coastal Summer, Storybook Train*; stylized nostalgic cinema colours, not sampled film stills.
+- **Design systems / Classic Material-inspired** — *Primary Playground, Paper Sunrise, Muted Material*; reinterpretations of familiar, saturated material-style hues, not an official Material palette library.
+- **Print & posters / Vintage Travel Posters** — *Railway to the Coast, Desert Motel, Alpine Express*; old-paper, screenprint and sun-faded colour combinations.
+- **Design systems / Editorial Data** — *Quiet Signal, Bold Evidence, Field Journal*; contrast-conscious sketches for infographics and diagrams, not certified accessible colour sets.
 
-The canonical checked-in snapshot is `data/palettes.json`. An equivalent `data/palettes.js` is committed for classic-script, offline loading. When intentionally changing the seed set, update both files together.
+**23 palettes** across six named collections, grouped into themed families in the collection dropdown. Choose a collection, or search across collection names, family names, and tags.
+
+The canonical checked-in snapshot is `data/palettes.json`, including the collection-family taxonomy. An equivalent `data/palettes.js` is committed for classic-script, offline loading. When intentionally changing the seed set, update both files together.
 
 ## What you can do
 
