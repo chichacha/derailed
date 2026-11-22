@@ -14,15 +14,29 @@ Open `index.html` directly in a browser—no build step, no CDN, no dependencies
 6. **SVG state**: the white-rump button toggles opacity of a named SVG path; a good starting point for more anatomy annotations.
 7. **Accessibility**: test tab/Enter controls, `aria-pressed`, text replacement, and your OS 'reduce motion' setting.
 
-## A possible painted illustration upgrade
+## Image files (put both beside index.html)
 
-The page uses an original vector drawing by default. To use the painted elk illustration from the ChatGPT conversation, save that image as `elk-painting.png` beside `index.html` and add an image element in the hero's `.illustration` container. For example:
+The layout now uses your painted image as the hero and the comparison illustration later in the story. You do not have to edit HTML to activate them:
 
-```html
-<img class="painted" src="elk-painting.png" alt="Painted illustration of the resting bull Roosevelt elk in a mossy forest">
+```text
+stories/elk-identity-crisis/
+  index.html
+  elk-painting.png             ← hero; intended primary image
+  elk-deer-illustration.png    ← optional deer comparison
+  README.md
 ```
 
-Hide or remove the adjacent `<svg class="elk-svg">` to show the painting instead. For a nicer effect, use the painting as a full-bleed hero background, then transition to the simplified SVG in the next section. The generated painting is **not yet committed** to this branch.
+Just download the images from ChatGPT, save with those exact filenames, and commit the PNGs to this feature branch. The images are **not yet present on GitHub**. Until then, the page shows intentional text-based placeholders rather than a broken image. A small `imageFallback()` helper handles missing assets.
+
+The hero uses `object-fit: cover` with `object-position: 50% 47%`; adjust those to change the crop. The comparison uses `object-fit: contain` so the entire illustration remains visible. Check both on mobile once the images are added.
+
+### What to learn from the redesign
+
+- `<figure>` and `<figcaption>` for meaningful editorial imagery.
+- `object-fit` / `object-position` for responsive cropping.
+- CSS Grid for the split hero; one-column layout in the mobile media query.
+- A subtle CSS entrance animation guarded by `prefers-reduced-motion`.
+- Image load error handling (a useful general pattern for local static sites).
 
 ## Editorial / factual guardrails
 
@@ -30,7 +44,7 @@ Hide or remove the adjacent `<svg class="elk-svg">` to show the painting instead
 - British 'elk' traditionally means moose; British 'moose' is also widely used. It isn't a neat one-for-one language replacement.
 - Roosevelt elk were named by C. Hart Merriam in 1897, before Theodore Roosevelt's presidency.
 - The Jasper vs Vancouver Island comparison is geographic context, not proof of an individual animal's subspecies.
-- The small-deer / elk scale panel is deliberately illustrative and not to numerical scale. The large emoji is a moose icon placeholder, **not** an elk anatomy diagram—replace it with a true elk SVG later.
+- The comparison illustration is a visual interpretation, not a numerical size chart. Check the artwork before publishing for anatomical accuracy.
 
 Sources are linked in the footer of the article.
 
