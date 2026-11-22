@@ -182,6 +182,64 @@ function shapeFor(cells,gap,rounding){
  }
  shape.closePath();return shape;
 }
+
+// Patterns are printable *graphics* on the top and bottom broad faces of the GLB.
+// In STL export only actual mesh geometry survives; no ink or texture is encoded.
+function graphicTexture(identity,letter){
+ let pattern=identity.pattern;
+ if(pattern==='none')return null;
+ if(pattern==='classic'){
+  pattern=['arc','stripes','split','blocks'][letters.indexOf(letter)%4];
+ }
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
+ const ctx=canvas.getContext('2d'),size=512;
+ ctx.fillStyle=identity.color;ctx.fillRect(0,0,size,size);
+ const col=new THREE.Color(identity.color);
+ const brightness=.2126*col.r+.7152*col.g+.0722*col.b;
+ const ink=brightness>.37?'rgba(17,23,35,.28)':'rgba(255,255,250,.34)';
+ ctx.strokeStyle=ink;ctx.fillStyle=ink;ctx.lineCap='round';
+ if(pattern==='stripes'){
+  ctx.save();ctx.translate(256,256);ctx.rotate(-Math.PI/4);
+  ctx.lineWidth=27;
+  for(let x=-720;x<720;x+=120){ctx.beginPath();ctx.moveTo(x,-720);ctx.lineTo(x,720);ctx.stroke()}
+  ctx.restore();
+ }else if(pattern==='dots'){
+  for(let y=58;y<size;y+=112)for(let x=58;x<size;x+=112){
+   ctx.beginPath();ctx.arc(x,y,16,0,Math.PI*2);ctx.fill();
+  }
+ }else if(pattern==='grid'){
+  ctx.lineWidth=9;
+  for(let x=0;x<=size;x+=102){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,size);ctx.stroke()}
+  for(let y=0;y<=size;y+=102){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(size,y);ctx.stroke()}
+ }else if(pattern==='arc'){
+  ctx.beginPath();ctx.arc(95,275,205,0,Math.PI*2);ctx.fill();
+  ctx.lineWidth=14;ctx.beginPath();ctx.arc(320,275,170,0,Math.PI*2);ctx.stroke();
+ }else if(pattern==='split'){
+  ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(size,0);ctx.lineTo(0,size);ctx.closePath();ctx.fill();
+ }else if(pattern==='blocks'){
+  ctx.fillRect(0,0,size*.36,size*.73);
+  ctx.fillRect(size*.36,size*.73,size*.64,size*.27);
+ }
+ const texture=new THREE.CanvasTexture(canvas);
+ texture.colorSpace=THREE.SRGBColorSpace;
+ texture.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);
+ texture.needsUpdate=true;
+ return texture;
+}
+// Fit a single, composition-wide graphic to each whole-piece silhouette.
+// ExtrudeGeometry puts material index 0 on broad caps and index 1 on sidewalls.
+function fitGraphicUV(geometry){
+ geometry.computeBoundingBox();
+ const b=geometry.boundingBox,p=geometry.getAttribute('position'),uv=geometry.getAttribute('uv');
+ const width=Math.max(.0001,b.max.x-b.min.x),height=Math.max(.0001,b.max.y-b.min.y);
+ for(let i=0;i<uv.count;i++)uv.setXY(i,(p.getX(i)-b.min.x)/width,(p.getY(i)-b.min.y)/height);
+ uv.needsUpdate=true;
+}
+function disposeMesh(mesh){
+ mesh.geometry.dispose();
+ const materials=Array.isArray(mesh.material)?mesh.material:[mesh.material];
+ for(const material of materials){material.map?.dispose();material.dispose()}
+}
 function fitCamera(){
  // Fit the actual 3D bounds, including the height of the new Z-axis stack.
  camera.aspect=Math.max(host.clientWidth,1)/Math.max(host.clientHeight,1);
@@ -207,7 +265,7 @@ function fitCamera(){
  camera.lookAt(centre);controls.update();
 }
 function renderPieces(){
- for(const m of meshes){group.remove(m);m.geometry.dispose();m.material.dispose()}meshes=[];
+ for(const m of meshes){group.remove(m);disposeMesh(m)}meshes=[];
  const palette=C.load($('palette').value),depth=Number($('depth').value),mode=$('finish').value;
  const exploded=$('arrangement').value==='exploded';
  for(const [i,tile] of T.solutions[Number($('solution').value)].entries()){
@@ -216,9 +274,13 @@ function renderPieces(){
   const geom=new THREE.ExtrudeGeometry(shape,{depth,steps:1,bevelEnabled:true,bevelThickness,bevelSize:.048,bevelSegments:5,curveSegments:6});
   geom.computeVertexNormals();
   const identity=materialIdentity(tile.name,palette,mode);
-  const material=new THREE.MeshStandardMaterial({color:identity.color,...finishSettings(identity.finish)});
-  material.name=tile.name+' · '+identity.token+' · '+identity.finish;
-  const mesh=new THREE.Mesh(geom,material);mesh.name='Pentomino '+tile.name;
+  const texture=graphicTexture(identity,tile.name);
+  if(texture)fitGraphicUV(geom);
+  const plain=new THREE.MeshStandardMaterial({color:identity.color,...finishSettings(identity.finish)});
+  plain.name=tile.name+' · '+identity.token+' · '+identity.finish;
+  const cap=texture?new THREE.MeshStandardMaterial({color:0xffffff,map:texture,...finishSettings(identity.finish)}):plain;
+  if(texture)cap.name=plain.name+' · '+identity.pattern;
+  const mesh=new THREE.Mesh(geom,texture?[cap,plain]:plain);mesh.name='Pentomino '+tile.name;
   mesh.userData={letter:tile.name,palette:palette.name,paletteToken:identity.token,surfaceFinish:identity.finish,pattern:identity.pattern};
   if(exploded){
    // Centre each mesh's local geometry: every pivot is EXACTLY x=0, y=0.
@@ -261,6 +323,14 @@ $('layerPitch').addEventListener('change',fitCamera);
 $('arrangement').addEventListener('change',()=>{group.rotation.z=0;renderPieces();fitCamera()});
 $('turntable').onclick=()=>{spinning=!spinning;$('turntable').textContent=spinning?'Pause rotation':'Resume rotation'};
 $('reset').onclick=()=>{group.rotation.z=0;fitCamera()};
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();
+renderer.domElement.addEventListener('click',event=>{
+ const bounds=renderer.domElement.getBoundingClientRect();
+ pointer.set((event.clientX-bounds.left)/bounds.width*2-1,-(event.clientY-bounds.top)/bounds.height*2+1);
+ raycaster.setFromCamera(pointer,camera);
+ const hit=raycaster.intersectObjects(meshes,false)[0];
+ if(hit){selectedPiece=hit.object.userData.letter;renderMaterialKey(C.load($('palette').value),$('finish').value);syncPieceEditor()}
+});
 $('export').onclick=async()=>{
  const btn=$('export');btn.disabled=true;$('status').textContent='Building binary glTF…';
  try{
