@@ -347,7 +347,7 @@ function printableScene(letter=null){
   if(settings.cube){
    // Separate print islands preserve exact 1×1×1 voxels within each solid.
    // An unmodified full 6×10 tiling touches neighbours and may fuse in a slicer.
-   const col=i%4,row=Math.floor(i/4);
+   const col=letter?0:i%4,row=letter?0:Math.floor(i/4);
    geometry.translate(-b.min.x+col*6,-b.min.y+row*6,-b.min.z);
   }else{
    geometry.translate(letter?-b.min.x:0,letter?-b.min.y:6,-b.min.z);
