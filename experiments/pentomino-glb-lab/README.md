@@ -14,6 +14,16 @@ Then open `http://localhost:8000/experiments/pentomino-glb-lab/index.html`.
 
 Three.js and its export addons are loaded from jsDelivr; an internet connection is required for a first load. The shape, tiling and colour data come from the existing local DERAILED modules. The experiment is not a Quarto article and needs no build step.
 
+## Studio interface
+
+The editor has five tabs in the right-hand panel: **01 Shape**, **02 Colour**, **03 Piece**, **04 Save**, and **05 Print**. The tabs keep the viewport visible instead of extending the panel down the page. Use arrow keys, Home and End when a tab has keyboard focus.
+
+Clicking a mesh in the 3D viewer, or choosing a shape in the colour key, opens **03 Piece** with that pentomino selected. Rotation and Reset Camera remain accessible under every tab.
+
+### Surface-graphic coordinates
+
+Graphics use *equal X and Y scale*, anchored to each piece's bounding-box centre on a fixed six-square canvas. This avoids stretching dots into ovals or changing stripe proportions on long pieces such as I or Y. Only the broad front/back caps receive this graphic UV mapping; the bevels and walls keep their solid material colour. This is a UV fix, not a change to printable geometry.
+
 ## Play
 
 - **Together:** valid 6 × 10 pentomino tiling with independently adjustable spacing.
