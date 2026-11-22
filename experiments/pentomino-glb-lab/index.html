@@ -29,6 +29,7 @@ h1{font-size:clamp(42px,6.5vw,88px);line-height:.94;letter-spacing:-.075em;margi
 .panel-footer .lab-link{font-size:11px;color:#bdc5d1;text-decoration:none}
 .panel-footer .lab-link:hover{text-decoration:underline}
 .camera-actions button{padding:8px 5px;font-size:11px}
+button.preset{padding:8px 10px;font-size:12px;background:#45404b;border-color:#f49cbb61;color:#ffe1eb;text-align:left}
 h2{font-size:12px;letter-spacing:.14em;margin:0;color:#f49cbb;text-transform:uppercase}
 .group{display:flex;flex-direction:column;gap:9px}.group[hidden]{display:none}.group label{font-size:12px;color:#d0d0d7;display:flex;justify-content:space-between}
 select,button,input[type=range]{width:100%}select,button{border:1px solid #ffffff28;border-radius:8px;background:#323640;color:#f7f1ea;padding:11px 12px;font:inherit;font-size:13px}
@@ -71,12 +72,13 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 <button type="button" id="tab-save" role="tab" aria-controls="panel-save" aria-selected="false" tabindex="-1" data-tab="save"><span class="tab-no">04</span><span>Save</span></button>
 <button type="button" id="tab-print" role="tab" aria-controls="panel-print" aria-selected="false" tabindex="-1" data-tab="print"><span class="tab-no">05</span><span>Print</span></button></nav>
 <div class="studio-tab-scroll"><section class="studio-panel" role="tabpanel" id="panel-shape" aria-labelledby="tab-shape" tabindex="0"><h2>01 / Shape & composition</h2><div class="group"><label for="arrangement">Arrangement</label><select id="arrangement"><option value="tiling">Together / 6 × 10 tiling</option><option value="exploded">Exploded / aligned Z-axis stack</option></select></div>
-<div class="group"><label for="geometryMode">Piece geometry</label><select id="geometryMode"><option value="slab" selected>Soft slab · adjustable thickness</option><option value="cube">True cubes · 1 × 1 × 1</option></select>
-<p class="note" id="cubeHint" hidden>Each piece becomes an exact five-cube solid: depth = 1 unit, sharp corners, no gaps or bevels. This enables future 3D packing, but does not yet solve 5 × 6 × 2 or 4 × 5 × 3 boxes.</p></div>
 <div class="group"><label for="solution">Tiling <output id="solutionLabel">01 / 16</output></label><input id="solution" type="range" min="0" max="15" value="0"></div>
-<div class="group" id="depthControl"><label for="depth">Extrusion depth <output id="depthLabel">0.26</output></label><input id="depth" type="range" min=".08" max=".65" step=".01" value=".26"></div>
-<div class="group" id="cornerControl"><label for="corner">Corner softness <output id="cornerLabel">0.12</output></label><input id="corner" type="range" min="0" max=".24" step=".01" value=".12"></div>
-<div class="group" id="togetherSpacing"><label for="gap">Piece gap <output id="gapLabel">0.18</output></label><input id="gap" type="range" min=".12" max=".35" step=".01" value=".18"></div>
+<div class="group"><label for="depth">Extrusion depth <output id="depthLabel">0.26×</output></label><input id="depth" type="range" min=".08" max="2" step=".01" value=".26">
+<button type="button" id="cubeProportions" class="preset">◇ 1× Cube proportions</button>
+<p class="note">1× means each unit square is one unit deep. Keep the soft corners and bevels, or set them to zero for mathematically exact cubic edges.</p></div>
+<div class="group"><label for="corner">Corner softness <output id="cornerLabel">0.12</output></label><input id="corner" type="range" min="0" max=".24" step=".01" value=".12"></div>
+<div class="group"><label for="bevel">Edge bevel <output id="bevelLabel">0.050</output></label><input id="bevel" type="range" min="0" max=".1" step=".005" value=".05"></div>
+<div class="group" id="togetherSpacing"><label for="gap">Piece gap <output id="gapLabel">0.18</output></label><input id="gap" type="range" min="0" max=".35" step=".01" value=".18"></div>
 <div class="group" id="layerSpacing" hidden><label for="layerPitch">Z-axis layer spacing <output id="layerPitchLabel">1.25</output></label><input id="layerPitch" type="range" min=".9" max="2.4" step=".05" value="1.25"></div></section>
 <section class="studio-panel" role="tabpanel" id="panel-material" aria-labelledby="tab-material" tabindex="0" hidden><h2>02 / Colour & surface</h2><div class="group"><label for="palette">Colour collection</label><select id="palette"></select><div class="swatches" id="swatches"></div>
 <p class="note" id="paletteExplainer">Five features + two neutrals, shared with the 2D lab.</p></div>
@@ -218,17 +220,15 @@ const fill=new THREE.DirectionalLight(0xbccfff,1.8);fill.position.set(6,5,8);sce
 const background=new THREE.Color('#22252d');scene.background=background;
 let spinning=true, meshes=[];
 function geometrySettings(){
- const cube=$('geometryMode').value==='cube';
- const depth=cube?1:Number($('depth').value),bevelThickness=cube?0:Math.min(.055,depth*.27);
- return {cube,depth,bevelThickness,gap:cube?0:Number($('gap').value),corner:cube?0:Number($('corner').value),
- extrude:{depth,steps:1,bevelEnabled:!cube,bevelThickness,bevelSize:cube?0:.048,bevelSegments:cube?1:5,curveSegments:cube?1:6}};
+ // Cube proportions are controlled by depth alone. Edge treatment is independent.
+ const depth=Number($('depth').value),bevelSize=Number($('bevel').value);
+ const bevelThickness=bevelSize===0?0:Math.min(bevelSize,depth*.27);
+ return {depth,bevelSize,bevelThickness,gap:Number($('gap').value),corner:Number($('corner').value),
+ extrude:{depth,steps:1,bevelEnabled:bevelSize>0,bevelThickness,bevelSize,
+ bevelSegments:bevelSize>0?5:1,curveSegments:6}};
 }
 function syncGeometryControls(){
- const cube=$('geometryMode').value==='cube';
- $('depthControl').hidden=cube;
- $('cornerControl').hidden=cube;
- $('cubeHint').hidden=!cube;
- $('togetherSpacing').hidden=cube||$('arrangement').value==='exploded';
+ $('togetherSpacing').hidden=$('arrangement').value==='exploded';
  $('layerSpacing').hidden=$('arrangement').value!=='exploded';
 }
 function edgesOf(cells){
@@ -337,16 +337,21 @@ function disposeMesh(mesh){
 }
 // Slicer-friendly export: reconstruct from the valid 6×10 tiling and put each
 // independent solid flat on the XY build plate. Never export the floating stack.
+function needsPrintIslands(settings){
+ // Zero or very small gaps would leave full-set solids touching (or overlapping
+ // after a bevel). Keep each piece distinct for slicers regardless of depth.
+ return settings.gap<=2*settings.bevelSize+.01;
+}
 function printableScene(letter=null){
  const result=new THREE.Scene(),cellMm=Number($('cellMm').value),settings=geometrySettings();
+ const islands=needsPrintIslands(settings);
  for(const [i,tile] of T.solutions[Number($('solution').value)].entries()){
   if(letter&&tile.name!==letter)continue;
   const contour=shapeFor(tile.cells,settings.gap,settings.corner);
   const geometry=new THREE.ExtrudeGeometry(contour,settings.extrude);
   geometry.computeBoundingBox();const b=geometry.boundingBox;
-  if(settings.cube){
-   // Separate print islands preserve exact 1×1×1 voxels within each solid.
-   // An unmodified full 6×10 tiling touches neighbours and may fuse in a slicer.
+  if(islands){
+   // Individual print islands allow zero-gap exact shapes to remain separate.
    const col=letter?0:i%4,row=letter?0:Math.floor(i/4);
    geometry.translate(-b.min.x+col*6,-b.min.y+row*6,-b.min.z);
   }else{
@@ -366,12 +371,13 @@ function download(name,blob){
 function updatePrintSize(){
  const mm=Number($('cellMm').value),shape=geometrySettings();
  $('cellMmLabel').textContent=mm+' mm';
- $('printDimensions').textContent=shape.cube?
-  'Each cube = '+mm+' × '+mm+' × '+mm+' mm · set STL: separated 4×3 print islands (up to '+(23*mm)+' × '+(17*mm)+' mm)':
-  'Full set footprint ≈ '+(10*mm)+' × '+(6*mm)+' mm · thickness ≈ '+((shape.depth+2*shape.bevelThickness)*mm).toFixed(1)+' mm';
+ const thick=((shape.depth+2*shape.bevelThickness)*mm).toFixed(1);
+ $('printDimensions').textContent=needsPrintIslands(shape)?
+  'Full set: separated 4×3 print islands (up to '+(23*mm)+' × '+(17*mm)+' mm) · '+thick+' mm thick':
+  'Full set footprint ≈ '+(10*mm)+' × '+(6*mm)+' mm · '+thick+' mm thick';
 }
 function exportDesignJson(){
- const ids=['arrangement','geometryMode','palette','solution','depth','corner','gap','layerPitch','finish','pattern','cellMm'];
+ const ids=['arrangement','palette','solution','depth','corner','bevel','gap','layerPitch','finish','pattern','cellMm'];
  const settings=Object.fromEntries(ids.map(id=>[id,$(id).value]));
  const result={schema:'derailed.pentomino-glb/1',settings,pieces:pieceOverrides};
  download('derailed-pentomino-design.json',new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));
@@ -379,9 +385,15 @@ function exportDesignJson(){
 function importDesignJson(data){
  if(!data||data.schema!=='derailed.pentomino-glb/1')throw Error('Unknown design schema');
  if(typeof data.settings!=='object'||!data.settings)throw Error('Missing settings');
- const ids=['arrangement','geometryMode','palette','solution','depth','corner','gap','layerPitch','finish','pattern','cellMm'];
+ // Backward-compatible import of earlier designs with a separate Cube mode.
+ const incoming={...data.settings};
+ if(incoming.geometryMode==='cube'){
+  Object.assign(incoming,{depth:'1',corner:'0',bevel:'0',gap:'0'});
+ }
+ if(incoming.bevel===undefined)incoming.bevel='.05';
+ const ids=['arrangement','palette','solution','depth','corner','bevel','gap','layerPitch','finish','pattern','cellMm'];
  for(const id of ids){
-  const element=$(id),value=String(data.settings[id]??(id==='geometryMode'?'slab':''));
+  const element=$(id),value=String(incoming[id]??'');
   if(element.tagName==='SELECT'){
    if(![...element.options].some(opt=>opt.value===value))throw Error('Invalid '+id);
   }else{
@@ -407,7 +419,7 @@ function importDesignJson(data){
   }
   next[letter]=item;
  }
- for(const id of ids)$(id).value=String(data.settings[id]??(id==='geometryMode'?'slab':''));
+ for(const id of ids)$(id).value=String(incoming[id]);
  pieceOverrides=next;group.rotation.z=0;
  renderPieces();fitCamera();updatePrintSize();
 }
@@ -468,7 +480,8 @@ function renderPieces(){
   group.add(mesh);meshes.push(mesh);
  }
  $('solutionLabel').textContent=String(Number($('solution').value)+1).padStart(2,'0')+' / '+T.solutions.length;
- $('depthLabel').textContent=depth.toFixed(2);
+ $('depthLabel').textContent=depth.toFixed(2)+'×';
+ $('bevelLabel').textContent=shapeSettings.bevelSize.toFixed(3);
  for(const id of ['corner','gap','layerPitch'])$(id+'Label').textContent=Number($(id).value).toFixed(2);
  syncGeometryControls();
  const isGomasu=palette.edition===GOMASU_EDITION,swatches=$('swatches');
@@ -504,9 +517,14 @@ $('pieceColour').addEventListener('change',()=>{
 $('pieceFinish').addEventListener('change',()=>overrideSelected('finish',$('pieceFinish').value));
 $('piecePattern').addEventListener('change',()=>overrideSelected('pattern',$('piecePattern').value));
 $('resetDesign').addEventListener('click',()=>{pieceOverrides=Object.create(null);$('finish').value='paired-satin';$('pattern').value='none';renderPieces()});
-for(const id of ['palette','solution','depth','finish','corner','gap','layerPitch','pattern'])$(id).addEventListener('input',renderPieces);
-for(const id of ['depth','cellMm'])$(id).addEventListener('input',updatePrintSize);
-$('geometryMode').addEventListener('change',()=>{group.rotation.z=0;renderPieces();fitCamera();updatePrintSize()});
+for(const id of ['palette','solution','depth','finish','corner','bevel','gap','layerPitch','pattern'])$(id).addEventListener('input',renderPieces);
+for(const id of ['depth','bevel','gap','cellMm'])$(id).addEventListener('input',updatePrintSize);
+for(const id of ['depth','bevel'])$(id).addEventListener('change',fitCamera);
+$('cubeProportions').addEventListener('click',()=>{
+ $('depth').value='1';
+ renderPieces();updatePrintSize();fitCamera();
+ $('status').textContent='1× cube proportions · soften or sharpen corners and edges as you like';
+});
 $('saveDesign').onclick=exportDesignJson;
 $('importDesign').onclick=()=>$('designFile').click();
 $('designFile').addEventListener('change',async event=>{
