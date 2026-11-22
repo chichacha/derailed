@@ -69,8 +69,18 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 <div class="group"><label for="piecePattern">Piece graphic</label><select id="piecePattern"></select></div>
 <button id="resetDesign">↺ Restore curated pairings</button>
 <div class="btnrow"><button id="turntable">Pause rotation</button><button id="reset">Reset camera</button></div>
-<h2>04 / Export your design</h2><button class="primary" id="export">↓ Export coloured .GLB</button>
-<p class="note">Curated pairs: F/Z (fluid), L/Y (long), P/U (compact), N/W (stepped), T/V (angular). I uses foreground; X uses background. Colour, finish and graphic edits are per-piece overrides.</p>
+<h2>04 / Keep your creation</h2>
+<button class="primary" id="export">↓ Export coloured .GLB</button>
+<div class="btnrow"><button id="saveDesign">↓ Design JSON</button><button id="importDesign">↑ Open design JSON</button></div>
+<input id="designFile" type="file" accept=".json,application/json" hidden>
+<p class="note">GLB keeps colour, textures and material sheen. Design JSON lets you reopen your editable selections.</p>
+<h2>05 / Make it physical</h2>
+<div class="group"><label for="cellMm">Unit square edge <output id="cellMmLabel">20 mm</output></label>
+<input id="cellMm" type="range" min="10" max="35" step="1" value="20">
+<p class="note" id="printDimensions">Set approx. 200 × 120 mm · 7.4 mm thick</p></div>
+<div class="btnrow"><button id="exportStl">↓ Full set STL</button><button id="exportPieceStl">↓ Selected piece STL</button></div>
+<p class="note">STL is geometry only: it does not print colours, satin finishes or graphic textures. Pieces export flat on a build plate regardless of the 3D preview arrangement. STL coordinates use millimetres (the file itself has no unit metadata). Verify scale, watertightness and printer tolerances with a slicer or print shop.</p>
+<p class="note">Curated pairs: F/Z (fluid), L/Y (long), P/U (compact), N/W (stepped), T/V (angular). I uses foreground; X uses background.</p>
 <div class="status" id="status" role="status" aria-live="polite">Loading 3D engine…</div>
 <p class="note"><a href="../pentomino-lab/index.html">Back to the original 2D Pentomino Lab ↗</a></p>
 </aside></div>
@@ -80,6 +90,7 @@ footer{padding:10px 0;color:#9095a0;font-size:12px}
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+import {STLExporter} from 'three/addons/exporters/STLExporter.js';
 const T=window.PentominoTilings,C=window.DERAILEDColour;
 const $=id=>document.getElementById(id), letters=[...T.letters];
 // Curated morphological families: swirls, long stems, compact, stepped, angular.
@@ -240,6 +251,79 @@ function disposeMesh(mesh){
  const materials=Array.isArray(mesh.material)?mesh.material:[mesh.material];
  for(const material of materials){material.map?.dispose();material.dispose()}
 }
+// Slicer-friendly export: reconstruct from the valid 6×10 tiling and put each
+// independent solid flat on the XY build plate. Never export the floating stack.
+function printableScene(letter=null){
+ const result=new THREE.Scene(),cellMm=Number($('cellMm').value);
+ const depth=Number($('depth').value),corner=Number($('corner').value),gap=Number($('gap').value);
+ const bevelThickness=Math.min(.055,depth*.27);
+ for(const tile of T.solutions[Number($('solution').value)]){
+  if(letter&&tile.name!==letter)continue;
+  const contour=shapeFor(tile.cells,gap,corner);
+  const geometry=new THREE.ExtrudeGeometry(contour,{
+   depth,steps:1,bevelEnabled:true,bevelThickness,bevelSize:.048,bevelSegments:5,curveSegments:6
+  });
+  geometry.computeBoundingBox();
+  const b=geometry.boundingBox;
+  // Keep the arranged set in original board coordinates; for a single
+  // object shift it to the origin. Translate the bed-facing surface to Z=0.
+  geometry.translate(letter?-b.min.x:0,letter?-b.min.y:6,-b.min.z);
+  geometry.scale(cellMm,cellMm,cellMm);
+  const mesh=new THREE.Mesh(geometry,new THREE.MeshStandardMaterial());
+  mesh.name='Pentomino '+tile.name;
+  result.add(mesh);
+ }
+ result.updateMatrixWorld(true);
+ return result;
+}
+function download(name,blob){
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download=name;document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),10000);
+}
+function updatePrintSize(){
+ const mm=Number($('cellMm').value),depth=Number($('depth').value);
+ const bevel=Math.min(.055,depth*.27);
+ $('cellMmLabel').textContent=mm+' mm';
+ $('printDimensions').textContent='Full set footprint ≈ '+(10*mm)+' × '+(6*mm)+' mm · thickness ≈ '+((depth+2*bevel)*mm).toFixed(1)+' mm';
+}
+function exportDesignJson(){
+ const ids=['arrangement','palette','solution','depth','corner','gap','layerPitch','finish','pattern','cellMm'];
+ const settings=Object.fromEntries(ids.map(id=>[id,$(id).value]));
+ const result={schema:'derailed.pentomino-glb/1',settings,pieces:pieceOverrides};
+ download('derailed-pentomino-design.json',new Blob([JSON.stringify(result,null,2)],{type:'application/json'}));
+}
+function importDesignJson(data){
+ if(!data||data.schema!=='derailed.pentomino-glb/1')throw Error('Unknown design schema');
+ if(typeof data.settings!=='object'||!data.settings)throw Error('Missing settings');
+ const ids=['arrangement','palette','solution','depth','corner','gap','layerPitch','finish','pattern','cellMm'];
+ for(const id of ids){
+  const element=$(id),value=String(data.settings[id]??'');
+  if(element.tagName==='SELECT'){
+   if(![...element.options].some(opt=>opt.value===value))throw Error('Invalid '+id);
+  }else{
+   const n=Number(value);
+   if(!value||!Number.isFinite(n)||n<Number(element.min)||n>Number(element.max))throw Error('Invalid '+id);
+  }
+ }
+ const next=Object.create(null);
+ for(const [letter,override] of Object.entries(data.pieces||{})){
+  if(!letters.includes(letter)||!override||typeof override!=='object')throw Error('Invalid piece override');
+  const item=Object.create(null);
+  if(override.colourIndex!==undefined){
+   if(!Number.isInteger(override.colourIndex)||override.colourIndex<0||override.colourIndex>6)throw Error('Invalid colour for '+letter);
+   item.colourIndex=override.colourIndex;
+  }
+  for(const id of ['finish','pattern'])if(override[id]!==undefined){
+   if(![...$(id==='finish'?'pieceFinish':'piecePattern').options].some(o=>o.value===override[id]))throw Error('Invalid '+id+' for '+letter);
+   item[id]=override[id];
+  }
+  next[letter]=item;
+ }
+ for(const id of ids)$(id).value=String(data.settings[id]);
+ pieceOverrides=next;group.rotation.z=0;
+ renderPieces();fitCamera();updatePrintSize();
+}
 function fitCamera(){
  // Fit the actual 3D bounds, including the height of the new Z-axis stack.
  camera.aspect=Math.max(host.clientWidth,1)/Math.max(host.clientHeight,1);
@@ -319,6 +403,36 @@ $('pieceFinish').addEventListener('change',()=>overrideSelected('finish',$('piec
 $('piecePattern').addEventListener('change',()=>overrideSelected('pattern',$('piecePattern').value));
 $('resetDesign').addEventListener('click',()=>{pieceOverrides=Object.create(null);$('finish').value='paired-satin';$('pattern').value='none';renderPieces()});
 for(const id of ['palette','solution','depth','finish','corner','gap','layerPitch','pattern'])$(id).addEventListener('input',renderPieces);
+for(const id of ['depth','cellMm'])$(id).addEventListener('input',updatePrintSize);
+$('saveDesign').onclick=exportDesignJson;
+$('importDesign').onclick=()=>$('designFile').click();
+$('designFile').addEventListener('change',async event=>{
+ const file=event.target.files[0];if(!file)return;
+ try{
+  if(file.size>128000)throw Error('File is too large for a design JSON');
+  importDesignJson(JSON.parse(await file.text()));
+  $('status').textContent='Design reopened from JSON';
+ }catch(error){$('status').textContent='Open failed: '+error.message}
+ finally{event.target.value=''}
+});
+async function downloadStl(letter=null){
+ const button=$(letter?'exportPieceStl':'exportStl');button.disabled=true;
+ $('status').textContent='Preparing printable STL geometry…';
+ let printScene;
+ try{
+  printScene=printableScene(letter);
+  const payload=new STLExporter().parse(printScene,{binary:true});
+  const blob=new Blob([payload],{type:'model/stl'});
+  download(letter?'derailed-pentomino-'+letter+'.stl':'derailed-pentomino-12-piece-set.stl',blob);
+  $('status').textContent='STL exported · '+(letter?'piece '+letter:'12 independent solids')+' · coordinates in mm';
+ }catch(error){console.error(error);$('status').textContent='STL export failed: '+error.message}
+ finally{
+  printScene?.traverse(object=>{if(object.isMesh){object.geometry.dispose();object.material.dispose()}});
+  button.disabled=false;
+ }
+}
+$('exportStl').onclick=()=>downloadStl();
+$('exportPieceStl').onclick=()=>downloadStl(selectedPiece);
 $('layerPitch').addEventListener('change',fitCamera);
 $('arrangement').addEventListener('change',()=>{group.rotation.z=0;renderPieces();fitCamera()});
 $('turntable').onclick=()=>{spinning=!spinning;$('turntable').textContent=spinning?'Pause rotation':'Resume rotation'};
@@ -338,13 +452,13 @@ $('export').onclick=async()=>{
   meshes.forEach(m=>bundle.add(m.clone()));exportScene.add(bundle);
   const exporter=new GLTFExporter();
   const output=await exporter.parseAsync(exportScene,{binary:true,onlyVisible:true,trs:false});
-  const blob=new Blob([output],{type:'model/gltf-binary'}),url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='derailed-pentomino-'+$('palette').value+'.glb';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);
+  const blob=new Blob([output],{type:'model/gltf-binary'});
+  download('derailed-pentomino-'+$('palette').value+'.glb',blob);
   $('status').textContent='Exported '+(blob.size/1024).toFixed(0)+' KB GLB · 12 meshes';
  }catch(error){console.error(error);$('status').textContent='Export failed: '+error.message}
  finally{btn.disabled=false}
 };
 const resize=new ResizeObserver(()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)});resize.observe(host);
-renderPieces();fitCamera();
+renderPieces();fitCamera();updatePrintSize();
 let last=performance.now();renderer.setAnimationLoop(now=>{const dt=Math.min((now-last)/1000,.05);last=now;if(spinning&&!controls.state)group.rotation.z+=dt*.085;controls.update();renderer.render(scene,camera)});
 </script></body></html>
