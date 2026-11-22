@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A home for colour palettes collected by taste, not colour-wheel rules. Curate SEY coffee-inspired palettes and your own favourites.">
+<meta name="theme-color" content="#28242b">
+<title>Colour Lab: Curate — DERAILED.</title>
+<link rel="stylesheet" href="style.css">
+</head><body>
+<header class="masthead">
+  <nav><a href="../index.html">← DERAILED. / EXPERIMENTS</a><a href="../colour-lab/index.html">Try Colour Lab: Generate ↗</a></nav>
+  <div class="hero"><div><span class="eyebrow">EXPERIMENT 003 / A PERSONAL COLOUR LIBRARY</span>
+    <h1>Colour Lab<span class="period">.</span><br><em>Curate.</em></h1>
+    <p>Colour stories worth keeping. No colour-wheel rules required.</p></div>
+    <div class="hero-stack" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  </div>
+</header>
+<main>
+  <section class="introduction">
+    <div><span class="eyebrow">01 / THE ARCHIVE</span><h2>Follow your eye.</h2>
+      <p>Explore SEY-inspired brights, cinematic pastels, classic Material colour, vintage travel posters and data-friendly editorial sets. Find a favourite and make it your own.</p></div>
+    <button id="newPalette" class="primary" type="button">＋ New palette</button>
+  </section>
+  <div class="filters" role="group" aria-label="Browse collection">
+    <label class="search"><span class="sr-only">Search palettes</span><input id="search" type="search" placeholder="Search by name, note or tag…" autocomplete="off"></label>
+    <label><span class="sr-only">Collection</span><select id="collection"><option value="all">All collections</option></select></label>
+    <button id="onlyFavorites" type="button" aria-pressed="false">♡ Favourites only</button>
+    <span id="resultCount" class="count"></span>
+  </div>
+  <div class="body-grid">
+    <section class="gallery-panel" aria-label="Curated palettes">
+      <div id="gallery" class="gallery"></div>
+      <p id="empty" class="empty" hidden>No palettes match those filters. Try another search or make your own.</p>
+    </section>
+    <aside class="detail" aria-label="Selected palette editor">
+      <div id="detailHeader"><span class="eyebrow">02 / THE WORKBENCH</span><h2 id="detailName">Select a palette</h2>
+        <p id="detailCollection" class="source"></p></div>
+      <div class="detail-swatches" id="detailSwatches" aria-label="Selected palette colours"></div>
+      <p id="editHint" class="hint"></p>
+      <div class="editor-fields">
+        <label for="editName">Palette name</label><input id="editName" type="text" maxlength="80">
+        <label for="editNote">Why do you love it?</label><textarea id="editNote" rows="3" maxlength="300" placeholder="The colour story, a memory, or a project idea…"></textarea>
+        <label for="editTags">Tags <span class="muted">(comma-separated)</span></label><input id="editTags" type="text" maxlength="160" placeholder="vibrant, coffee, optimistic">
+      </div>
+      <div class="detail-actions">
+        <button id="favoriteSelected" type="button">♡ Save to favourites</button>
+        <button id="duplicate" type="button" class="primary">Make my version ↗</button>
+        <button id="delete" type="button" class="danger" hidden>Delete my version</button>
+      </div>
+      <div class="mini-preview" id="preview" aria-label="Palette applied to small editorial sample">
+        <span>FIELD NOTES / COLOUR STUDIES</span>
+        <h3>Ideas look<br><em>different</em><br>in colour.</h3>
+        <div id="previewChips" class="preview-chips"></div>
+        <div class="mini-preview-bottom"><span>NO FIXED DESTINATION</span><span>DERAILED. ✳</span></div>
+      </div>
+      <div class="export-panel">
+        <span class="eyebrow">03 / TAKE IT WITH YOU</span>
+        <p>Use these seven tokens in Pentomino Lab, Colour Lab: Generate or your next little HTML page.</p>
+        <div class="export-actions">
+          <button id="copyCSS" type="button">Copy CSS</button>
+          <button id="downloadCSS" type="button">↓ CSS</button>
+          <button id="downloadJSON" type="button">↓ Palette JSON</button>
+          <button id="downloadLibrary" type="button">↓ My collection</button>
+          <button id="import" type="button">↑ Import JSON</button>
+        </div>
+        <input id="importFile" type="file" accept=".json,application/json" hidden>
+        <p class="hint">Favourite stars and your own versions are saved in this browser when storage is available. Download your collection to back it up or move to another device.</p>
+      </div>
+      <p id="notice" class="notice" role="status" aria-live="polite"></p>
+    </aside>
+  </div>
+</main>
+<footer><span>All themed palettes are unofficial creative interpretations, <strong>not</strong> official brand or film colour specifications.</span>
+  <a href="https://www.seycoffee.com/collections/archived-coffees" target="_blank" rel="noopener noreferrer">View the inspiration at SEY Coffee ↗</a>
+  <span>DERAILED. / One thing led to another.</span></footer>
+<script src="../shared/colour-system.js"></script>
+<script src="data/palettes.js"></script>
+<script src="app.js"></script>
+</body></html>
