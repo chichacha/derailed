@@ -5,7 +5,8 @@ A collection of small creative-coding laboratories. Each lab asks a question, bu
 ## Labs
 
 - [Pentomino Pattern Lab](pentomino-lab/index.html) — mathematical tilings turned into geometric art. [Developer notes](pentomino-lab/README.md).
-- **Colour Lab** — planned as an independent studio built on the same shared seven-token colour system.
+- [Colour Lab: Generate](colour-lab/index.html) — seed-colour harmony generator, editable swatches, light/dark previews and WCAG contrast checks. [Notes](colour-lab/README.md).
+- [Colour Lab: Curate](colour-lab-curate/index.html) — a taste-led gallery of favourite palettes, including six unofficial SEY coffee-inspired sets, with saved personal copies and portable exports. [Notes](colour-lab-curate/README.md).
 
 ## Shared components
 

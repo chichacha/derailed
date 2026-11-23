@@ -1,25 +1,418 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Experiments — DERAILED.</title><style>
-:root{font-family:system-ui,-apple-system,sans-serif;color:#243039;background:#faf8f2}
-*{box-sizing:border-box}body{margin:0}main{max-width:950px;margin:auto;padding:clamp(24px,6vw,72px)}
-a{color:inherit}header a{font-weight:800;text-decoration:none;color:#b74760}
-.eyebrow{text-transform:uppercase;letter-spacing:.17em;font-size:12px;font-weight:800;color:#9b4563;margin:70px 0 15px}
-h1{font-size:clamp(45px,7vw,85px);letter-spacing:-.075em;line-height:1;margin:0}
-p{max-width:620px;line-height:1.7;color:#53636a}.cards{margin-top:40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:17px}
-article{border:1px solid #ddd8d3;border-radius:16px;padding:22px;background:#fff;min-height:250px}
-.visual{display:flex;gap:5px;height:85px;margin-bottom:15px}.visual span{display:block;width:19%;border-radius:5px;background:var(--c)}
-h2{font-size:21px;letter-spacing:-.04em;margin:5px 0}small{color:#9a5066;font-weight:700;letter-spacing:.07em}
-article a{font-weight:800;text-underline-offset:4px}.soon{opacity:.64}
-footer{margin-top:60px;color:#67747a;font-size:12px}
-</style></head><body><main>
-<header><a href="../index.html">← DERAILED.</a></header><p class="eyebrow">THE COLLECTION / EXPERIMENTS</p>
-<h1>Curiosity has<br>no roadmap.</h1><p>A shelf of small interactive experiments. Some are useful. Some are beautifully unnecessary.</p>
-<div class="cards">
-<article><div class="visual" aria-hidden="true"><span style="--c:#880D1E"></span><span style="--c:#F26A8D"></span><span style="--c:#DD2D4A"></span><span style="--c:#CBEEF3"></span><span style="--c:#F49CBB"></span></div>
-<small>01 / MATHEMATICAL ART</small><h2>Pentomino Pattern Lab</h2><p>60 squares, 12 shapes, two neutrals and far too many geometric possibilities.</p><a href="pentomino-lab/index.html">Open the lab ↗</a></article>
-<article><div class="visual" aria-hidden="true"><span style="--c:#880D1E"></span><span style="--c:#F26A8D"></span><span style="--c:#DD2D4A"></span><span style="--c:#CBEEF3"></span><span style="--c:#F49CBB"></span></div><small>02 / 3D MODEL STUDY</small><h2>Pentomino GLB Studio</h2><p>Twelve shapes escape the page. Orbit, change materials and export the pieces as a real GLB.</p><a href="pentomino-glb-lab/index.html">Explore in 3D ↗</a></article>
-<article class="soon"><div class="visual" aria-hidden="true"><span style="--c:#38604D"></span><span style="--c:#91AA70"></span><span style="--c:#C79A64"></span><span style="--c:#D9A6A0"></span><span style="--c:#A6C6C5"></span></div>
-<small>UP NEXT / COLOUR SYSTEM</small><h2>Colour Lab</h2><p>A palette is more than five swatches. Explore contrast, themes, harmony and reusable design tokens.</p><span>Future experiment</span></article>
-</div><footer>DERAILED. · One thing led to another.</footer>
-</main></body></html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Experiments — DERAILED.</title>
+    <style>
+      :root {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: #243039;
+        background: #faf8f2;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      main {
+        max-width: 950px;
+        margin: auto;
+        padding: clamp(24px, 6vw, 72px);
+      }
+      a {
+        color: inherit;
+      }
+      header a {
+        font-weight: 800;
+        text-decoration: none;
+        color: #b74760;
+      }
+      .eyebrow {
+        text-transform: uppercase;
+        letter-spacing: 0.17em;
+        font-size: 12px;
+        font-weight: 800;
+        color: #9b4563;
+        margin: 70px 0 15px;
+      }
+      h1 {
+        font-size: clamp(45px, 7vw, 85px);
+        letter-spacing: -0.075em;
+        line-height: 1;
+        margin: 0;
+      }
+      p {
+        max-width: 620px;
+        line-height: 1.7;
+        color: #53636a;
+      }
+      .cards {
+        margin-top: 40px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 17px;
+      }
+      article {
+        border: 1px solid #ddd8d3;
+        border-radius: 16px;
+        padding: 22px;
+        background: #fff;
+        min-height: 250px;
+      }
+      .visual {
+        height: 85px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        overflow: hidden;
+        position: relative;
+        background: #f6f1eb;
+      }
+      .visual span {
+        position: absolute;
+        display: block;
+        border-radius: 8px;
+      }
+
+      /* 01 / Pentomino Pattern Lab */
+      .visual-pento {
+        background: #fbf7f2;
+      }
+      .visual-pento span:nth-child(1) {
+        left: 10px;
+        top: 12px;
+        width: 36px;
+        height: 14px;
+        background: #880d1e;
+      }
+      .visual-pento span:nth-child(2) {
+        left: 10px;
+        top: 28px;
+        width: 14px;
+        height: 14px;
+        background: #880d1e;
+      }
+      .visual-pento span:nth-child(3) {
+        left: 26px;
+        top: 28px;
+        width: 14px;
+        height: 14px;
+        background: #880d1e;
+      }
+      .visual-pento span:nth-child(4) {
+        left: 42px;
+        top: 28px;
+        width: 14px;
+        height: 14px;
+        background: #880d1e;
+      }
+      .visual-pento span:nth-child(5) {
+        left: 58px;
+        top: 28px;
+        width: 14px;
+        height: 14px;
+        background: #880d1e;
+      }
+
+      .visual-pento span:nth-child(6) {
+        left: 110px;
+        top: 16px;
+        width: 14px;
+        height: 46px;
+        background: #f26a8d;
+      }
+      .visual-pento span:nth-child(7) {
+        left: 126px;
+        top: 16px;
+        width: 14px;
+        height: 14px;
+        background: #f26a8d;
+      }
+      .visual-pento span:nth-child(8) {
+        left: 126px;
+        top: 32px;
+        width: 14px;
+        height: 14px;
+        background: #f26a8d;
+      }
+      .visual-pento span:nth-child(9) {
+        left: 126px;
+        top: 48px;
+        width: 14px;
+        height: 14px;
+        background: #f26a8d;
+      }
+      .visual-pento span:nth-child(10) {
+        left: 142px;
+        top: 48px;
+        width: 14px;
+        height: 14px;
+        background: #f26a8d;
+      }
+
+      .visual-pento span:nth-child(11) {
+        right: 42px;
+        top: 16px;
+        width: 14px;
+        height: 14px;
+        background: #cbeef3;
+      }
+      .visual-pento span:nth-child(12) {
+        right: 26px;
+        top: 16px;
+        width: 14px;
+        height: 14px;
+        background: #cbeef3;
+      }
+      .visual-pento span:nth-child(13) {
+        right: 10px;
+        top: 16px;
+        width: 14px;
+        height: 14px;
+        background: #cbeef3;
+      }
+      .visual-pento span:nth-child(14) {
+        right: 26px;
+        top: 32px;
+        width: 14px;
+        height: 14px;
+        background: #cbeef3;
+      }
+      .visual-pento span:nth-child(15) {
+        right: 26px;
+        top: 48px;
+        width: 14px;
+        height: 14px;
+        background: #cbeef3;
+      }
+
+      /* 02 / GLB Studio */
+      .visual-glb {
+        background: linear-gradient(180deg, #f5f0eb 0%, #ece5df 100%);
+      }
+      .visual-glb span:nth-child(1) {
+        left: 26px;
+        top: 38px;
+        width: 54px;
+        height: 20px;
+        background: #880d1e;
+        transform: skew(-18deg);
+      }
+      .visual-glb span:nth-child(2) {
+        left: 52px;
+        top: 24px;
+        width: 54px;
+        height: 20px;
+        background: #f26a8d;
+        transform: skew(-18deg);
+      }
+      .visual-glb span:nth-child(3) {
+        left: 78px;
+        top: 10px;
+        width: 54px;
+        height: 20px;
+        background: #dd2d4a;
+        transform: skew(-18deg);
+      }
+      .visual-glb span:nth-child(4) {
+        left: 104px;
+        top: 24px;
+        width: 54px;
+        height: 20px;
+        background: #cbeef3;
+        transform: skew(-18deg);
+      }
+      .visual-glb span:nth-child(5) {
+        left: 130px;
+        top: 38px;
+        width: 54px;
+        height: 20px;
+        background: #f49cbb;
+        transform: skew(-18deg);
+      }
+      .visual-glb::after {
+        content: "";
+        position: absolute;
+        inset: auto 18px 12px 18px;
+        height: 10px;
+        background: radial-gradient(
+          circle,
+          #00000014 0%,
+          #00000008 55%,
+          transparent 70%
+        );
+        border-radius: 999px;
+      }
+
+      /* 03 / Colour Lab Generate */
+      .visual-generate {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+        background: #fff;
+      }
+      .visual-generate span {
+        position: static;
+        height: 100%;
+        border-radius: 8px;
+      }
+      .visual-generate span:nth-child(1) {
+        background: #880d1e;
+      }
+      .visual-generate span:nth-child(2) {
+        background: #f26a8d;
+      }
+      .visual-generate span:nth-child(3) {
+        background: #dd2d4a;
+      }
+      .visual-generate span:nth-child(4) {
+        background: #cbeef3;
+      }
+      .visual-generate span:nth-child(5) {
+        background: #f49cbb;
+      }
+      .visual-generate span:nth-child(6) {
+        background: #fff8f4;
+      }
+      .visual-generate span:nth-child(7) {
+        background: #2a2c35;
+      }
+
+      /* 04 / Colour Lab Curate */
+      .visual-curate {
+        background: #f8f3ee;
+      }
+      .visual-curate span:nth-child(1),
+      .visual-curate span:nth-child(2),
+      .visual-curate span:nth-child(3) {
+        left: 18px;
+        right: 18px;
+        height: 16px;
+        border-radius: 999px;
+      }
+      .visual-curate span:nth-child(1) {
+        top: 16px;
+        background: linear-gradient(
+          90deg,
+          #ffe469,
+          #ffd12d,
+          #f6a029,
+          #f47e59,
+          #fff9ec
+        );
+      }
+      .visual-curate span:nth-child(2) {
+        top: 36px;
+        background: linear-gradient(
+          90deg,
+          #d8edf5,
+          #8cc8e9,
+          #4da8d8,
+          #226695,
+          #f7fbff
+        );
+      }
+      .visual-curate span:nth-child(3) {
+        top: 56px;
+        background: linear-gradient(
+          90deg,
+          #f6dce9,
+          #d36aa7,
+          #bd268a,
+          #843a75,
+          #fff9fc
+        );
+      }
+      h2 {
+        font-size: 21px;
+        letter-spacing: -0.04em;
+        margin: 5px 0;
+      }
+      small {
+        color: #9a5066;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+      }
+      article a {
+        font-weight: 800;
+        text-underline-offset: 4px;
+      }
+      .soon {
+        opacity: 0.64;
+      }
+      footer {
+        margin-top: 60px;
+        color: #67747a;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header><a href="../index.html">← DERAILED.</a></header>
+      <p class="eyebrow">THE COLLECTION / EXPERIMENTS</p>
+      <h1>Curiosity has<br />no roadmap.</h1>
+      <p>
+        A shelf of small interactive experiments. Some are useful. Some are
+        beautifully unnecessary.
+      </p>
+      <div class="cards">
+        <article>
+          <div class="visual visual-pento" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          <small>01 / MATHEMATICAL ART</small>
+          <h2>Pentomino Pattern Lab</h2>
+          <p>
+            60 squares, 12 shapes, two neutrals and far too many geometric
+            possibilities.
+          </p>
+          <a href="pentomino-lab/index.html">Open the lab ↗</a>
+        </article>
+        <article>
+          <div class="visual visual-glb" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          <small>02 / 3D MODEL STUDY</small>
+          <h2>Pentomino GLB Studio</h2>
+          <p>
+            Twelve shapes escape the page. Orbit, change materials and export
+            the pieces as a real GLB.
+          </p>
+          <a href="pentomino-glb-lab/index.html">Explore in 3D ↗</a>
+        </article>
+        <article>
+          <div class="visual visual-generate" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          <small>03 / COLOUR SYSTEM</small>
+          <h2>Colour Lab: Generate</h2>
+          <p>
+            Start with a seed colour. Explore harmony and contrast, preview
+            seven-token palettes, and export reusable CSS or JSON.
+          </p>
+          <a href="colour-lab/index.html">Generate a palette ↗</a>
+        </article>
+        <article>
+          <div class="visual visual-curate" aria-hidden="true">
+            <span></span><span></span><span></span>
+            </div>
+          <small>04 / COLOUR LIBRARY</small>
+          <h2>Colour Lab: Curate</h2>
+          <p>
+            Browse 23 palettes inspired by coffee, cinema, editorial design and
+            print. Collect favourites or make a version of your own.
+          </p>
+          <a href="colour-lab-curate/index.html">Explore the collection ↗</a>
+        </article>
+      </div>
+      <footer>DERAILED. · One thing led to another.</footer>
+    </main>
+  </body>
+</html>
