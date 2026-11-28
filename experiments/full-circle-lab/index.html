@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Full Circle — Edition 01 · DERAILED.</title>
+<meta name="description" content="An interactive atlas of mathematical constants. Turn digits into circular paths and explore their patterns.">
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<style>
+:root{color-scheme:light;--paper:#f3efe5;--ink:#23352f;--muted:#52645d;--line:#d4d7c9;--accent:#a04e37;--panel:#faf8f1;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--paper);color:var(--ink)}
+*{box-sizing:border-box}body{margin:0}a{color:inherit;text-underline-offset:4px}main{max-width:1360px;margin:auto;padding:clamp(18px,4vw,60px)}header, .between{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}header a{font-size:.78rem;font-weight:750;text-decoration:none} .eyebrow,.mono,output,.tag{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.76rem;letter-spacing:.08em}.eyebrow{color:var(--accent);text-transform:uppercase;font-weight:700}h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing:-.055em}h1{font-size:clamp(4rem,10vw,8rem);line-height:.86;margin:38px 0 12px}h1 em{color:var(--accent);font-weight:400}h2{font-size:2rem;margin:0 0 12px}p{line-height:1.6;color:var(--muted)}.lede{font-size:clamp(1rem,2vw,1.25rem);max-width:680px;margin:22px 0 30px}.lab{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(270px,1fr);gap:18px;align-items:start}.stage{min-width:0;border-radius:6px;overflow:hidden;background:#182825;color:#e7dfc8}.stage-head{padding:19px 22px 0}.stage-head strong{font-family:Georgia,serif;font-weight:400;font-size:1.7rem}.stage-head .mono{opacity:.8}.stage svg{display:block;width:100%;height:auto;aspect-ratio:1;max-height:760px;margin:auto}.stage-foot{padding:0 20px 18px;font-size:.8rem;opacity:.85;min-height:42px}.panel{background:var(--panel);border:1px solid var(--line);padding:20px;border-radius:6px}.controls{display:grid;gap:19px}.field{display:grid;gap:8px}label,legend{font-size:.82rem;font-weight:700}select,button,input{font:inherit}select,button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:4px;padding:9px 12px;min-height:38px}button{cursor:pointer;font-size:.84rem;font-weight:650}button:hover,button[aria-pressed=true]{background:var(--ink);color:var(--paper)}button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #b66b48;outline-offset:3px}input[type=range]{width:100%;accent-color:var(--accent);margin:3px 0}input[type=checkbox]{accent-color:var(--accent)}.buttons{display:flex;flex-wrap:wrap;gap:7px}.buttons button{flex:1}fieldset{border:0;margin:0;padding:0;min-width:0}legend{margin-bottom:8px}.tiny{font-size:.76rem;color:var(--muted);line-height:1.5;margin:0}.swatches{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}.swatch{padding:0;min-width:0;min-height:30px;border-radius:3px;font-size:.72rem;border:2px solid transparent}.swatch[aria-pressed=true]{outline:2px solid var(--accent);outline-offset:1px}.readout{font-family:ui-monospace,monospace;font-size:.9rem;line-height:1.8;overflow-wrap:anywhere;max-height:100px;overflow:auto;padding:10px;border:1px solid var(--line);border-radius:4px}.readout b{color:var(--accent)}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.stat{border-top:1px solid var(--line);padding-top:12px}.stat strong{display:block;font-family:Georgia,serif;font-size:1.8rem;font-weight:400}.stat span{font-size:.72rem;color:var(--muted)}.explain{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:32px}.explain article{border-top:1px solid var(--line);padding-top:16px}.explain h3{font-family:Georgia,serif;font-size:1.5rem;font-weight:400;margin:0}.error{padding:20px;background:#ffefdc;color:#752f19}footer{border-top:1px solid var(--line);margin-top:40px;padding-top:16px;font-size:.8rem;color:var(--muted)}@media(max-width:800px){.lab{grid-template-columns:1fr}.explain{grid-template-columns:1fr}h1{margin-top:30px}.stage-head{padding:14px 14px 0}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body><main>
+<header><a href="../index.html">← DERAILED. / Experiments</a><span class="mono">FULL CIRCLE / EDITION 01</span></header>
+<div class="eyebrow" style="margin-top:42px">The geometry of relationships</div>
+<h1>Full <em>Circle.</em></h1>
+<p class="lede">The anatomy of irrational numbers. Infinite decimal expansions, finite windows, and the invisible threads between one digit and the next.</p>
+<noscript><p class="error">This interactive lab requires JavaScript.</p></noscript>
+<div id="error" class="error" hidden role="alert"></div>
+<section class="lab" aria-label="Circular visualization laboratory">
+<div>
+<div class="stage" id="stage">
+<div class="stage-head between"><strong id="artTitle">π / Pi</strong><span class="mono" id="artMeta">300 decimal digits</span></div>
+<svg id="art" viewBox="0 0 720 720" role="img" aria-labelledby="svgTitle svgDesc"><title id="svgTitle">Circular digit transitions</title><desc id="svgDesc">Ten digit sectors with paths showing adjacent decimal digits.</desc></svg>
+<div class="stage-foot" id="detail" aria-live="polite">Select a digit to isolate its outgoing connections.</div>
+</div>
+<div class="stats" aria-label="Statistics for selected digits"><div class="stat"><strong id="statDigits">300</strong><span>decimal digits</span></div><div class="stat"><strong id="statPairs">299</strong><span>successive pairs</span></div><div class="stat"><strong id="statUnique">—</strong><span>distinct pairs / 100</span></div></div>
+<div class="panel"><div class="between"><label for="sequence">The sequence</label><span class="mono" id="seqLabel"></span></div><div class="readout" id="sequence" tabindex="0"></div><p class="tiny" style="margin-top:8px">Only digits after the decimal point are connected. The integer part is displayed for context, not included in the counts.</p></div>
+</div>
+<aside class="panel controls" aria-label="Visualization controls">
+<div><span class="eyebrow">The composer</span><h2>Make it yours.</h2></div>
+<div class="field"><label for="constant">Mathematical constant</label><select id="constant"><option value="pi">π — Pi</option><option value="phi">φ — Golden ratio</option><option value="sqrt2">√2 — Square root of 2</option><option value="sqrt3">√3 — Square root of 3</option><option value="e">e — Euler's number</option><option value="tau">τ — Tau</option></select><p class="tiny" id="constantNote"></p></div>
+<fieldset><legend>Visual language</legend><div class="buttons" id="modes"><button data-mode="paths" aria-pressed="true">Threads</button><button data-mode="chords" aria-pressed="false">Ribbons</button></div><p class="tiny" id="modeNote">One thread for every successive pair. Equal-sized digit sectors.</p></fieldset>
+<div class="field"><div class="between"><label for="count">Decimal digits</label><output id="countVal" for="count">300</output></div><input id="count" type="range" min="20" max="1500" step="1" value="300"><div class="buttons"><button id="play" aria-pressed="false">▶ Reveal</button><button id="reset">Reset</button></div></div>
+<div class="field"><div class="between"><label for="curvature">Thread curvature</label><output id="curveVal" for="curvature">80%</output></div><input id="curvature" type="range" min="0" max="100" value="80"></div>
+<div class="field"><div class="between"><label for="opacity">Connection opacity</label><output id="opacityVal" for="opacity">35%</output></div><input id="opacity" type="range" min="5" max="100" value="35"></div>
+<div class="field"><label for="palette">Palette</label><select id="palette"><option value="botanical">Botanical / moss & clay</option><option value="candy">Candy / vivid</option><option value="ocean">Ocean / cool tones</option><option value="ink">Ink / jewel tones</option></select><div class="swatches" id="swatches" aria-label="Filter outgoing digit"></div><button id="clearFilter">Show all digits</button></div>
+<div class="field"><label for="background">Paper</label><select id="background"><option value="dark">Midnight green</option><option value="light">Ivory</option><option value="black">Black ink</option></select><label><input id="showFreq" type="checkbox" checked> Show digit frequency track</label><label><input id="showLabels" type="checkbox" checked> Show digit labels</label></div>
+<div class="field"><label>Take the artwork with you</label><div class="buttons"><button id="svgExport">SVG</button><button id="pngExport">PNG</button><button id="jsonExport">JSON</button></div><p class="tiny" id="exportStatus" role="status">SVG is vector artwork; PNG is 1440 × 1440. JSON preserves settings and the decimal sequence.</p></div>
+</aside></section>
+<section class="explain"><article><div class="eyebrow">01 / Read the circle</div><h3>Digits become relationships.</h3><p>Every digit owns a sector. If 1 is followed by 4, a thread runs from 1 to 4. Repeated transitions create density. Threads retain individual occurrences; ribbons aggregate them into directed flows, whose sector sizes reflect the total incoming and outgoing counts. Select any digit to isolate outgoing transitions.</p></article><article><div class="eyebrow">02 / Read the evidence</div><h3>Patterns are not proof.</h3><p>These are finite prefixes, not evidence that a constant is normal or random. Frequencies and transition counts describe only the selected prefix. The constants are computed locally using BigInt fixed-point arithmetic, with 40 guard digits; no external digit dataset is needed.</p></article><article><div class="eyebrow">03 / The origin</div><h3>Coming full circle.</h3><p>Inspired by the 2018 <a href="https://github.com/chichacha/Imperfect/blob/master/content/post/2018-10-13-visual-art-with-pi-using-ggplot2-circlize.Rmd">visual art with pi experiment</a> in R. This edition reimagines circular coordinates using SVG and D3.</p></article><article><div class="eyebrow">04 / The next circle</div><h3>One visual language, many worlds.</h3><p>Future editions could trace pentomino solutions, language, or seasonal rhythms. This first edition deliberately focuses on decimal sequences. Learn more about <a href="https://d3js.org/d3-chord">D3 chord layouts</a> and <a href="https://jokergoo.github.io/circlize_book/book/">circlize</a>.</p></article></section>
+<footer class="between"><span>DERAILED. · One thing led to another.</span><span class="mono">FULL CIRCLE — 01 / 2026</span></footer>
+</main>
+<script>
+"use strict";
+(function(){
+const $=id=>document.getElementById(id);
+if(!window.d3||typeof BigInt==="undefined"){const el=$("error");el.hidden=false;el.textContent="Full Circle requires BigInt and D3. Check your browser and internet connection, then reload.";return;}
+const D=1500, G=40, S=10n**BigInt(D+G);
+function isqrt(n){if(n<2n)return n;let x=1n<<BigInt(Math.ceil(n.toString(2).length/2));while(true){let y=(x+n/x)/2n;if(y>=x)return x;x=y;}}
+function atan(q){q=BigInt(q);let term=S/q, total=term, k=1n, sign=-1n;while(term){term/=q*q;total+=sign*(term/(2n*k+1n));k++;sign=-sign;}return total;}
+function exp1(){let term=S,sum=S;for(let k=1n;term;k++){term/=k;sum+=term;}return sum;}
+const pi=16n*atan(5)-4n*atan(239);
+const values={pi:pi,phi:(S+isqrt(5n*S*S))/2n,sqrt2:isqrt(2n*S*S),sqrt3:isqrt(3n*S*S),e:exp1(),tau:2n*pi};
+const info={pi:["π","Pi","The ratio of a circle's circumference to its diameter."],phi:["φ","Golden ratio","The positive solution to x² = x + 1."],sqrt2:["√2","Square root of 2","The diagonal of a unit square."],sqrt3:["√3","Square root of 3","The positive number whose square is 3."],e:["e","Euler's number","The base of the natural logarithm."],tau:["τ","Tau","One full turn in radians; twice π."]};
+const decimals=Object.fromEntries(Object.entries(values).map(([k,v])=>[k,{whole:(v/S).toString(),fraction:(v%S).toString().padStart(D+G,"0").slice(0,D)}]));
+const palettes={botanical:["#89ac9b","#d4b86a","#d98c72","#88b8c4","#b9a6cc","#b4ca85","#e5a5af","#c6a47d","#7696cb","#b9bfab"],candy:["#f17d9e","#f6a654","#f5d75e","#a7d46d","#57d4b7","#64bde9","#a49cf2","#e6a2e3","#fa8d7a","#8ca6ef"],ocean:["#75b9ab","#76c4c7","#519cb8","#6895d6","#8c9fe3","#a3a5d6","#8cbdac","#c2cc9f","#83b0c5","#c6e1dc"],ink:["#da8c72","#d9aa4a","#a1bf6c","#6cb5a4","#609ac8","#9c8cce","#d397bb","#b87586","#c0b9a8","#7faaa4"]};
+const paper={dark:["#182825","#f1e8d1"],light:["#f7f0df","#25362f"],black:["#121416","#f3f0e7"]};
+let mode="paths",filter=null,frame=0,animation=0,playing=false,target=300,visible=null,lastTime=0;
+const svg=d3.select("#art"), C=360,R=265, digitList=d3.range(10), tau=Math.PI*2;
+const coord=(a,r)=>[C+r*Math.sin(a),C-r*Math.cos(a)];
+const arc=d3.arc();
+const state=()=>({constant:$("constant").value,mode,count:+$("count").value,curvature:+$("curvature").value,opacity:+$("opacity").value,palette:$("palette").value,background:$("background").value,frequency:$("showFreq").checked,labels:$("showLabels").checked,filter});
+const current=()=>{const s=state();return decimals[s.constant].fraction.slice(0,visible===null?s.count:visible);};
+function setFilter(n){filter=filter===n?null:n;render();}
+function schedule(){if(frame)return;frame=requestAnimationFrame(()=>{frame=0;render();});}
+function render(){
+const s=state(), digits=current(), n=digits.length, colors=palettes[s.palette], [bg,fg]=paper[s.background];
+const counts=Array(10).fill(0), matrix=Array.from({length:10},()=>Array(10).fill(0)), pairs=[];
+for(const d of digits)counts[+d]++;
+for(let i=0;i<n-1;i++){const a=+digits[i],b=+digits[i+1];matrix[a][b]++;pairs.push({a,b,i});}
+const unique=matrix.flat().filter(Boolean).length;
+$("countVal").value=s.count;$("curveVal").value=s.curvature+"%";$("opacityVal").value=s.opacity+"%";
+$("curvature").disabled=s.mode==="chords";$("modeNote").textContent=s.mode==="paths"?"One thread for every successive pair. Equal-sized digit sectors.":"Directed ribbons aggregate pairs. Sector sizes reflect incoming and outgoing counts.";
+$("constantNote").textContent=info[s.constant][2];$("artTitle").textContent=info[s.constant].slice(0,2).join(" / ");$("artMeta").textContent=n+" decimal digits";
+$("stage").style.background=bg;$("stage").style.color=fg;
+$("statDigits").textContent=n;$("statPairs").textContent=Math.max(0,n-1);$("statUnique").textContent=unique;
+$("seqLabel").textContent="0 → "+n+" decimals";
+const readout=$("sequence");readout.replaceChildren(document.createTextNode(decimals[s.constant].whole+"."));
+for(let i=0;i<n;i++){const el=document.createElement(filter===+digits[i]?"b":"span");el.textContent=digits[i];readout.append(el);}
+$("swatches").replaceChildren();
+digitList.forEach(d=>{const b=document.createElement("button");b.type="button";b.className="swatch";b.textContent=d;b.style.background=colors[d];b.style.color="#172822";b.setAttribute("aria-label","Highlight outgoing digit "+d);b.setAttribute("aria-pressed",String(filter===d));b.onclick=()=>setFilter(d);$("swatches").append(b);});
+$("detail").textContent=filter===null?"Select a digit to isolate its outgoing connections.":"Digit "+filter+" occurs "+counts[filter]+" times; "+d3.sum(matrix[filter])+" outgoing transitions.";
+svg.selectAll("*:not(title):not(desc)").remove();
+svg.select("#svgTitle").text(info[s.constant][1]+" digit transitions");
+svg.select("#svgDesc").text(n+" decimal digits; "+s.mode+"; "+(filter===null?"all digits":"outgoing digit "+filter));
+svg.append("rect").attr("width",720).attr("height",720).attr("fill",bg);
+const center=svg.append("g").attr("transform","translate("+C+","+C+")");
+center.append("circle").attr("r",R+41).attr("fill","none").attr("stroke",fg).attr("stroke-opacity",.16);
+center.append("circle").attr("r",R-5).attr("fill","none").attr("stroke",fg).attr("stroke-opacity",.12);
+let groups;
+const connectionLayer=center.append("g").attr("fill","none");
+function alpha(a){return s.opacity/100*(filter===null||filter===a?1:.045);}
+function detail(a,b){$("detail").textContent=a+" → "+b+" · "+matrix[a][b]+" of "+Math.max(0,n-1)+" transitions";}
+if(s.mode==="paths"){
+const step=tau/10,gap=.045;
+groups=digitList.map(i=>({index:i,startAngle:i*step+gap/2,endAngle:(i+1)*step-gap/2}));
+const seen=Array(10).fill(0), positions=Array.from(digits,(d)=>{const k=+d;return k*step+gap+.04+(++seen[k]/(counts[k]+1))*(step-2*gap-.08);});
+const paths=connectionLayer.selectAll("path").data(pairs).join("path").attr("d",d=>{const a=positions[d.i],b=positions[d.i+1],p=coord(a,R-15).map(x=>x-C),q=coord(b,R-15).map(x=>x-C),pull=1-s.curvature/100;return "M"+p.join(",")+" Q"+((p[0]+q[0])/2*pull)+","+((p[1]+q[1])/2*pull)+" "+q.join(",");}).attr("stroke",d=>colors[d.a]).attr("stroke-width",n>800?.85:1.35).attr("stroke-opacity",d=>alpha(d.a)).attr("stroke-linecap","round");
+paths.on("pointerenter",(_,d)=>detail(d.a,d.b)).append("title").text(d=>d.a+" → "+d.b+" · pair "+(d.i+1));
+}else{
+const chords=d3.chordDirected().padAngle(.045)(matrix);
+groups=chords.groups;
+const ribbons=connectionLayer.selectAll("path").data(chords).join("path").attr("d",d3.ribbonArrow().radius(R-15).headRadius(8)).attr("fill",d=>colors[d.source.index]).attr("fill-opacity",d=>alpha(d.source.index)).attr("stroke",bg).attr("stroke-opacity",.6).attr("stroke-width",.6);
+ribbons.on("pointerenter",(_,d)=>detail(d.source.index,d.target.index)).append("title").text(d=>d.source.index+" → "+d.target.index+" · "+d.source.value+" transitions");
+}
+const sectors=center.append("g").selectAll("g").data(groups).join("g").attr("opacity",d=>filter===null||filter===d.index?1:.46);
+sectors.append("path").attr("d",arc.innerRadius(R).outerRadius(R+13)).attr("fill",d=>colors[d.index]).attr("stroke",bg).attr("stroke-width",1);
+sectors.style("cursor","pointer").on("click",(_,d)=>setFilter(d.index)).append("title").text(d=>"Digit "+d.index+" · "+counts[d.index]+" occurrences");
+if(s.frequency){const max=d3.max(counts)||1;sectors.append("path").attr("d",d=>arc.innerRadius(R+20).outerRadius(R+20+counts[d.index]/max*25)(d)).attr("fill",d=>colors[d.index]).attr("opacity",.74);}
+if(s.labels){sectors.append("text").attr("x",d=>Math.sin((d.startAngle+d.endAngle)/2)*(R+59)).attr("y",d=>-Math.cos((d.startAngle+d.endAngle)/2)*(R+59)).attr("text-anchor","middle").attr("dominant-baseline","central").attr("font-family","Georgia,serif").attr("font-size",22).attr("fill",fg).text(d=>d.endAngle-d.startAngle>.025?d.index:"");}
+svg.append("text").attr("x",20).attr("y",27).attr("fill",fg).attr("font-family","monospace").attr("font-size",11).attr("opacity",.8).text("FULL CIRCLE / 01");
+svg.append("text").attr("x",700).attr("y",699).attr("text-anchor","end").attr("fill",fg).attr("font-family","monospace").attr("font-size",11).attr("opacity",.8).text(info[s.constant][0]+" · "+n+" DIGITS · "+s.mode.toUpperCase());
+}
+function stop(){playing=false;cancelAnimationFrame(animation);visible=null;$("play").textContent="▶ Reveal";$("play").setAttribute("aria-pressed","false");}
+function animate(t){if(!playing)return;if(!lastTime)lastTime=t;if(t-lastTime>60){visible=Math.min(target,visible+Math.max(1,Math.ceil(target/75)));render();lastTime=t;}if(visible>=target){stop();render();return;}animation=requestAnimationFrame(animate);}
+$("play").onclick=()=>{if(playing){stop();render();return;}target=+$("count").value;visible=2;lastTime=0;playing=true;$("play").textContent="■ Stop";$("play").setAttribute("aria-pressed","true");render();animation=requestAnimationFrame(animate);};
+for(const id of ["constant","count","curvature","opacity","palette","background","showFreq","showLabels"]){$(id).addEventListener("input",()=>{if(id==="constant"||id==="count")stop();schedule();});}
+$("modes").querySelectorAll("button").forEach(b=>b.onclick=()=>{mode=b.dataset.mode;$("modes").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));render();});
+$("clearFilter").onclick=()=>{filter=null;render();};
+$("reset").onclick=()=>{stop();mode="paths";filter=null;Object.entries({constant:"pi",count:300,curvature:80,opacity:35,palette:"botanical",background:"dark"}).forEach(([k,v])=>$(k).value=v);$("showFreq").checked=$("showLabels").checked=true;$("modes").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.mode===mode)));render();};
+function serialized(){const clone=$("art").cloneNode(true);clone.setAttribute("xmlns","http://www.w3.org/2000/svg");clone.setAttribute("width","720");clone.setAttribute("height","720");return new XMLSerializer().serializeToString(clone);}
+function name(ext){return "full-circle-01-"+state().constant+"-"+current().length+"-"+mode+"."+ext;}
+function download(blob,filename){const u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);$("exportStatus").textContent="Prepared "+filename;}
+$("svgExport").onclick=()=>download(new Blob([serialized()],{type:"image/svg+xml;charset=utf-8"}),name("svg"));
+$("jsonExport").onclick=()=>{const s=state();download(new Blob([JSON.stringify({edition:1,...s,visibleDigits:current().length,integerPart:decimals[s.constant].whole,decimalDigits:current(),encoding:"adjacent decimal digit transitions"},null,2)],{type:"application/json"}),name("json"));};
+$("pngExport").onclick=()=>{const filename=name("png"),img=new Image(),url=URL.createObjectURL(new Blob([serialized()],{type:"image/svg+xml;charset=utf-8"}));img.onload=()=>{try{const canvas=document.createElement("canvas");canvas.width=canvas.height=1440;canvas.getContext("2d").drawImage(img,0,0,1440,1440);canvas.toBlob(blob=>{if(blob)download(blob,filename);else $("exportStatus").textContent="PNG encoding failed.";});}catch(e){$("exportStatus").textContent="PNG export failed: "+e.message;}finally{URL.revokeObjectURL(url);}};img.onerror=()=>{URL.revokeObjectURL(url);$("exportStatus").textContent="Could not render SVG for PNG export.";};img.src=url;};
+render();
+})();
+</script>
+</body></html>
