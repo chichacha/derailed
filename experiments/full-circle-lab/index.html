@@ -15,7 +15,7 @@
 <header><a href="../index.html">← DERAILED. / Experiments</a><span class="mono">FULL CIRCLE / EDITION 01</span></header>
 <div class="eyebrow" style="margin-top:42px">The geometry of relationships</div>
 <h1>Full <em>Circle.</em></h1>
-<p class="lede">The anatomy of irrational numbers. Infinite decimal expansions, finite windows, and the invisible threads between one digit and the next.</p>
+<p class="lede">The anatomy of decimal expansions. From familiar irrational numbers to delightfully eccentric constructions and repeating fractions. Infinite sequences, finite windows, and the invisible threads between one digit and the next.</p>
 <noscript><p class="error">This interactive lab requires JavaScript.</p></noscript>
 <div id="error" class="error" hidden role="alert"></div>
 <section class="lab" aria-label="Circular visualization laboratory">
@@ -30,7 +30,7 @@
 </div>
 <aside class="panel controls" aria-label="Visualization controls">
 <div><span class="eyebrow">The composer</span><h2>Make it yours.</h2></div>
-<div class="field"><label for="constant">Mathematical constant</label><select id="constant"><option value="pi">π — Pi</option><option value="phi">φ — Golden ratio</option><option value="sqrt2">√2 — Square root of 2</option><option value="sqrt3">√3 — Square root of 3</option><option value="e">e — Euler's number</option><option value="tau">τ — Tau</option></select><p class="tiny" id="constantNote"></p></div>
+<div class="field"><label for="constant">Number or constant</label><select id="constant"><optgroup label="The Classics"><option value="pi">π — Pi</option><option value="phi">φ — Golden ratio</option><option value="sqrt2">√2 — Square root of 2</option><option value="sqrt3">√3 — Square root of 3</option><option value="e">e — Euler's number</option><option value="tau">τ — Tau</option></optgroup><optgroup label="The Eccentrics"><option value="liouville">L — Liouville's constant</option><option value="champernowne">C₁₀ — Champernowne's constant</option><option value="copelandErdos">CE — Copeland–Erdős constant</option><option value="oneSeventh">1/7 — Repeating decimal</option><option value="oneThirteenth">1/13 — Repeating decimal</option></optgroup></select><p class="tiny" id="constantNote"></p></div>
 <fieldset><legend>Visual language</legend><div class="buttons" id="modes"><button data-mode="paths" aria-pressed="true">Threads</button><button data-mode="chords" aria-pressed="false">Ribbons</button></div><p class="tiny" id="modeNote">One thread for every successive pair. Equal-sized digit sectors.</p></fieldset>
 <div class="field"><div class="between"><label for="count">Decimal digits</label><output id="countVal" for="count">300</output></div><input id="count" type="range" min="20" max="1500" step="1" value="300"><div class="buttons"><button id="play" aria-pressed="false">▶ Reveal</button><button id="reset">Reset</button></div></div>
 <div class="field"><div class="between"><label for="curvature">Thread curvature</label><output id="curveVal" for="curvature">80%</output></div><input id="curvature" type="range" min="0" max="100" value="80"></div>
@@ -39,7 +39,7 @@
 <div class="field"><label for="background">Paper</label><select id="background"><option value="dark">Midnight green</option><option value="light">Ivory</option><option value="black">Black ink</option></select><label><input id="showFreq" type="checkbox" checked> Show digit frequency track</label><label><input id="showLabels" type="checkbox" checked> Show digit labels</label></div>
 <div class="field"><label>Take the artwork with you</label><div class="buttons"><button id="svgExport">SVG</button><button id="pngExport">PNG</button><button id="jsonExport">JSON</button></div><p class="tiny" id="exportStatus" role="status">SVG is vector artwork; PNG is 1440 × 1440. JSON preserves settings and the decimal sequence.</p></div>
 </aside></section>
-<section class="explain"><article><div class="eyebrow">01 / Read the circle</div><h3>Digits become relationships.</h3><p>Every digit owns a sector. If 1 is followed by 4, a thread runs from 1 to 4. Repeated transitions create density. Threads retain individual occurrences; ribbons aggregate them into directed flows, whose sector sizes reflect the total incoming and outgoing counts. Select any digit to isolate outgoing transitions.</p></article><article><div class="eyebrow">02 / Read the evidence</div><h3>Patterns are not proof.</h3><p>These are finite prefixes, not evidence that a constant is normal or random. Frequencies and transition counts describe only the selected prefix. The constants are computed locally using BigInt fixed-point arithmetic, with 40 guard digits; no external digit dataset is needed.</p></article><article><div class="eyebrow">03 / The origin</div><h3>Coming full circle.</h3><p>Inspired by the 2018 <a href="https://github.com/chichacha/Imperfect/blob/master/content/post/2018-10-13-visual-art-with-pi-using-ggplot2-circlize.Rmd">visual art with pi experiment</a> in R. This edition reimagines circular coordinates using SVG and D3.</p></article><article><div class="eyebrow">04 / The next circle</div><h3>One visual language, many worlds.</h3><p>Future editions could trace pentomino solutions, language, or seasonal rhythms. This first edition deliberately focuses on decimal sequences. Learn more about <a href="https://d3js.org/d3-chord">D3 chord layouts</a> and <a href="https://jokergoo.github.io/circlize_book/book/">circlize</a>.</p></article></section>
+<section class="explain"><article style="grid-column:1/-1"><div class="eyebrow">The cabinet of eccentrics / A comparative study</div><h3>Order can look like chaos.</h3><p>Try Liouville’s constant in Ribbons mode: nearly every transition is 0 → 0. Then compare 1/7 and 1/13, whose repeating cycles produce six recurring directed connections. Champernowne and Copeland–Erdős have entirely deterministic constructions yet are proven normal in base 10. In contrast, whether π is normal remains unknown. Normality concerns limiting frequencies of every finite digit block, not whether a finite picture looks random.</p><p class="tiny">Further reading: <a href="https://en.wikipedia.org/wiki/Liouville_number">Liouville numbers</a> · <a href="https://en.wikipedia.org/wiki/Champernowne_constant">Champernowne constant</a> · <a href="https://en.wikipedia.org/wiki/Copeland%E2%80%93Erd%C5%91s_constant">Copeland–Erdős constant</a> · <a href="https://en.wikipedia.org/wiki/Normal_number">Normal numbers</a>.</p></article><article><div class="eyebrow">01 / Read the circle</div><h3>Digits become relationships.</h3><p>Every digit owns a sector. If 1 is followed by 4, a thread runs from 1 to 4. Repeated transitions create density. Threads retain individual occurrences; ribbons aggregate them into directed flows, whose sector sizes reflect the total incoming and outgoing counts. Select any digit to isolate outgoing transitions.</p></article><article><div class="eyebrow">02 / Read the evidence</div><h3>Patterns are not proof.</h3><p>These are finite prefixes, not evidence that a constant is normal or random. Frequencies and transition counts describe only the selected prefix. The Classics are computed locally using BigInt fixed-point arithmetic with 40 guard digits. The Eccentrics use exact digit constructions. No external digit dataset is needed.</p></article><article><div class="eyebrow">03 / The origin</div><h3>Coming full circle.</h3><p>Inspired by the 2018 <a href="https://github.com/chichacha/Imperfect/blob/master/content/post/2018-10-13-visual-art-with-pi-using-ggplot2-circlize.Rmd">visual art with pi experiment</a> in R. This edition reimagines circular coordinates using SVG and D3.</p></article><article><div class="eyebrow">04 / The next circle</div><h3>One visual language, many worlds.</h3><p>Future editions could trace pentomino solutions, language, or seasonal rhythms. This first edition deliberately focuses on decimal sequences. Learn more about <a href="https://d3js.org/d3-chord">D3 chord layouts</a> and <a href="https://jokergoo.github.io/circlize_book/book/">circlize</a>.</p></article></section>
 <footer class="between"><span>DERAILED. · One thing led to another.</span><span class="mono">FULL CIRCLE — 01 / 2026</span></footer>
 </main>
 <script>
@@ -54,7 +54,39 @@ function exp1(){let term=S,sum=S;for(let k=1n;term;k++){term/=k;sum+=term;}retur
 const pi=16n*atan(5)-4n*atan(239);
 const values={pi:pi,phi:(S+isqrt(5n*S*S))/2n,sqrt2:isqrt(2n*S*S),sqrt3:isqrt(3n*S*S),e:exp1(),tau:2n*pi};
 const info={pi:["π","Pi","The ratio of a circle's circumference to its diameter."],phi:["φ","Golden ratio","The positive solution to x² = x + 1."],sqrt2:["√2","Square root of 2","The diagonal of a unit square."],sqrt3:["√3","Square root of 3","The positive number whose square is 3."],e:["e","Euler's number","The base of the natural logarithm."],tau:["τ","Tau","One full turn in radians; twice π."]};
-const decimals=Object.fromEntries(Object.entries(values).map(([k,v])=>[k,{whole:(v/S).toString(),fraction:(v%S).toString().padStart(D+G,"0").slice(0,D)}]));
+// The Eccentrics: exact digit constructions rather than numerical approximations.
+function liouvilleDigits(length){
+  const digits=Array(length).fill("0");
+  for(let k=1,factorial=1;factorial<=length;k++,factorial*=k) digits[factorial-1]="1";
+  return digits.join("");
+}
+function isPrime(n){
+  if(n<2)return false;
+  if(n%2===0)return n===2;
+  for(let d=3;d*d<=n;d+=2)if(n%d===0)return false;
+  return true;
+}
+function concatenateIntegers(length, predicate, start){
+  let out="";
+  for(let n=start;out.length<length;n++)if(predicate(n))out+=String(n);
+  return out.slice(0,length);
+}
+function repeatDigits(pattern,length){return pattern.repeat(Math.ceil(length/pattern.length)).slice(0,length);}
+Object.assign(info,{
+  liouville:["L","Liouville's constant","Transcendental but not normal: 1s at factorial positions (1, 2, 6, 24, …), and 0s everywhere else."],
+  champernowne:["C₁₀","Champernowne's constant","Concatenate positive integers: 123456789101112… Proven normal in base 10, despite structured finite prefixes."],
+  copelandErdos:["CE","Copeland–Erdős constant","Concatenate successive primes: 235711131719… Proven normal in base 10."],
+  oneSeventh:["1/7","One seventh","A rational number with a six-digit repeating cycle: 142857."],
+  oneThirteenth:["1/13","One thirteenth","A rational number with a six-digit repeating cycle: 076923."]
+});
+const decimals={
+  ...Object.fromEntries(Object.entries(values).map(([k,v])=>[k,{whole:(v/S).toString(),fraction:(v%S).toString().padStart(D+G,"0").slice(0,D)}])),
+  liouville:{whole:"0",fraction:liouvilleDigits(D)},
+  champernowne:{whole:"0",fraction:concatenateIntegers(D,()=>true,1)},
+  copelandErdos:{whole:"0",fraction:concatenateIntegers(D,isPrime,2)},
+  oneSeventh:{whole:"0",fraction:repeatDigits("142857",D)},
+  oneThirteenth:{whole:"0",fraction:repeatDigits("076923",D)}
+};
 const palettes={botanical:["#89ac9b","#d4b86a","#d98c72","#88b8c4","#b9a6cc","#b4ca85","#e5a5af","#c6a47d","#7696cb","#b9bfab"],candy:["#f17d9e","#f6a654","#f5d75e","#a7d46d","#57d4b7","#64bde9","#a49cf2","#e6a2e3","#fa8d7a","#8ca6ef"],ocean:["#75b9ab","#76c4c7","#519cb8","#6895d6","#8c9fe3","#a3a5d6","#8cbdac","#c2cc9f","#83b0c5","#c6e1dc"],ink:["#da8c72","#d9aa4a","#a1bf6c","#6cb5a4","#609ac8","#9c8cce","#d397bb","#b87586","#c0b9a8","#7faaa4"]};
 const paper={dark:["#182825","#f1e8d1"],light:["#f7f0df","#25362f"],black:["#121416","#f3f0e7"]};
 let mode="paths",filter=null,frame=0,animation=0,playing=false,target=300,visible=null,lastTime=0;
